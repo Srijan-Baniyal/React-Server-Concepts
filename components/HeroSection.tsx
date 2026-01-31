@@ -15,6 +15,7 @@ import {
 	useSpring,
 	useTransform,
 } from "motion/react";
+import Link from "next/link";
 import {
 	type ComponentType,
 	useCallback,
@@ -24,7 +25,6 @@ import {
 } from "react";
 import { Button } from "@/components/ui/button";
 
-// Types
 interface Node {
 	id: string;
 	label: string;
@@ -52,7 +52,10 @@ interface EdgeSequence {
 }
 
 interface Feature {
-	icon: ComponentType<{ className?: string }>;
+	icon: ComponentType<{
+		className?: string;
+		weight?: "thin" | "light" | "regular" | "bold" | "fill" | "duotone";
+	}>;
 	title: string;
 	description: string;
 }
@@ -156,23 +159,24 @@ const STEPS: readonly Step[] = [
 ] as const;
 
 const ANIMATION_CONFIG = {
-	NODE_INTERVAL: 400,
-	EDGE_INTERVAL: 300,
-	EDGE_ANIMATION_DURATION: 600,
-	SPRING_CONFIG: { stiffness: 100, damping: 20 },
-	SCROLL_SPRING_CONFIG: { stiffness: 100, damping: 30 },
+	NODE_INTERVAL: 350,
+	EDGE_INTERVAL: 250,
+	EDGE_ANIMATION_DURATION: 500,
+	SPRING_CONFIG: { stiffness: 120, damping: 18 },
+	SCROLL_SPRING_CONFIG: { stiffness: 80, damping: 25 },
 } as const;
 
-// Animated Knowledge Graph Component
+// Animated Knowledge Graph Component - No Repeat
 function AnimatedGraph() {
 	const [nodes, setNodes] = useState<Node[]>([]);
 	const [edges, setEdges] = useState<Edge[]>([]);
 	const [nodeIndex, setNodeIndex] = useState(0);
 	const [edgeIndex, setEdgeIndex] = useState(0);
+	const [isComplete, setIsComplete] = useState(false);
 
 	// Add nodes sequentially
 	useEffect(() => {
-		if (nodeIndex >= NODE_SEQUENCE.length) {
+		if (nodeIndex >= NODE_SEQUENCE.length || isComplete) {
 			return;
 		}
 
@@ -182,11 +186,11 @@ function AnimatedGraph() {
 		}, ANIMATION_CONFIG.NODE_INTERVAL);
 
 		return () => clearTimeout(timer);
-	}, [nodeIndex]);
+	}, [nodeIndex, isComplete]);
 
 	// Animate node scale
 	useEffect(() => {
-		if (nodes.length === 0) {
+		if (nodes.length === 0 || isComplete) {
 			return;
 		}
 
@@ -199,11 +203,11 @@ function AnimatedGraph() {
 		}, 50);
 
 		return () => clearTimeout(timer);
-	}, [nodes.length]);
+	}, [nodes.length, isComplete]);
 
 	// Add edges sequentially
 	useEffect(() => {
-		if (edgeIndex >= EDGE_SEQUENCE.length || nodes.length < 2) {
+		if (edgeIndex >= EDGE_SEQUENCE.length || nodes.length < 2 || isComplete) {
 			return;
 		}
 
@@ -219,11 +223,11 @@ function AnimatedGraph() {
 		}, ANIMATION_CONFIG.EDGE_INTERVAL);
 
 		return () => clearTimeout(timer);
-	}, [edgeIndex, nodes]);
+	}, [edgeIndex, nodes, isComplete]);
 
 	// Animate edge progress
 	useEffect(() => {
-		if (edges.length === 0) {
+		if (edges.length === 0 || isComplete) {
 			return;
 		}
 
@@ -236,25 +240,18 @@ function AnimatedGraph() {
 		}, 50);
 
 		return () => clearTimeout(timer);
-	}, [edges.length]);
+	}, [edges.length, isComplete]);
 
-	// Reset animation
-	const resetAnimation = useCallback(() => {
-		setNodes([]);
-		setEdges([]);
-		setNodeIndex(0);
-		setEdgeIndex(0);
-	}, []);
-
+	// Mark as complete when animation finishes
 	useEffect(() => {
 		if (
 			nodeIndex >= NODE_SEQUENCE.length &&
-			edgeIndex >= EDGE_SEQUENCE.length
+			edgeIndex >= EDGE_SEQUENCE.length &&
+			!isComplete
 		) {
-			const resetTimer = setTimeout(resetAnimation, 3000);
-			return () => clearTimeout(resetTimer);
+			setIsComplete(true);
 		}
-	}, [nodeIndex, edgeIndex, resetAnimation]);
+	}, [nodeIndex, edgeIndex, isComplete]);
 
 	const getNodePosition = useCallback(
 		(nodeId: string) => {
@@ -271,19 +268,26 @@ function AnimatedGraph() {
 			viewBox="0 0 100 100"
 		>
 			<title>Animated Knowledge Graph</title>
+			<defs>
+				<linearGradient id="edgeGradient" x1="0%" x2="100%" y1="0%" y2="0%">
+					<stop offset="0%" stopColor="currentColor" stopOpacity="0.1" />
+					<stop offset="50%" stopColor="currentColor" stopOpacity="0.4" />
+					<stop offset="100%" stopColor="currentColor" stopOpacity="0.1" />
+				</linearGradient>
+			</defs>
+
 			{/* Edges */}
 			{edges.map((edge) => {
 				const from = getNodePosition(edge.from);
 				const to = getNodePosition(edge.to);
 				return (
 					<motion.line
-						animate={{ opacity: 0.3 }}
+						animate={{ opacity: 0.4 }}
 						initial={{ opacity: 0 }}
 						key={`${edge.from}-${edge.to}`}
-						stroke="currentColor"
-						strokeDasharray="2 2"
-						strokeWidth="0.3"
-						transition={{ duration: 0.5 }}
+						stroke="url(#edgeGradient)"
+						strokeWidth="0.4"
+						transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
 						x1={from.x}
 						x2={to.x}
 						y1={from.y}
@@ -296,23 +300,36 @@ function AnimatedGraph() {
 			{nodes.map((node) => (
 				<motion.g key={node.id}>
 					<motion.circle
-						animate={{ scale: node.scale, opacity: node.scale }}
+						animate={{ scale: node.scale, opacity: 1 }}
+						className="fill-primary/20"
+						cx={node.x}
+						cy={node.y}
+						initial={{ scale: 0, opacity: 0 }}
+						r="4.5"
+						transition={{ ...ANIMATION_CONFIG.SPRING_CONFIG, type: "spring" }}
+					/>
+					<motion.circle
+						animate={{ scale: node.scale, opacity: 1 }}
 						className="fill-primary"
 						cx={node.x}
 						cy={node.y}
 						initial={{ scale: 0, opacity: 0 }}
-						r="3"
-						transition={{ ...ANIMATION_CONFIG.SPRING_CONFIG, type: "spring" }}
+						r="2.5"
+						transition={{
+							...ANIMATION_CONFIG.SPRING_CONFIG,
+							type: "spring",
+							delay: 0.05,
+						}}
 					/>
 					<motion.text
 						animate={{ opacity: node.scale }}
-						className="fill-current text-[3px]"
+						className="fill-current font-medium text-[2.8px]"
 						dy="0.3em"
 						initial={{ opacity: 0 }}
 						textAnchor="middle"
-						transition={{ duration: 0.3 }}
+						transition={{ duration: 0.4, delay: 0.1 }}
 						x={node.x}
-						y={node.y + 5}
+						y={node.y + 7}
 					>
 						{node.label}
 					</motion.text>
@@ -325,14 +342,14 @@ function AnimatedGraph() {
 // Scroll Reveal Component
 function ScrollReveal({ children, delay = 0 }: ScrollRevealProps) {
 	const ref = useRef<HTMLDivElement>(null);
-	const isInView = useInView(ref, { once: true, margin: "-100px" });
+	const isInView = useInView(ref, { once: true, margin: "-80px" });
 
 	return (
 		<motion.div
-			animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-			initial={{ opacity: 0, y: 20 }}
+			animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+			initial={{ opacity: 0, y: 30 }}
 			ref={ref}
-			transition={{ duration: 0.6, delay }}
+			transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
 		>
 			{children}
 		</motion.div>
@@ -342,7 +359,7 @@ function ScrollReveal({ children, delay = 0 }: ScrollRevealProps) {
 // Stagger Reveal Container
 function StaggerReveal({ children }: StaggerRevealProps) {
 	const ref = useRef<HTMLDivElement>(null);
-	const isInView = useInView(ref, { once: true, margin: "-100px" });
+	const isInView = useInView(ref, { once: true, margin: "-80px" });
 
 	return (
 		<motion.div
@@ -351,7 +368,7 @@ function StaggerReveal({ children }: StaggerRevealProps) {
 			ref={ref}
 			variants={{
 				hidden: {},
-				visible: { transition: { staggerChildren: 0.1 } },
+				visible: { transition: { staggerChildren: 0.12 } },
 			}}
 		>
 			{children}
@@ -364,12 +381,12 @@ function StaggerItem({ children }: StaggerItemProps) {
 	return (
 		<motion.div
 			variants={{
-				hidden: { opacity: 0, y: 20, scale: 0.95 },
+				hidden: { opacity: 0, y: 24, scale: 0.96 },
 				visible: {
 					opacity: 1,
 					y: 0,
 					scale: 1,
-					transition: { duration: 0.5, ease: "easeOut" },
+					transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
 				},
 			}}
 		>
@@ -387,10 +404,10 @@ export default function HeroSection() {
 		damping: ANIMATION_CONFIG.SCROLL_SPRING_CONFIG.damping,
 	});
 
-	const heroY = useTransform(smoothProgress, [0, 1], [0, -100]);
-	const heroOpacity = useTransform(smoothProgress, [0, 0.5], [1, 0]);
-	const graphScale = useTransform(smoothProgress, [0, 1], [1, 0.8]);
-	const graphRotate = useTransform(smoothProgress, [0, 1], [0, 360]);
+	const heroY = useTransform(smoothProgress, [0, 1], [0, -80]);
+	const heroOpacity = useTransform(smoothProgress, [0, 0.4], [1, 0]);
+	const graphScale = useTransform(smoothProgress, [0, 0.5], [1, 0.92]);
+	const graphY = useTransform(smoothProgress, [0, 0.5], [0, 20]);
 
 	return (
 		<div className="relative min-h-screen overflow-hidden" ref={containerRef}>
@@ -400,16 +417,16 @@ export default function HeroSection() {
 				style={{ y: heroY, opacity: heroOpacity }}
 			>
 				<div className="container mx-auto max-w-7xl">
-					<div className="grid items-center gap-12 lg:grid-cols-2">
+					<div className="grid items-center gap-16 lg:grid-cols-2">
 						{/* Left Content */}
 						<div className="space-y-8">
 							<motion.div
-								animate={{ opacity: 1, y: 0 }}
+								animate={{ opacity: 1, y: 0, scale: 1 }}
 								className="inline-block"
-								initial={{ opacity: 0, y: 20 }}
-								transition={{ duration: 0.6 }}
+								initial={{ opacity: 0, y: 20, scale: 0.9 }}
+								transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
 							>
-								<span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 font-medium text-primary text-sm">
+								<span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-linear-to-r from-primary/10 to-primary/5 px-4 py-2 font-medium text-primary text-sm backdrop-blur-sm">
 									<SparkleIcon className="size-4" weight="fill" />
 									Real-time Knowledge Graphs
 								</span>
@@ -417,21 +434,29 @@ export default function HeroSection() {
 
 							<motion.h1
 								animate={{ opacity: 1, y: 0 }}
-								className="font-bold text-4xl text-foreground leading-tight sm:text-5xl lg:text-6xl"
+								className="font-bold text-4xl text-foreground leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl"
 								initial={{ opacity: 0, y: 20 }}
-								transition={{ duration: 0.6, delay: 0.1 }}
+								transition={{
+									duration: 0.8,
+									delay: 0.1,
+									ease: [0.22, 1, 0.36, 1],
+								}}
 							>
 								Build Knowledge Graphs{" "}
-								<span className="bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+								<span className="bg-linear-to-r from-primary via-primary to-primary/70 bg-clip-text text-transparent">
 									While You Think
 								</span>
 							</motion.h1>
 
 							<motion.p
 								animate={{ opacity: 1, y: 0 }}
-								className="text-lg text-muted-foreground sm:text-xl"
+								className="text-lg text-muted-foreground leading-relaxed sm:text-xl"
 								initial={{ opacity: 0, y: 20 }}
-								transition={{ duration: 0.6, delay: 0.2 }}
+								transition={{
+									duration: 0.8,
+									delay: 0.2,
+									ease: [0.22, 1, 0.36, 1],
+								}}
 							>
 								No waiting. No manual mapping. Just type, and watch as entities
 								and relationships emerge in real-time, revealing the structure
@@ -439,17 +464,29 @@ export default function HeroSection() {
 							</motion.p>
 
 							<motion.div
-								animate={{ opacity: 1, x: 0 }}
+								animate={{ opacity: 1, y: 0 }}
 								className="flex flex-wrap gap-4"
-								initial={{ opacity: 0, x: -20 }}
-								transition={{ duration: 0.6, delay: 0.3 }}
+								initial={{ opacity: 0, y: 20 }}
+								transition={{
+									duration: 0.8,
+									delay: 0.3,
+									ease: [0.22, 1, 0.36, 1],
+								}}
 							>
-								<Button size="lg">
-									Get Started
-									<ArrowRightIcon className="ml-2 size-4" weight="bold" />
+                <Button className="group" size="lg">
+                  <Link className="flex items-center gap-2" href="/dashboard">
+                    Get Started
+                  </Link>
+									<ArrowRightIcon
+										className="ml-2 size-4 transition-transform duration-300 group-hover:translate-x-1"
+										weight="bold"
+									/>
 								</Button>
-								<Button size="lg" variant="outline">
-									<PlayIcon className="mr-2 size-4" weight="fill" />
+								<Button className="group" size="lg" variant="outline">
+									<PlayIcon
+										className="mr-2 size-4 transition-transform duration-300 group-hover:scale-110"
+										weight="fill"
+									/>
 									Watch Demo
 								</Button>
 							</motion.div>
@@ -458,18 +495,12 @@ export default function HeroSection() {
 								animate={{ opacity: 1, y: 0 }}
 								className="flex items-center gap-6 pt-4"
 								initial={{ opacity: 0, y: 20 }}
-								transition={{ duration: 0.6, delay: 0.4 }}
+								transition={{
+									duration: 0.8,
+									delay: 0.4,
+									ease: [0.22, 1, 0.36, 1],
+								}}
 							>
-								<div className="flex items-center gap-2">
-									<div className="flex -space-x-2">
-										<div className="size-8 rounded-full border-2 border-background bg-primary/20 ring-2 ring-background" />
-										<div className="size-8 rounded-full border-2 border-background bg-primary/20 ring-2 ring-background" />
-										<div className="size-8 rounded-full border-2 border-background bg-primary/20 ring-2 ring-background" />
-									</div>
-									<span className="text-muted-foreground text-sm">
-										Trusted by 10,000+ users
-									</span>
-								</div>
 							</motion.div>
 						</div>
 
@@ -477,37 +508,53 @@ export default function HeroSection() {
 						<motion.div
 							animate={{ opacity: 1, scale: 1 }}
 							className="relative"
-							initial={{ opacity: 0, scale: 0.8 }}
-							style={{ scale: graphScale, rotateZ: graphRotate }}
-							transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+							initial={{ opacity: 0, scale: 0.9 }}
+							style={{ scale: graphScale, y: graphY }}
+							transition={{
+								duration: 1,
+								delay: 0.3,
+								ease: [0.22, 1, 0.36, 1],
+							}}
 						>
-							<div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-border bg-linear-to-br from-primary/5 to-primary/10 p-8 shadow-2xl">
-								<div className="absolute inset-0 bg-grid-pattern opacity-5" />
+							<div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-border/50 bg-linear-to-br from-primary/5 via-primary/3 to-background p-8 shadow-2xl shadow-primary/5 backdrop-blur-sm">
+								<div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(var(--primary-rgb),0.03),transparent_50%)]" />
 								<AnimatedGraph />
 							</div>
 
 							{/* Floating Stats */}
 							<motion.div
-								animate={{ y: [0, -10, 0] }}
-								className="absolute top-1/4 -right-4 rounded-lg border border-border bg-background p-4 shadow-lg"
+								animate={{ y: [-2, 2, -2] }}
+								className="absolute top-1/4 -right-4 rounded-xl border border-border/50 bg-background/95 p-4 shadow-primary/5 shadow-xl backdrop-blur-xl"
+								initial={{ opacity: 0, scale: 0.8, y: 20 }}
 								transition={{
-									duration: 3,
-									repeat: Number.POSITIVE_INFINITY,
-									ease: "easeInOut",
+									y: {
+										duration: 4,
+										repeat: Number.POSITIVE_INFINITY,
+										ease: "easeInOut",
+									},
+									opacity: { duration: 0.6, delay: 1.2 },
+									scale: { duration: 0.6, delay: 1.2 },
 								}}
+								whileInView={{ opacity: 1, scale: 1, y: 0 }}
 							>
 								<div className="font-bold text-2xl text-primary">98%</div>
 								<div className="text-muted-foreground text-xs">Accuracy</div>
 							</motion.div>
 
 							<motion.div
-								animate={{ y: [0, 10, 0] }}
-								className="absolute bottom-1/4 -left-4 rounded-lg border border-border bg-background p-4 shadow-lg"
+								animate={{ y: [2, -2, 2] }}
+								className="absolute bottom-1/4 -left-4 rounded-xl border border-border/50 bg-background/95 p-4 shadow-primary/5 shadow-xl backdrop-blur-xl"
+								initial={{ opacity: 0, scale: 0.8, y: -20 }}
 								transition={{
-									duration: 2.5,
-									repeat: Number.POSITIVE_INFINITY,
-									ease: "easeInOut",
+									y: {
+										duration: 3.5,
+										repeat: Number.POSITIVE_INFINITY,
+										ease: "easeInOut",
+									},
+									opacity: { duration: 0.6, delay: 1.4 },
+									scale: { duration: 0.6, delay: 1.4 },
 								}}
+								whileInView={{ opacity: 1, scale: 1, y: 0 }}
 							>
 								<div className="font-bold text-2xl text-primary">2.3s</div>
 								<div className="text-muted-foreground text-xs">Avg. Time</div>
@@ -518,20 +565,36 @@ export default function HeroSection() {
 
 				{/* Background Elements */}
 				<div className="pointer-events-none absolute inset-0 overflow-hidden">
-					<div className="absolute top-1/4 -right-1/4 size-96 rounded-full bg-primary/5 blur-3xl" />
-					<div className="absolute bottom-1/4 -left-1/4 size-96 rounded-full bg-primary/5 blur-3xl" />
+					<motion.div
+						animate={{ scale: [1, 1.2, 1], opacity: [0.03, 0.05, 0.03] }}
+						className="absolute top-1/4 -right-1/4 size-96 rounded-full bg-primary blur-3xl"
+						transition={{
+							duration: 8,
+							repeat: Number.POSITIVE_INFINITY,
+							ease: "easeInOut",
+						}}
+					/>
+					<motion.div
+						animate={{ scale: [1, 1.1, 1], opacity: [0.03, 0.06, 0.03] }}
+						className="absolute bottom-1/4 -left-1/4 size-96 rounded-full bg-primary blur-3xl"
+						transition={{
+							duration: 10,
+							repeat: Number.POSITIVE_INFINITY,
+							ease: "easeInOut",
+						}}
+					/>
 				</div>
 			</motion.section>
 
 			{/* Features Section */}
-			<section className="relative bg-background py-24">
+			<section className="relative bg-background py-32">
 				<div className="container mx-auto max-w-7xl px-4">
 					<ScrollReveal>
-						<div className="mb-16 text-center">
-							<h2 className="mb-4 font-bold text-3xl text-foreground sm:text-4xl">
+						<div className="mb-20 text-center">
+							<h2 className="mb-4 font-bold text-3xl text-foreground tracking-tight sm:text-4xl">
 								Features That Set Us Apart
 							</h2>
-							<p className="mx-auto max-w-2xl text-lg text-muted-foreground">
+							<p className="mx-auto max-w-2xl text-lg text-muted-foreground leading-relaxed">
 								Experience the future of knowledge management with cutting-edge
 								technology designed for speed and clarity.
 							</p>
@@ -539,20 +602,28 @@ export default function HeroSection() {
 					</ScrollReveal>
 
 					<StaggerReveal>
-						<div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+						<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
 							{FEATURES.map((feature) => (
 								<StaggerItem key={feature.title}>
-									<div className="group relative h-full overflow-hidden rounded-xl border border-border bg-card p-6 transition-all hover:border-primary/50 hover:shadow-lg">
-										<div className="mb-4 inline-flex size-12 items-center justify-center rounded-lg bg-primary/10 text-primary transition-transform group-hover:scale-110">
+									<motion.div
+										className="group relative h-full overflow-hidden rounded-xl border border-border/50 bg-linear-to-br from-card to-background p-6 transition-all duration-300 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5"
+										transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+										whileHover={{ y: -4 }}
+									>
+										<motion.div
+											className="mb-4 inline-flex size-12 items-center justify-center rounded-xl bg-linear-to-br from-primary/15 to-primary/5 text-primary"
+											transition={{ duration: 0.3 }}
+											whileHover={{ scale: 1.1, rotate: 5 }}
+										>
 											<feature.icon className="size-6" weight="duotone" />
-										</div>
-										<h3 className="mb-2 font-semibold text-foreground text-lg">
+										</motion.div>
+										<h3 className="mb-3 font-semibold text-foreground text-lg">
 											{feature.title}
 										</h3>
 										<p className="text-muted-foreground text-sm leading-relaxed">
 											{feature.description}
 										</p>
-									</div>
+									</motion.div>
 								</StaggerItem>
 							))}
 						</div>
@@ -561,14 +632,14 @@ export default function HeroSection() {
 			</section>
 
 			{/* How It Works Section */}
-			<section className="relative bg-muted/30 py-24">
+			<section className="relative bg-linear-to-b from-muted/30 to-background py-32">
 				<div className="container mx-auto max-w-7xl px-4">
 					<ScrollReveal>
-						<div className="mb-16 text-center">
-							<h2 className="mb-4 font-bold text-3xl text-foreground sm:text-4xl">
+						<div className="mb-20 text-center">
+							<h2 className="mb-4 font-bold text-3xl text-foreground tracking-tight sm:text-4xl">
 								How It Works
 							</h2>
-							<p className="mx-auto max-w-2xl text-lg text-muted-foreground">
+							<p className="mx-auto max-w-2xl text-lg text-muted-foreground leading-relaxed">
 								Four simple steps to transform your ideas into interactive
 								knowledge graphs.
 							</p>
@@ -578,40 +649,42 @@ export default function HeroSection() {
 					<div className="relative">
 						{/* Progress Line */}
 						<motion.div
-							animate={{ scaleY: 1 }}
-							className="absolute top-0 left-8 h-full w-0.5 origin-top bg-primary/20 md:left-1/2"
+							className="absolute top-0 left-8 h-full w-0.5 origin-top bg-linear-to-b from-primary/40 via-primary/20 to-transparent md:left-1/2"
 							initial={{ scaleY: 0 }}
-							transition={{ duration: 1, delay: 0.5 }}
+							transition={{
+								duration: 1.2,
+								delay: 0.3,
+								ease: [0.22, 1, 0.36, 1],
+							}}
 							viewport={{ once: true }}
+							whileInView={{ scaleY: 1 }}
 						/>
 
-						<div className="space-y-16">
+						<div className="space-y-24">
 							{STEPS.map((step, index) => (
-								<ScrollReveal delay={index * 0.1} key={step.number}>
-									<div
-										className={`relative grid gap-8 md:grid-cols-2 md:items-center ${
-											index % 2 === 0 ? "" : "md:flex-row-reverse"
-										}`}
-									>
+								<ScrollReveal delay={index * 0.15} key={step.number}>
+									<div className="relative grid gap-8 md:grid-cols-2 md:items-start">
 										{/* Number Circle */}
 										<motion.div
-											animate={{ scale: 1, borderColor: "rgb(var(--primary))" }}
-											className="absolute top-0 left-8 z-10 flex size-16 items-center justify-center rounded-full border-4 border-border bg-background font-bold text-2xl text-primary md:left-1/2 md:-translate-x-1/2"
-											initial={{ scale: 0, borderColor: "rgb(var(--border))" }}
+											className="absolute top-0 left-8 z-10 flex size-16 items-center justify-center rounded-full border-4 border-border bg-background font-bold text-2xl text-primary shadow-lg shadow-primary/10 md:left-1/2 md:-translate-x-1/2"
+											initial={{ scale: 0, rotate: -180 }}
 											transition={{
-												duration: 0.5,
-												repeat: 1,
-												repeatType: "reverse",
+												duration: 0.6,
+												delay: index * 0.15 + 0.2,
+												ease: [0.22, 1, 0.36, 1],
 											}}
 											viewport={{ once: true }}
+											whileInView={{ scale: 1, rotate: 0 }}
 										>
 											{step.number}
 										</motion.div>
 
-										{/* Content */}
+										{/* Content - Left on even, Right on odd */}
 										<div
 											className={`ml-24 md:ml-0 ${
-												index % 2 === 0 ? "md:text-right" : "md:col-start-2"
+												index % 2 === 0
+													? "md:order-1 md:pr-12 md:text-right"
+													: "md:order-2 md:pl-12 md:text-left"
 											}`}
 										>
 											<h3 className="mb-3 font-bold text-2xl text-foreground">
@@ -622,13 +695,25 @@ export default function HeroSection() {
 											</p>
 										</div>
 
-										{/* Visual */}
+										{/* Visual - Right on even, Left on odd */}
 										<div
 											className={`ml-24 md:ml-0 ${
-												index % 2 === 0 ? "md:col-start-2" : "md:col-start-1"
+												index % 2 === 0
+													? "md:order-2 md:pl-12"
+													: "md:order-1 md:pr-12"
 											}`}
 										>
-											<div className="aspect-video rounded-lg border border-border bg-linear-to-br from-primary/5 to-primary/10" />
+											<motion.div
+												className="aspect-video rounded-xl border border-border/50 bg-linear-to-br from-primary/10 via-primary/5 to-background shadow-lg"
+												initial={{ opacity: 0, scale: 0.9 }}
+												transition={{
+													duration: 0.6,
+													delay: index * 0.15 + 0.3,
+													ease: [0.22, 1, 0.36, 1],
+												}}
+												viewport={{ once: true }}
+												whileInView={{ opacity: 1, scale: 1 }}
+											/>
 										</div>
 									</div>
 								</ScrollReveal>
@@ -639,52 +724,49 @@ export default function HeroSection() {
 			</section>
 
 			{/* CTA Section */}
-			<section className="relative bg-background py-24">
+			<section className="relative bg-background py-32">
 				<div className="container mx-auto max-w-4xl px-4 text-center">
 					<ScrollReveal>
-						<motion.div
-							animate={{ opacity: 1, y: 0 }}
-							className="space-y-8"
-							initial={{ opacity: 0, y: 20 }}
-							transition={{ duration: 0.6 }}
-							viewport={{ once: true }}
-						>
-							<h2 className="font-bold text-3xl text-foreground sm:text-4xl lg:text-5xl">
+						<div className="space-y-8">
+							<h2 className="font-bold text-3xl text-foreground tracking-tight sm:text-4xl lg:text-5xl">
 								Ready to Transform Your Ideas?
 							</h2>
-							<p className="mx-auto max-w-2xl text-lg text-muted-foreground">
+							<p className="mx-auto max-w-2xl text-lg text-muted-foreground leading-relaxed">
 								Join thousands of users who are already building knowledge
 								graphs in real-time.
 							</p>
-							<motion.div
-								animate={{ opacity: 1 }}
-								className="flex flex-wrap items-center justify-center gap-4"
-								initial={{ opacity: 0 }}
-								transition={{ duration: 0.6, delay: 0.2 }}
-								viewport={{ once: true }}
-							>
-								<Button size="lg">
-									Start Building Now
-									<ArrowRightIcon className="ml-2 size-4" weight="bold" />
+							<div className="flex flex-wrap items-center justify-center gap-4">
+								<Button className="group" size="lg">
+									<Link className="flex items-center gap-2" href="/dashboard">
+										Start Building Now
+									</Link>
+									<ArrowRightIcon
+										className="ml-2 size-4 transition-transform duration-300 group-hover:translate-x-1"
+										weight="bold"
+									/>
 								</Button>
 								<Button size="lg" variant="outline">
-									Learn More
+									<Link className="flex items-center gap-2" href="/about">
+										Learn More
+									</Link>
 								</Button>
-							</motion.div>
-						</motion.div>
+							</div>
+						</div>
 					</ScrollReveal>
 				</div>
 
 				{/* Background Glow */}
-				<motion.div
-					animate={{ opacity: 0.5 }}
-					className="pointer-events-none absolute inset-0 overflow-hidden"
-					initial={{ opacity: 0 }}
-					transition={{ duration: 1 }}
-					viewport={{ once: true }}
-				>
-					<div className="absolute top-1/2 left-1/2 size-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-3xl" />
-				</motion.div>
+				<div className="pointer-events-none absolute inset-0 overflow-hidden">
+					<motion.div
+						animate={{ scale: [1, 1.1, 1], opacity: [0.05, 0.08, 0.05] }}
+						className="absolute top-1/2 left-1/2 size-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary blur-3xl"
+						transition={{
+							duration: 8,
+							repeat: Number.POSITIVE_INFINITY,
+							ease: "easeInOut",
+						}}
+					/>
+				</div>
 			</section>
 		</div>
 	);

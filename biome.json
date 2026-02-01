@@ -20,7 +20,9 @@
         "useFilenamingConvention": {
           "level": "error",
           "options": {
-            "filenameCases": ["PascalCase"]
+            "filenameCases": [
+              "PascalCase"
+            ]
           }
         }
       }
@@ -39,7 +41,10 @@
       }
     }
   },
-  "extends": ["ultracite/biome/core", "ultracite/biome/next"],
+  "extends": [
+    "ultracite/biome/core",
+    "ultracite/biome/next"
+  ],
   "overrides": [
     {
       "includes": [

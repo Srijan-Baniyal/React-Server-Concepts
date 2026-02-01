@@ -37,7 +37,7 @@ export default function RootLayout({
 					<ReactQueryProvider>
 						<Navigation />
 						{children}
-						<Toaster richColors />
+						<Toaster richColors position={"top-center"}/>
 					</ReactQueryProvider>
 				</ThemeProvider>
 			</body>

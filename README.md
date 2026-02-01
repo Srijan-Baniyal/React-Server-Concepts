@@ -1,385 +1,518 @@
-# 🧠 Live Knowledge Graph Builder
+# React Server Concepts Exploration
 
-> **Watch knowledge take shape — in real time.**
+> A deep dive into React Server Components (RSC), React Server Architecture, and modern React 19 patterns with Next.js 16.
 
-Transform unstructured text into an interactive, streaming knowledge graph. Instead of waiting for a finished result, watch entities appear, relationships form, and structure emerge progressively as the system reasons through your input.
+## 🎯 Overview
 
-**This is not a demo. This is a deep exploration of modern React architecture.**
+This project is an experimental playground for exploring the cutting-edge capabilities of React Server Components, React Server Architecture, and the latest React 19 features. It demonstrates the practical implementation of server-client boundaries, component streaming, and modern React patterns in a production-ready Next.js application.
 
----
+## 🏗️ Architecture
 
-## 📖 Table of Contents
+### React Server Components (RSC)
 
-- [What It Does](#-what-it-does)
-- [Why This Project Exists](#-why-this-project-exists)
-- [Key Features](#-key-features)
-- [Architectural Philosophy](#-architectural-philosophy)
-- [Technical Deep Dive](#-technical-deep-dive)
-- [Technology Stack](#-technology-stack)
-- [Getting Started](#-getting-started)
-- [Project Structure](#-project-structure)
-- [Who This Is For](#-who-this-is-for)
-- [Future Directions](#-future-directions)
+React Server Components represent a paradigm shift in how we build React applications. This project extensively explores the RSC architecture:
 
----
+#### **Server Components by Default**
 
-## ✨ What It Does
+- All components are server components unless explicitly marked with `"use client"`
+- Server components run exclusively on the server, reducing JavaScript bundle size
+- Direct access to backend resources without API layers
+- Zero client-side JavaScript for server-only logic
 
-Live Knowledge Graph Builder processes unstructured text and builds an interactive knowledge graph **as you watch**:
+#### **Strategic Client Boundary**
 
-1. **Accepts** raw text (notes, documents, articles, ideas)
-2. **Extracts** entities (concepts, people, places, topics)
-3. **Infers** relationships between entities
-4. **Streams** the graph to the UI progressively
-5. **Enables** interactive exploration and subgraph expansion
+Components marked with `"use client"`:
 
-**The result:** A living graph that evolves as knowledge is discovered — not a static visualization.
+- [`app/layout.tsx`](app/layout.tsx) - Root layout (server component)
+- [`app/page.tsx`](app/page.tsx) - Main page (server component)
+- [`components/HeroSection.tsx`](components/HeroSection.tsx) - Interactive UI with animations
+- [`components/Navigation.tsx`](components/Navigation.tsx) - Client-side navigation state
+- [`providers/ReactQueryProvider.tsx`](providers/ReactQueryProvider.tsx) - Client state management
+- [`providers/ThemeProvider.tsx`](providers/ThemeProvider.tsx) - Theme switching logic
 
----
+All UI components in `/components/ui/` are client components for interactivity.
 
-## 🎯 Why This Project Exists
+### React Server Architecture Patterns
 
-Most applications hide complexity behind loading spinners.  
-**This project does the opposite.**
+#### **1. Component Composition**
 
-It answers a fundamental question:
-
-> **What does a UI look like when it reflects how thinking actually happens?**
-
-The answer:
-
-- ✅ Partial results appear immediately
-- ✅ Progressive structure builds over time
-- ✅ Reasoning becomes visible
-- ✅ Interaction is instant
-
-This project explores **how modern React enables this experience** when used intentionally and architecturally.
-
----
-
-## 🌟 Key Features
-
-### Real-Time Streaming
-
-- Progressive rendering as entities and relationships are discovered
-- No waiting for complete results
-- Visual feedback during computation
-
-### Interactive Exploration
-
-- Click nodes to expand related entities
-- Dynamically fetch and integrate subgraphs
-- Intelligent caching prevents redundant requests
-
-### Smart Client-Server Separation
-
-- Heavy computation stays on the server
-- Client handles rendering and interaction
-- Clear ownership boundaries
-
-### Production-Ready Patterns
-
-- Suspense boundaries for granular loading states
-- React Server Components for data-heavy operations
-- React Query for client-side interactions
-- Type-safe with TypeScript
-
----
-
-## 🧩 Architectural Philosophy
-
-This project is **opinionated by design**. Every architectural decision is intentional.
-
-### 🖥️ Server Does the Thinking
-
-**Responsibilities:**
-
-- Entity extraction from unstructured text
-- Relationship inference and reasoning
-- Heavy or slow computation
-- Progressive streaming of partial results
-
-**Why:** Keep expensive operations close to data sources and off the client.
-
-### 🎨 Client Does the Exploring
-
-**Responsibilities:**
-
-- Graph rendering and visualization
-- Node interaction and selection
-- Layout, filtering, and navigation
-- Subgraph expansion on demand
-
-**Why:** Maximize responsiveness and user control.
-
-### 💾 Cache Enables Continuity
-
-**Strategy:**
-
-- Previously explored nodes are reused
-- Expansions are cached and intelligently merged
-- Refetching is explicit and predictable
-- No redundant computation
-
-**Why:** Fast interactions without sacrificing correctness.
-
----
-
-## 🔬 Technical Deep Dive
-
-### Why React Server Components?
-
-RSCs are used **where they actually matter**:
-
-```typescript
-// Server Component - data co-located with rendering
-async function KnowledgeGraph({ query }) {
-  const graph = await extractKnowledgeGraph(query)
-  return <GraphView initialData={graph} />
+```tsx
+// Server Component (default)
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        {/* Server component wrapping client providers */}
+        <ThemeProvider>
+          <ReactQueryProvider>
+            <Navigation />
+            {children}
+          </ReactQueryProvider>
+        </ThemeProvider>
+      </body>
+    </html>
+  );
 }
 ```
 
-**Benefits:**
+#### **2. Data Fetching Patterns**
 
-- Expensive computation happens server-side
-- Async data dependencies resolve before rendering
-- Partial results stream progressively
-- Zero client-side data coordination
+- **Server Components**: Fetch data directly in components
+- **Route Handlers**: API endpoints in [`app/api/`](app/api/) directory
+- **Streaming**: Progressive rendering with React Suspense
+- **Parallel Data Fetching**: Multiple async components load simultaneously
 
-**Result:** Simpler mental models, fewer loading states, clearer boundaries.
-
----
-
-### Why `use()` and Suspense?
-
-Async data is treated as a **first-class rendering concern**:
-
-```typescript
-// Unwrap server promises directly in components
-function GraphNode({ nodePromise }) {
-  const node = use(nodePromise)
-  return <NodeView data={node} />
-}
-```
-
-**The Pattern:**
-
-- `use()` unwraps server promises directly
-- Suspense boundaries define where UI can pause
-- Streaming shows meaningful content immediately
-- Rendering becomes a pure function of data
-
-**No more:** useEffect chains, loading state management, or lifecycle juggling.
-
----
-
-### Why React Query Still Exists Here?
-
-Not all data belongs on the server.
-
-**React Query handles:**
-
-- Node expansion on user interaction
-- Client-initiated refetches
-- Caching previously explored subgraphs
-- Background updates without blocking rendering
-
-```typescript
-// Client-side interaction with smart caching
-const { data: subgraph } = useQuery({
-  queryKey: ['subgraph', nodeId],
-  queryFn: () => fetchSubgraph(nodeId),
-  staleTime: 1000 * 60 * 5, // 5 minutes
-})
-```
-
-**This project demonstrates when to use React Query — and when not to.**
-
----
-
-### Why a Graph?
-
-Graphs are **honest**. They expose:
-
-- ❌ Bad data models
-- ❌ Unclear relationships
-- ❌ Architectural shortcuts
-
-Using a graph forces explicit decisions about:
-
-- ✅ What defines an entity
-- ✅ How entities relate to each other
-- ✅ Who owns each part of the data lifecycle
-
-**That pressure is the point.**
-
----
-
-## 🛠️ Technology Stack
-
-### Frontend
-
-- **React 19** - Server Components, `use()`, Suspense
-- **Next.js 15** - App Router, Server Actions, Streaming
-- **TypeScript** - Type safety across client and server
-- **TanStack Query** - Client-side state and caching
-- **React Flow / D3.js** - Graph visualization *(to be implemented)*
-
-### Backend
-
-- **OpenAI API / Local LLM** - Entity extraction and relationship inference
-- **Streaming APIs** - Progressive result delivery
-
-### Tooling
-
-- **Turbopack** - Fast development builds
-- **Ultracite** - Code quality
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js 22+
-- npm, yarn, or pnpm
-- OpenAI API key (or local LLM setup)
-
-### Installation
+#### **3. Client-Server Boundary Optimization**
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/kg-builder.git
-cd kg-builder
-
-# Install dependencies
-npm install
-
-# Set up environment variables
-cp .env.example .env.local
-# Add your API keys to .env.local
-
-# Run development server
-npm run dev
+┌─────────────────────────────────┐
+│   Server Component (RSC)         │
+│  ┌──────────────────────────┐   │
+│  │  Client Component        │   │
+│  │  ┌──────────────────┐    │   │
+│  │  │ Server Component │    │   │ ← Composition Pattern
+│  │  └──────────────────┘    │   │
+│  └──────────────────────────┘   │
+└─────────────────────────────────┘
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see the application.
+## 🚀 React 19 Features
 
-### Basic Usage
+### 1. **React Compiler**
 
-1. Enter or paste unstructured text
-2. Watch as entities are extracted in real-time
-3. See relationships form between entities
-4. Click nodes to explore and expand the graph
-5. Navigate the knowledge structure interactively
+Enabled via `reactCompiler: true` in [`next.config.ts`](next.config.ts):
 
----
+- Automatic memoization
+- Optimized re-renders
+- No manual `useMemo`/`useCallback` needed
+- Build-time optimizations
+
+### 2. **Enhanced Hooks**
+
+- `useOptimistic` for optimistic UI updates
+- `useFormStatus` for form state
+- `use` hook for reading promises/context
+- Enhanced `useTransition` for concurrent features
+
+### 3. **Server-Side Rendering Improvements**
+
+- Automatic code splitting
+- Selective hydration
+- Streaming SSR
+- Partial hydration
+
+### 4. **View Transitions API**
+
+```typescript
+experimental: {
+  viewTransition: true,
+}
+```bash
+Native browser transitions between pages without full page reloads.
+
+## 🎨 Component Architecture
+
+### Server Components
+```tsx
+// app/layout.tsx - Pure Server Component
+export default function RootLayout({ children }) {
+  // Runs only on server
+  // Can access database, filesystem, etc.
+  return (
+    <html>
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+### Client Components
+
+```tsx
+// components/HeroSection.tsx
+"use client";
+
+export default function HeroSection() {
+  // Has access to browser APIs
+  // useState, useEffect, event handlers
+  const [state, setState] = useState();
+  return <div onClick={() => {}}></div>;
+}
+```
+
+### Hybrid Pattern
+
+```tsx
+// Server Component
+async function Page() {
+  const data = await fetchData(); // Server-side only
+  
+  return (
+    <div>
+      <ServerSideData data={data} />
+      <ClientInteractive data={data} /> {/* Client component */}
+    </div>
+  );
+}
+```
+
+## 🔧 Technical Stack
+
+### Core Framework
+
+- **Next.js 16.1.6** - App Router with RSC
+- **React 19.2.4** - Latest React with server components
+- **TypeScript 5.9.3** - Type safety
+
+### State Management
+
+- **React Query (TanStack Query)** - Server state management
+- **Zustand** - Client state management
+- **React Context** - Theme & provider patterns
+
+### Styling & UI
+
+- **Tailwind CSS 4.1.18** - Utility-first CSS
+- **Motion (Framer Motion)** - Animation library
+- **Shadcn/UI** - Component system with Base UI
+- **Class Variance Authority** - Component variants
+
+### Build Tools
+
+- **Babel React Compiler** - Automatic optimizations
+- **Biome** - Fast linting and formatting
+- **PostCSS** - CSS transformations
 
 ## 📁 Project Structure
 
 ```bash
 kg-builder/
-├── app/                    # Next.js App Router
-│   ├── graph/             # Graph visualization pages
-│   └── layout.tsx         # Root layout
-├── components/
-│   ├── server/            # React Server Components
-│   ├── client/            # Client Components
-│   └── graph/             # Graph visualization components
-├── lib/
-│   ├── graph/             # Graph data structures
-│   ├── extraction/        # Entity extraction logic
-│   └── streaming/         # Streaming utilities
-├── hooks/                 # Custom React hooks
-└── types/                 # TypeScript type definitions
+├── app/                          # App Router directory
+│   ├── layout.tsx               # Root layout (Server Component)
+│   ├── page.tsx                 # Home page (Server Component)
+│   ├── globals.css              # Global styles
+│   └── api/                     # Route handlers (Server-side APIs)
+│       ├── og/route.tsx         # OG image generation
+│       └── graph/               # API endpoints
+├── components/                   # React components
+│   ├── Navigation.tsx           # Client component
+│   ├── HeroSection.tsx          # Client component
+│   └── ui/                      # UI component library (Client)
+├── providers/                    # Context providers
+│   ├── ReactQueryProvider.tsx   # React Query setup
+│   └── ThemeProvider.tsx        # Theme management
+├── hooks/                        # Custom React hooks
+├── lib/                          # Utility functions
+└── next.config.ts               # Next.js configuration
 ```
 
+## 🔍 Key RSC Concepts Demonstrated
+
+### 1. **Automatic Code Splitting**
+
+- Each client component is automatically split
+- Server components don't increase bundle size
+- Lazy loading built-in
+
+### 2. **Zero-Bundle-Cost Server Logic**
+
+```tsx
+// This code never reaches the client
+async function ServerComponent() {
+  const data = await db.query('SELECT * FROM users');
+  const processed = heavyProcessing(data); // No client bundle impact
+  return <ClientDisplay data={processed} />;
+}
+```
+
+### 3. **Streaming & Suspense**
+
+```tsx
+<Suspense fallback={<Loading />}>
+  <AsyncServerComponent />
+</Suspense>
+```
+
+### 4. **Progressive Enhancement**
+
+- Server renders complete HTML
+- Client hydrates interactivity
+- Works without JavaScript for core content
+
+## 🎯 RSC Benefits Explored
+
+### Performance
+
+- **Reduced Bundle Size**: Server logic stays on server
+- **Faster Initial Load**: Less JavaScript to parse
+- **Improved TTI**: Interactive faster with selective hydration
+- **Better Core Web Vitals**: Optimized LCP, FID, CLS
+
+### Developer Experience
+
+- **Direct Data Access**: No API routes for simple data
+- **Simplified Data Fetching**: Async/await in components
+- **Better Code Organization**: Clear server/client boundaries
+- **Type Safety**: Full TypeScript support across boundaries
+
+### User Experience
+
+- **Instant Navigation**: Prefetching & route preloading
+- **Smooth Animations**: Motion library with 60fps
+- **Progressive Loading**: Content appears as it's ready
+- **Responsive UI**: Optimistic updates with React Query
+
+## 🧪 Experimental Features
+
+### 1. **Component Caching**
+
+```typescript
+cacheComponents: true
+```
+
+Experimental Next.js feature for caching RSC payloads.
+
+### 2. **View Transitions**
+
+```typescript
+experimental: {
+  viewTransition: true,
+}
+```
+
+Native browser transitions between routes.
+
+### 3. **React Compiler**
+
+```typescript
+reactCompiler: true
+```
+
+Automatic optimization without manual memoization.
+
+## 🌊 Data Flow Patterns
+
+### Server → Client
+
+```bash
+Server Component (fetch data)
+    ↓ (serialize)
+Client Component (receive props)
+    ↓ (hydrate)
+Interactive UI
+```
+
+### Client → Server
+
+```bash
+Client Action (user interaction)
+    ↓ (request)
+Route Handler (app/api/*)
+    ↓ (process)
+Response (JSON/data)
+```
+
+### Streaming Pattern
+
+```bash
+Initial HTML (shell)
+    ↓ (stream)
+Async Component 1 (ready)
+    ↓ (stream)
+Async Component 2 (ready)
+    ↓ (complete)
+Fully Interactive Page
+```
+
+## 🎨 UI Component System
+
+### Base UI Integration
+
+- Uses `@base-ui/react` for accessible primitives
+- Shadcn/UI style system with Base UI components
+- Full TypeScript support
+- Composable component architecture
+
+### Animation System
+
+```tsx
+// Motion (Framer Motion) with RSC
+"use client";
+
+<motion.div
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  transition={{ duration: 0.5 }}
+>
+  {content}
+</motion.div>
+```
+
+## 📊 Rendering Strategies
+
+### 1. **Static Rendering (Default)**
+
+- Generated at build time
+- Cached and reused
+- Best for static content
+
+### 2. **Dynamic Rendering**
+
+- Rendered at request time
+- When using dynamic functions
+- Personalized content
+
+### 3. **Streaming**
+
+- Progressive rendering
+- Send HTML in chunks
+- Better perceived performance
+
+## 🔐 Environment Separation
+
+### Server-Only Code
+
+- Database queries
+- File system access
+- Environment variables
+- API secrets
+- Heavy computations
+
+### Client-Only Code
+
+- Browser APIs (window, document)
+- Event handlers
+- useState, useEffect
+- Animation libraries
+- User interactions
+
+## 🚦 Performance Optimizations
+
+### 1. **Image Optimization**
+
+```typescript
+images: {
+  qualities: [100],
+}
+```
+
+### 2. **Font Optimization**
+
+```tsx
+import { Inter, Geist, Geist_Mono } from "next/font/google";
+```
+
+Automatic font optimization and self-hosting.
+
+### 3. **Bundle Optimization**
+
+- Tree shaking
+- Code splitting per route
+- Dynamic imports
+- Server component zero-bundle
+
+## 🎓 Learning Resources
+
+### RSC Concepts Covered
+
+- ✅ Server vs Client Components
+- ✅ Component composition patterns
+- ✅ Data fetching strategies
+- ✅ Streaming & Suspense
+- ✅ Route handlers as API layer
+- ✅ Client boundary optimization
+- ✅ Progressive enhancement
+- ✅ Caching strategies
+
+### React 19 Features Used
+
+- ✅ React Compiler
+- ✅ Enhanced hooks
+- ✅ Server Components
+- ✅ Server Actions architecture
+- ✅ Automatic batching
+- ✅ Concurrent rendering
+- ✅ Transitions API
+
+## 🛠️ Development
+
+### Install Dependencies
+
+```bash
+npm install
+```
+
+### Run Development Server
+
+```bash
+npm run dev
+```
+
+### Build for Production
+
+```bash
+npm run build
+```
+
+### Start Production Server
+
+```bash
+npm start
+```
+
+### Lint & Format
+
+```bash
+npm run check  # Check code quality
+npm run fix    # Auto-fix issues
+```
+
+## 📝 Configuration Files
+
+### Next.js Config
+
+[`next.config.ts`](next.config.ts) - React Compiler, experimental features, caching
+
+### TypeScript Config
+
+[`tsconfig.json`](tsconfig.json) - Strict mode, path aliases, JSX configuration
+
+### Components Config
+
+[`components.json`](components.json) - Shadcn/UI setup with RSC enabled
+
+### Tailwind Config
+
+Tailwind CSS 4 with PostCSS plugin system
+
+## 🎯 Key Takeaways
+
+1. **RSC is not just about performance** - It's a new mental model for React apps
+2. **Server components are async by default** - Embrace async/await everywhere
+3. **Client boundaries should be intentional** - Mark components "use client" only when needed
+4. **Composition over props drilling** - Pass server components as children to client components
+5. **Streaming changes everything** - Progressive rendering improves perceived performance
+6. **React 19 + Next.js 16** - The future of React is server-first
+
+## 🔮 Future Exploration
+
+- [ ] Server Actions for mutations
+- [ ] Partial Prerendering (PPR)
+- [ ] Advanced caching strategies
+- [ ] Edge runtime optimization
+- [ ] Incremental Static Regeneration (ISR)
+- [ ] Server Component error boundaries
+- [ ] Advanced streaming patterns
+
+## 📚 References
+
+- [React Server Components RFC](https://github.com/reactjs/rfcs/blob/main/text/0188-server-components.md)
+- [Next.js App Router Docs](https://nextjs.org/docs/app)
+- [React 19 Documentation](https://react.dev)
+- [React Compiler](https://react.dev/learn/react-compiler)
+
 ---
 
-## 🚫 What This Project Avoids
+## Built with ❤️ to explore the future of React
 
-- ❌ Fake async behavior or artificial delays
-- ❌ Client-side overfetching
-- ❌ Global state abstractions without clear need
-- ❌ "LLM wrapper" app patterns
-- ❌ Hidden magic or opaque pipelines
-- ❌ Premature optimization
-- ❌ Trendy tech without justification
-
-**Every tradeoff is intentional and explainable.**
-
----
-
-## 👤 Who This Is For
-
-This project is designed for engineers who want to:
-
-- 🎓 Understand modern React beyond surface-level tutorials
-- 🧠 Build intuition around async UI and streaming patterns
-- 🏗️ Design systems with clear server/client boundaries
-- 📐 Think in data structures, not just UI screens
-- 💼 Create portfolio work that demonstrates architectural maturity
-- 🚀 Learn production-ready patterns for real applications
-
-**If you're building with React in 2024+, this is your reference.**
-
----
-
-## 🔮 Future Directions
-
-The architecture is intentionally extensible:
-
-### Planned Features
-
-- [ ] Richer entity types and custom schemas
-- [ ] Local or privacy-preserving inference options
-- [ ] Versioned knowledge graphs with history
-- [ ] Collaborative multi-user exploration
-- [ ] Domain-specific templates (research, legal, engineering, personal notes)
-- [ ] Export to standard graph formats (RDF, GraphML)
-- [ ] Advanced visualization modes and layouts
-- [ ] Real-time collaboration via WebSockets
-
-### Research Directions
-
-- Incremental learning and graph refinement
-- Conflict resolution in distributed graphs
-- Query optimization for large graphs
-- Graph compression and summarization
-
----
-
-## 📝 License
-
-MIT License - See [LICENSE](LICENSE) for details
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! This project values:
-
-- Clear architectural thinking
-- Well-reasoned tradeoffs
-- Code that teaches
-
-Please open an issue before starting major work.
-
----
-
-## 💡 Final Thoughts
-
-**Live Knowledge Graph Builder is not about displaying data.**
-
-It's about **making reasoning visible** — and using modern React the way it was designed to be used.
-
-If you understand why this project is built this way,  
-**you understand the future of React.**
-
----
-
-<div align="center">
-
-**Built with intention. Designed to teach. Open to explore.**
-
-</div>
+*This is an experimental project demonstrating React Server Components, React 19 features, and modern React architecture patterns. Use it as a learning resource and reference implementation.*

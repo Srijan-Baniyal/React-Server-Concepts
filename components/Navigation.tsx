@@ -144,7 +144,7 @@ export default function Navigation() {
 						<NavigationMenuItem>
 							<NavigationMenuLink
 								className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 font-medium text-sm backdrop-blur-sm transition-all duration-300 hover:bg-accent/50"
-								href="#about"
+								href="/about"
 							>
 								About
 							</NavigationMenuLink>
@@ -258,7 +258,7 @@ export default function Navigation() {
 							<div className="space-y-2">
 								<Link
 									className="group block rounded-lg border border-border/40 bg-linear-to-br from-accent/40 to-accent/20 p-4 backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:bg-linear-to-br hover:from-accent/60 hover:to-accent/30 hover:shadow-lg hover:shadow-primary/5"
-									href="#graph-builder"
+									href="/features/graph-builder"
 									onClick={() => setMobileMenuOpen(false)}
 								>
 									<div className="font-semibold text-sm">Graph Builder</div>
@@ -268,7 +268,7 @@ export default function Navigation() {
 								</Link>
 								<Link
 									className="group block rounded-lg border border-border/40 bg-linear-to-br from-accent/40 to-accent/20 p-4 backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:bg-linear-to-br hover:from-accent/60 hover:to-accent/30 hover:shadow-lg hover:shadow-primary/5"
-									href="#schema-designer"
+									href="/features/schema-designer"
 									onClick={() => setMobileMenuOpen(false)}
 								>
 									<div className="font-semibold text-sm">Schema Designer</div>
@@ -278,7 +278,7 @@ export default function Navigation() {
 								</Link>
 								<Link
 									className="group block rounded-lg border border-border/40 bg-linear-to-br from-accent/40 to-accent/20 p-4 backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:bg-linear-to-br hover:from-accent/60 hover:to-accent/30 hover:shadow-lg hover:shadow-primary/5"
-									href="#query-editor"
+									href="/features/query-editor"
 									onClick={() => setMobileMenuOpen(false)}
 								>
 									<div className="font-semibold text-sm">Query Editor</div>
@@ -300,7 +300,7 @@ export default function Navigation() {
 							<div className="space-y-2">
 								<Link
 									className="group block rounded-lg border border-border/40 bg-linear-to-br from-accent/40 to-accent/20 p-4 backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:bg-linear-to-br hover:from-accent/60 hover:to-accent/30 hover:shadow-lg hover:shadow-primary/5"
-									href="#documentation"
+									href="/resources/documentation"
 									onClick={() => setMobileMenuOpen(false)}
 								>
 									<div className="font-semibold text-sm">Documentation</div>
@@ -310,7 +310,7 @@ export default function Navigation() {
 								</Link>
 								<Link
 									className="group block rounded-lg border border-border/40 bg-linear-to-br from-accent/40 to-accent/20 p-4 backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:bg-linear-to-br hover:from-accent/60 hover:to-accent/30 hover:shadow-lg hover:shadow-primary/5"
-									href="#tutorials"
+									href="/resources/tutorials"
 									onClick={() => setMobileMenuOpen(false)}
 								>
 									<div className="font-semibold text-sm">Tutorials</div>
@@ -320,7 +320,7 @@ export default function Navigation() {
 								</Link>
 								<Link
 									className="group block rounded-lg border border-border/40 bg-linear-to-br from-accent/40 to-accent/20 p-4 backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:bg-linear-to-br hover:from-accent/60 hover:to-accent/30 hover:shadow-lg hover:shadow-primary/5"
-									href="#api"
+									href="/resources/api-reference"
 									onClick={() => setMobileMenuOpen(false)}
 								>
 									<div className="font-semibold text-sm">API Reference</div>
@@ -337,14 +337,14 @@ export default function Navigation() {
 						<div className="space-y-2">
 							<Link
 								className="group flex items-center justify-between rounded-lg border border-border/40 bg-linear-to-br from-accent/40 to-accent/20 p-4 font-semibold text-sm backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:bg-linear-to-br hover:from-accent/60 hover:to-accent/30 hover:shadow-lg hover:shadow-primary/5"
-								href="#pricing"
+								href="/pricing"
 								onClick={() => setMobileMenuOpen(false)}
 							>
 								Pricing
 							</Link>
 							<Link
 								className="group flex items-center justify-between rounded-lg border border-border/40 bg-linear-to-br from-accent/40 to-accent/20 p-4 font-semibold text-sm backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:bg-linear-to-br hover:from-accent/60 hover:to-accent/30 hover:shadow-lg hover:shadow-primary/5"
-								href="#about"
+								href="/about"
 								onClick={() => setMobileMenuOpen(false)}
 							>
 								About

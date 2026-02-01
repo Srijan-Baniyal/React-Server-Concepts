@@ -107,54 +107,54 @@ const EDGE_SEQUENCE: readonly EdgeSequence[] = [
 const FEATURES: readonly Feature[] = [
 	{
 		icon: LightningIcon,
-		title: "Concurrent Processing",
+		title: "Zero-Bundle Server Logic",
 		description:
-			"Reasoning happens as you type. No loading indicators, no artificial wait times—just seamless, fluid understanding that builds in real-time.",
+			"Server components run exclusively on the server. Heavy computations, data fetching, and business logic never reach the client bundle.",
 	},
 	{
 		icon: EyeIcon,
-		title: "Transparent Reasoning",
+		title: "Streaming & Suspense",
 		description:
-			"See the thinking process unfold. Entities and connections emerge progressively, offering a window into how knowledge structures form.",
+			"Watch content progressively render as it becomes ready. No loading spinners—just smooth, incremental page building with React Suspense.",
 	},
 	{
 		icon: CpuIcon,
-		title: "Server-Side Intelligence",
+		title: "React 19 Compiler",
 		description:
-			"Heavy computational reasoning happens server-side, while your client experience remains fluid and responsive. The best of both worlds.",
+			"Automatic memoization and optimization without manual useMemo or useCallback. The compiler handles performance for you.",
 	},
 	{
 		icon: SparkleIcon,
-		title: "Living Knowledge",
+		title: "Server-First Architecture",
 		description:
-			"What you observe is not a static result—it is an evolving, interactive map of ideas that grows and adapts with every interaction.",
+			"Experience the paradigm shift of server components. Direct database access, async components, and seamless server-client composition.",
 	},
 ] as const;
 
 const STEPS: readonly Step[] = [
 	{
 		number: "01",
-		title: "Input Your Text",
+		title: "Server Components",
 		description:
-			"Begin typing or paste any text. The moment characters appear, the reasoning engine activates—no submit buttons, no waiting.",
+			"Understand how components run on the server by default, reducing JavaScript bundle size and enabling direct access to backend resources.",
 	},
 	{
 		number: "02",
-		title: "Watch Entities Emerge",
+		title: "Client Boundaries",
 		description:
-			"Concepts, people, places, and ideas surface in real-time. Each entity appears as it is recognized, building your knowledge map progressively.",
+			"Learn strategic placement of 'use client' directives. See how to compose server and client components for optimal performance.",
 	},
 	{
 		number: "03",
-		title: "See Connections Form",
+		title: "Data Fetching Patterns",
 		description:
-			"Relationships between entities materialize as the system reasons through your content. Watch the structure of understanding take shape.",
+			"Explore async/await in components, streaming with Suspense, and parallel data fetching without traditional API routes.",
 	},
 	{
 		number: "04",
-		title: "Explore Interactively",
+		title: "React 19 Features",
 		description:
-			"Navigate your living knowledge graph. Click, zoom, and discover insights within an interface that responds instantly to your curiosity.",
+			"Experience the React Compiler, enhanced hooks, server actions, and the future of React architecture in a production-ready app.",
 	},
 ] as const;
 
@@ -473,35 +473,26 @@ export default function HeroSection() {
 									ease: [0.22, 1, 0.36, 1],
 								}}
 							>
-                <Button className="group" size="lg">
-                  <Link className="flex items-center gap-2" href="/dashboard">
-                    Get Started
-                  </Link>
-									<ArrowRightIcon
-										className="ml-2 size-4 transition-transform duration-300 group-hover:translate-x-1"
-										weight="bold"
-									/>
+								<Button className="group" size="lg">
+									<Link className="flex items-center gap-2" href="/dashboard">
+										Get Started
+										<ArrowRightIcon
+											className="ml-2 size-4 transition-transform duration-300 group-hover:translate-x-1"
+											weight="bold"
+										/>
+									</Link>
 								</Button>
 								<Button className="group" size="lg" variant="outline">
-									<PlayIcon
-										className="mr-2 size-4 transition-transform duration-300 group-hover:scale-110"
-										weight="fill"
-									/>
-									Watch Demo
+									<Link className="flex items-center gap-2" href="#features">
+										<PlayIcon
+											className="mr-2 size-4 transition-transform duration-300 group-hover:scale-110"
+											weight="fill"
+										/>
+										Watch Demo
+									</Link>
 								</Button>
 							</motion.div>
 
-							<motion.div
-								animate={{ opacity: 1, y: 0 }}
-								className="flex items-center gap-6 pt-4"
-								initial={{ opacity: 0, y: 20 }}
-								transition={{
-									duration: 0.8,
-									delay: 0.4,
-									ease: [0.22, 1, 0.36, 1],
-								}}
-							>
-							</motion.div>
 						</div>
 
 						{/* Right Content - Animated Graph */}
@@ -739,11 +730,11 @@ export default function HeroSection() {
 								<Button className="group" size="lg">
 									<Link className="flex items-center gap-2" href="/dashboard">
 										Start Building Now
+										<ArrowRightIcon
+											className="ml-2 size-4 transition-transform duration-300 group-hover:translate-x-1"
+											weight="bold"
+										/>
 									</Link>
-									<ArrowRightIcon
-										className="ml-2 size-4 transition-transform duration-300 group-hover:translate-x-1"
-										weight="bold"
-									/>
 								</Button>
 								<Button size="lg" variant="outline">
 									<Link className="flex items-center gap-2" href="/about">

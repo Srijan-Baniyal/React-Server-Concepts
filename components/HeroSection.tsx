@@ -20,10 +20,28 @@ import {
 	type ComponentType,
 	useCallback,
 	useEffect,
+	useMemo,
 	useRef,
 	useState,
 } from "react";
 import { Button } from "@/components/ui/button";
+
+// Hook to track if user has seen the hero animations before
+function useHasSeenAnimation() {
+	const [hasSeen, setHasSeen] = useState<boolean | null>(null);
+
+	useEffect(() => {
+		const seen = localStorage.getItem("hero-animation-seen") === "true";
+		setHasSeen(seen);
+	}, []);
+
+	const markAsSeen = useCallback(() => {
+		localStorage.setItem("hero-animation-seen", "true");
+		setHasSeen(true);
+	}, []);
+
+	return { hasSeen, markAsSeen };
+}
 
 interface Node {
 	id: string;
@@ -81,14 +99,14 @@ interface StaggerItemProps {
 
 // Constants
 const NODE_SEQUENCE: readonly NodeSequence[] = [
-	{ id: "1", label: "Idea", x: 50, y: 50 },
-	{ id: "2", label: "Concept", x: 75, y: 30 },
-	{ id: "3", label: "Pattern", x: 25, y: 35 },
-	{ id: "4", label: "Insight", x: 60, y: 70 },
-	{ id: "5", label: "Connection", x: 35, y: 65 },
-	{ id: "6", label: "Knowledge", x: 50, y: 85 },
-	{ id: "7", label: "Reasoning", x: 80, y: 55 },
-	{ id: "8", label: "Context", x: 20, y: 55 },
+	{ id: "1", label: "Server", x: 50, y: 50 },
+	{ id: "2", label: "Client", x: 75, y: 30 },
+	{ id: "3", label: "Data", x: 25, y: 35 },
+	{ id: "4", label: "UI", x: 60, y: 70 },
+	{ id: "5", label: "State", x: 35, y: 65 },
+	{ id: "6", label: "React", x: 50, y: 85 },
+	{ id: "7", label: "Stream", x: 80, y: 55 },
+	{ id: "8", label: "Suspense", x: 20, y: 55 },
 ] as const;
 
 const EDGE_SEQUENCE: readonly EdgeSequence[] = [
@@ -166,17 +184,35 @@ const ANIMATION_CONFIG = {
 	SCROLL_SPRING_CONFIG: { stiffness: 80, damping: 25 },
 } as const;
 
-// Animated Knowledge Graph Component - No Repeat
-function AnimatedGraph() {
-	const [nodes, setNodes] = useState<Node[]>([]);
-	const [edges, setEdges] = useState<Edge[]>([]);
-	const [nodeIndex, setNodeIndex] = useState(0);
-	const [edgeIndex, setEdgeIndex] = useState(0);
-	const [isComplete, setIsComplete] = useState(false);
+// Animated Architecture Diagram Component - No Repeat
+function AnimatedGraph({ skipAnimation }: { skipAnimation: boolean }) {
+	// Initialize with all nodes and edges if animation should be skipped
+	const initialNodes = useMemo(
+		() =>
+			skipAnimation ? NODE_SEQUENCE.map((node) => ({ ...node, scale: 1 })) : [],
+		[skipAnimation]
+	);
+	const initialEdges = useMemo(
+		() =>
+			skipAnimation
+				? EDGE_SEQUENCE.map((edge) => ({ ...edge, progress: 1 }))
+				: [],
+		[skipAnimation]
+	);
+
+	const [nodes, setNodes] = useState<Node[]>(initialNodes);
+	const [edges, setEdges] = useState<Edge[]>(initialEdges);
+	const [nodeIndex, setNodeIndex] = useState(
+		skipAnimation ? NODE_SEQUENCE.length : 0
+	);
+	const [edgeIndex, setEdgeIndex] = useState(
+		skipAnimation ? EDGE_SEQUENCE.length : 0
+	);
+	const [isComplete, setIsComplete] = useState(skipAnimation);
 
 	// Add nodes sequentially
 	useEffect(() => {
-		if (nodeIndex >= NODE_SEQUENCE.length || isComplete) {
+		if (nodeIndex >= NODE_SEQUENCE.length || isComplete || skipAnimation) {
 			return;
 		}
 
@@ -186,11 +222,11 @@ function AnimatedGraph() {
 		}, ANIMATION_CONFIG.NODE_INTERVAL);
 
 		return () => clearTimeout(timer);
-	}, [nodeIndex, isComplete]);
+	}, [nodeIndex, isComplete, skipAnimation]);
 
 	// Animate node scale
 	useEffect(() => {
-		if (nodes.length === 0 || isComplete) {
+		if (nodes.length === 0 || isComplete || skipAnimation) {
 			return;
 		}
 
@@ -203,11 +239,16 @@ function AnimatedGraph() {
 		}, 50);
 
 		return () => clearTimeout(timer);
-	}, [nodes.length, isComplete]);
+	}, [nodes.length, isComplete, skipAnimation]);
 
 	// Add edges sequentially
 	useEffect(() => {
-		if (edgeIndex >= EDGE_SEQUENCE.length || nodes.length < 2 || isComplete) {
+		if (
+			edgeIndex >= EDGE_SEQUENCE.length ||
+			nodes.length < 2 ||
+			isComplete ||
+			skipAnimation
+		) {
 			return;
 		}
 
@@ -223,11 +264,11 @@ function AnimatedGraph() {
 		}, ANIMATION_CONFIG.EDGE_INTERVAL);
 
 		return () => clearTimeout(timer);
-	}, [edgeIndex, nodes, isComplete]);
+	}, [edgeIndex, nodes, isComplete, skipAnimation]);
 
 	// Animate edge progress
 	useEffect(() => {
-		if (edges.length === 0 || isComplete) {
+		if (edges.length === 0 || isComplete || skipAnimation) {
 			return;
 		}
 
@@ -240,7 +281,7 @@ function AnimatedGraph() {
 		}, 50);
 
 		return () => clearTimeout(timer);
-	}, [edges.length, isComplete]);
+	}, [edges.length, isComplete, skipAnimation]);
 
 	// Mark as complete when animation finishes
 	useEffect(() => {
@@ -263,11 +304,11 @@ function AnimatedGraph() {
 
 	return (
 		<svg
-			aria-label="Animated knowledge graph visualization"
+			aria-label="React Server Components architecture visualization"
 			className="h-full w-full"
 			viewBox="0 0 100 100"
 		>
-			<title>Animated Knowledge Graph</title>
+			<title>React Server Components Flow</title>
 			<defs>
 				<linearGradient id="edgeGradient" x1="0%" x2="100%" y1="0%" y2="0%">
 					<stop offset="0%" stopColor="currentColor" stopOpacity="0.1" />
@@ -398,6 +439,7 @@ function StaggerItem({ children }: StaggerItemProps) {
 // Main Hero Section Component
 export default function HeroSection() {
 	const containerRef = useRef<HTMLDivElement>(null);
+	const { hasSeen, markAsSeen } = useHasSeenAnimation();
 	const { scrollYProgress } = useScroll({ target: containerRef });
 	const smoothProgress = useSpring(scrollYProgress, {
 		stiffness: ANIMATION_CONFIG.SCROLL_SPRING_CONFIG.stiffness,
@@ -408,6 +450,19 @@ export default function HeroSection() {
 	const heroOpacity = useTransform(smoothProgress, [0, 0.4], [1, 0]);
 	const graphScale = useTransform(smoothProgress, [0, 0.5], [1, 0.92]);
 	const graphY = useTransform(smoothProgress, [0, 0.5], [0, 20]);
+
+	// Mark animations as seen after they complete
+	useEffect(() => {
+		if (hasSeen === false) {
+			const timer = setTimeout(() => {
+				markAsSeen();
+			}, 5000);
+			return () => clearTimeout(timer);
+		}
+	}, [hasSeen, markAsSeen]);
+
+	// Skip animations if already seen or still loading from localStorage
+	const shouldAnimate = hasSeen === false;
 
 	return (
 		<div className="relative min-h-screen overflow-hidden" ref={containerRef}>
@@ -423,53 +478,67 @@ export default function HeroSection() {
 							<motion.div
 								animate={{ opacity: 1, y: 0, scale: 1 }}
 								className="inline-block"
-								initial={{ opacity: 0, y: 20, scale: 0.9 }}
-								transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+								initial={
+									shouldAnimate
+										? { opacity: 0, y: 20, scale: 0.9 }
+										: { opacity: 1, y: 0, scale: 1 }
+								}
+								transition={{
+									duration: shouldAnimate ? 0.8 : 0,
+									ease: [0.22, 1, 0.36, 1],
+								}}
 							>
 								<span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-linear-to-r from-primary/10 to-primary/5 px-4 py-2 font-medium text-primary text-sm backdrop-blur-sm">
 									<SparkleIcon className="size-4" weight="fill" />
-									Real-time Knowledge Graphs
+									React Server Components
 								</span>
 							</motion.div>
 
 							<motion.h1
 								animate={{ opacity: 1, y: 0 }}
 								className="font-bold text-4xl text-foreground leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl"
-								initial={{ opacity: 0, y: 20 }}
+								initial={
+									shouldAnimate ? { opacity: 0, y: 20 } : { opacity: 1, y: 0 }
+								}
 								transition={{
-									duration: 0.8,
-									delay: 0.1,
+									duration: shouldAnimate ? 0.8 : 0,
+									delay: shouldAnimate ? 0.1 : 0,
 									ease: [0.22, 1, 0.36, 1],
 								}}
 							>
-								Build Knowledge Graphs{" "}
+								Master React Server Components{" "}
 								<span className="bg-linear-to-r from-primary via-primary to-primary/70 bg-clip-text text-transparent">
-									While You Think
+									The Future of React
 								</span>
 							</motion.h1>
 
 							<motion.p
 								animate={{ opacity: 1, y: 0 }}
 								className="text-lg text-muted-foreground leading-relaxed sm:text-xl"
-								initial={{ opacity: 0, y: 20 }}
+								initial={
+									shouldAnimate ? { opacity: 0, y: 20 } : { opacity: 1, y: 0 }
+								}
 								transition={{
-									duration: 0.8,
-									delay: 0.2,
+									duration: shouldAnimate ? 0.8 : 0,
+									delay: shouldAnimate ? 0.2 : 0,
 									ease: [0.22, 1, 0.36, 1],
 								}}
 							>
-								No waiting. No manual mapping. Just type, and watch as entities
-								and relationships emerge in real-time, revealing the structure
-								within your ideas.
+								Explore the paradigm shift in React development. Learn server
+								components, streaming, and React 19 features through interactive
+								demos and real-world patterns that showcase the future of web
+								applications.
 							</motion.p>
 
 							<motion.div
 								animate={{ opacity: 1, y: 0 }}
 								className="flex flex-wrap gap-4"
-								initial={{ opacity: 0, y: 20 }}
+								initial={
+									shouldAnimate ? { opacity: 0, y: 20 } : { opacity: 1, y: 0 }
+								}
 								transition={{
-									duration: 0.8,
-									delay: 0.3,
+									duration: shouldAnimate ? 0.8 : 0,
+									delay: shouldAnimate ? 0.3 : 0,
 									ease: [0.22, 1, 0.36, 1],
 								}}
 							>
@@ -492,63 +561,86 @@ export default function HeroSection() {
 									</Link>
 								</Button>
 							</motion.div>
-
 						</div>
 
 						{/* Right Content - Animated Graph */}
 						<motion.div
 							animate={{ opacity: 1, scale: 1 }}
 							className="relative"
-							initial={{ opacity: 0, scale: 0.9 }}
+							initial={
+								shouldAnimate
+									? { opacity: 0, scale: 0.9 }
+									: { opacity: 1, scale: 1 }
+							}
 							style={{ scale: graphScale, y: graphY }}
 							transition={{
-								duration: 1,
-								delay: 0.3,
+								duration: shouldAnimate ? 1 : 0,
+								delay: shouldAnimate ? 0.3 : 0,
 								ease: [0.22, 1, 0.36, 1],
 							}}
 						>
 							<div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-border/50 bg-linear-to-br from-primary/5 via-primary/3 to-background p-8 shadow-2xl shadow-primary/5 backdrop-blur-sm">
 								<div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(var(--primary-rgb),0.03),transparent_50%)]" />
-								<AnimatedGraph />
+								<AnimatedGraph skipAnimation={!shouldAnimate} />
 							</div>
 
 							{/* Floating Stats */}
 							<motion.div
 								animate={{ y: [-2, 2, -2] }}
 								className="absolute top-1/4 -right-4 rounded-xl border border-border/50 bg-background/95 p-4 shadow-primary/5 shadow-xl backdrop-blur-xl"
-								initial={{ opacity: 0, scale: 0.8, y: 20 }}
+								initial={
+									shouldAnimate
+										? { opacity: 0, scale: 0.8, y: 20 }
+										: { opacity: 1, scale: 1, y: 0 }
+								}
 								transition={{
 									y: {
 										duration: 4,
 										repeat: Number.POSITIVE_INFINITY,
 										ease: "easeInOut",
 									},
-									opacity: { duration: 0.6, delay: 1.2 },
-									scale: { duration: 0.6, delay: 1.2 },
+									opacity: {
+										duration: shouldAnimate ? 0.6 : 0,
+										delay: shouldAnimate ? 1.2 : 0,
+									},
+									scale: {
+										duration: shouldAnimate ? 0.6 : 0,
+										delay: shouldAnimate ? 1.2 : 0,
+									},
 								}}
 								whileInView={{ opacity: 1, scale: 1, y: 0 }}
 							>
-								<div className="font-bold text-2xl text-primary">98%</div>
-								<div className="text-muted-foreground text-xs">Accuracy</div>
+								<div className="font-bold text-2xl text-primary">87%</div>
+								<div className="text-muted-foreground text-xs">Faster Load</div>
 							</motion.div>
 
 							<motion.div
 								animate={{ y: [2, -2, 2] }}
 								className="absolute bottom-1/4 -left-4 rounded-xl border border-border/50 bg-background/95 p-4 shadow-primary/5 shadow-xl backdrop-blur-xl"
-								initial={{ opacity: 0, scale: 0.8, y: -20 }}
+								initial={
+									shouldAnimate
+										? { opacity: 0, scale: 0.8, y: -20 }
+										: { opacity: 1, scale: 1, y: 0 }
+								}
 								transition={{
 									y: {
 										duration: 3.5,
 										repeat: Number.POSITIVE_INFINITY,
 										ease: "easeInOut",
 									},
-									opacity: { duration: 0.6, delay: 1.4 },
-									scale: { duration: 0.6, delay: 1.4 },
+									opacity: {
+										duration: shouldAnimate ? 0.6 : 0,
+										delay: shouldAnimate ? 1.4 : 0,
+									},
+									scale: {
+										duration: shouldAnimate ? 0.6 : 0,
+										delay: shouldAnimate ? 1.4 : 0,
+									},
 								}}
 								whileInView={{ opacity: 1, scale: 1, y: 0 }}
 							>
-								<div className="font-bold text-2xl text-primary">2.3s</div>
-								<div className="text-muted-foreground text-xs">Avg. Time</div>
+								<div className="font-bold text-2xl text-primary">-60%</div>
+								<div className="text-muted-foreground text-xs">Bundle Size</div>
 							</motion.div>
 						</motion.div>
 					</div>
@@ -583,11 +675,11 @@ export default function HeroSection() {
 					<ScrollReveal>
 						<div className="mb-20 text-center">
 							<h2 className="mb-4 font-bold text-3xl text-foreground tracking-tight sm:text-4xl">
-								Features That Set Us Apart
+								Powerful React Server Components
 							</h2>
 							<p className="mx-auto max-w-2xl text-lg text-muted-foreground leading-relaxed">
-								Experience the future of knowledge management with cutting-edge
-								technology designed for speed and clarity.
+								Discover the cutting-edge features that make React Server
+								Components the future of modern web development.
 							</p>
 						</div>
 					</ScrollReveal>
@@ -628,11 +720,11 @@ export default function HeroSection() {
 					<ScrollReveal>
 						<div className="mb-20 text-center">
 							<h2 className="mb-4 font-bold text-3xl text-foreground tracking-tight sm:text-4xl">
-								How It Works
+								Your Learning Journey
 							</h2>
 							<p className="mx-auto max-w-2xl text-lg text-muted-foreground leading-relaxed">
-								Four simple steps to transform your ideas into interactive
-								knowledge graphs.
+								Four progressive steps to master React Server Components and
+								build high-performance applications.
 							</p>
 						</div>
 					</ScrollReveal>
@@ -720,16 +812,16 @@ export default function HeroSection() {
 					<ScrollReveal>
 						<div className="space-y-8">
 							<h2 className="font-bold text-3xl text-foreground tracking-tight sm:text-4xl lg:text-5xl">
-								Ready to Transform Your Ideas?
+								Ready to Build Faster Apps?
 							</h2>
 							<p className="mx-auto max-w-2xl text-lg text-muted-foreground leading-relaxed">
-								Join thousands of users who are already building knowledge
-								graphs in real-time.
+								Join developers mastering React Server Components and creating
+								ultra-fast, modern web applications.
 							</p>
 							<div className="flex flex-wrap items-center justify-center gap-4">
 								<Button className="group" size="lg">
 									<Link className="flex items-center gap-2" href="/dashboard">
-										Start Building Now
+										Start Learning Now
 										<ArrowRightIcon
 											className="ml-2 size-4 transition-transform duration-300 group-hover:translate-x-1"
 											weight="bold"

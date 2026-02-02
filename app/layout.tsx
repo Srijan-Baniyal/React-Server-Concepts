@@ -19,8 +19,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-	title: "Knowledge Graph Builder",
-	description: "Build and manage your knowledge graphs with ease.",
+	title: "React Server Concepts Exploration and Experimentation",
+	description: "A deep dive into React Server Actions and Components.",
 };
 
 export default function RootLayout({
@@ -29,7 +29,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html className={inter.variable} lang="en">
+		<html className={inter.variable} lang="en" suppressHydrationWarning>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
@@ -37,7 +37,7 @@ export default function RootLayout({
 					<ReactQueryProvider>
 						<Navigation />
 						{children}
-						<Toaster richColors position={"top-center"}/>
+						<Toaster position={"top-center"} richColors />
 					</ReactQueryProvider>
 				</ThemeProvider>
 			</body>

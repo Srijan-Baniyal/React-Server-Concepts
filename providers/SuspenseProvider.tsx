@@ -1,4 +1,4 @@
-import { Suspense, type ReactNode } from "react";
+import { type ReactNode, Suspense } from "react";
 
 interface SuspenseProviderProps {
 	children: ReactNode;
@@ -7,7 +7,11 @@ interface SuspenseProviderProps {
 
 export function SuspenseProvider({
 	children,
-	fallback = <div className="flex items-center justify-center min-h-screen">Loading...</div>,
+	fallback = (
+		<div className="flex min-h-screen items-center justify-center">
+			Loading...
+		</div>
+	),
 }: SuspenseProviderProps) {
 	return <Suspense fallback={fallback}>{children}</Suspense>;
 }

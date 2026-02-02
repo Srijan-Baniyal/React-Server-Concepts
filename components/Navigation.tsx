@@ -3,7 +3,8 @@
 import { ListIcon, MoonIcon, SunIcon, XIcon } from "@phosphor-icons/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useTheme as useNextTheme } from "next-themes";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	NavigationMenu,
@@ -15,12 +16,20 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/Utils";
-import { useTheme } from "@/providers/ThemeProvider";
 import L from "@/public/favicon/apple-touch-icon.png";
 
 export default function Navigation() {
-	const { theme, toggleTheme } = useTheme();
+	const { theme, setTheme, resolvedTheme } = useNextTheme();
+	const [mounted, setMounted] = useState(false);
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+	useEffect(() => {
+		setMounted(true);
+	}, []);
+
+	const toggleTheme = () => {
+		setTheme(theme === "dark" ? "light" : "dark");
+	};
 
 	return (
 		<header className="sticky top-0 z-50 w-full">
@@ -161,26 +170,30 @@ export default function Navigation() {
 						size="icon"
 						variant="ghost"
 					>
-						<div className="relative flex h-full w-full items-center justify-center">
-							<SunIcon
-								className={cn(
-									"absolute h-5 w-5 transition-all duration-500",
-									theme === "light"
-										? "rotate-0 scale-100 opacity-100"
-										: "rotate-180 scale-0 opacity-0"
-								)}
-								weight="duotone"
-							/>
-							<MoonIcon
-								className={cn(
-									"absolute h-5 w-5 transition-all duration-500",
-									theme === "dark"
-										? "rotate-0 scale-100 opacity-100"
-										: "-rotate-180 scale-0 opacity-0"
-								)}
-								weight="duotone"
-							/>
-						</div>
+						{mounted ? (
+							<div className="relative flex h-full w-full items-center justify-center">
+								<SunIcon
+									className={cn(
+										"absolute h-5 w-5 transition-all duration-500",
+										resolvedTheme === "light"
+											? "rotate-0 scale-100 opacity-100"
+											: "rotate-180 scale-0 opacity-0"
+									)}
+									weight="duotone"
+								/>
+								<MoonIcon
+									className={cn(
+										"absolute h-5 w-5 transition-all duration-500",
+										resolvedTheme === "dark"
+											? "rotate-0 scale-100 opacity-100"
+											: "-rotate-180 scale-0 opacity-0"
+									)}
+									weight="duotone"
+								/>
+							</div>
+						) : (
+							<div className="h-5 w-5" />
+						)}
 					</Button>
 
 					{/* Separator */}

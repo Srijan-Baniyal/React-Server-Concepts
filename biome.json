@@ -16,13 +16,19 @@
     "enabled": true,
     "rules": {
       "recommended": true,
+      "complexity": {
+        "noExcessiveCognitiveComplexity": {
+          "level": "error",
+          "options": {
+            "maxAllowedComplexity": 30
+          }
+        }
+      },
       "style": {
         "useFilenamingConvention": {
           "level": "error",
           "options": {
-            "filenameCases": [
-              "PascalCase"
-            ]
+            "filenameCases": ["PascalCase"]
           }
         }
       }
@@ -41,10 +47,7 @@
       }
     }
   },
-  "extends": [
-    "ultracite/biome/core",
-    "ultracite/biome/next"
-  ],
+  "extends": ["ultracite/biome/core", "ultracite/biome/next"],
   "overrides": [
     {
       "includes": [

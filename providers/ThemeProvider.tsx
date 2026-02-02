@@ -1,37 +1,50 @@
 "use client";
 
-import { useEffect } from "react";
+import {
+	ThemeProvider as NextThemesProvider,
+	useTheme as useNextTheme,
+} from "next-themes";
+import { useEffect, useState } from "react";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
-
-type Theme = "light" | "dark";
 
 interface ThemeStore {
-	theme: Theme;
-	setTheme: (theme: Theme) => void;
-	toggleTheme: () => void;
+	resolvedTheme: "light" | "dark" | undefined;
+	setResolvedTheme: (theme: "light" | "dark" | undefined) => void;
 }
 
-const useThemeStore = create<ThemeStore>()(
-	persist(
-		(set) => ({
-			theme: "light",
-			setTheme: (theme) => set({ theme }),
-			toggleTheme: () =>
-				set((state) => ({ theme: state.theme === "light" ? "dark" : "light" })),
-		}),
-		{
-			name: "theme",
-		}
-	)
-);
+const useThemeStore = create<ThemeStore>((set) => ({
+	resolvedTheme: undefined,
+	setResolvedTheme: (resolvedTheme) => set({ resolvedTheme }),
+}));
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-	const theme = useThemeStore((state) => state.theme);
+	return (
+		<NextThemesProvider
+			attribute="class"
+			defaultTheme="system"
+			disableTransitionOnChange
+			enableSystem
+			storageKey="theme"
+		>
+			<ThemeSyncProvider>{children}</ThemeSyncProvider>
+		</NextThemesProvider>
+	);
+}
+
+function ThemeSyncProvider({ children }: { children: React.ReactNode }) {
+	const [mounted, setMounted] = useState(false);
+	const { resolvedTheme } = useNextTheme();
+	const setResolvedTheme = useThemeStore((state) => state.setResolvedTheme);
 
 	useEffect(() => {
-		document.documentElement.classList.toggle("dark", theme === "dark");
-	}, [theme]);
+		setMounted(true);
+	}, []);
+
+	useEffect(() => {
+		if (mounted) {
+			setResolvedTheme(resolvedTheme as "light" | "dark" | undefined);
+		}
+	}, [mounted, resolvedTheme, setResolvedTheme]);
 
 	return <>{children}</>;
 }

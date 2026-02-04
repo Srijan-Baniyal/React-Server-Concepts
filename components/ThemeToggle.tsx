@@ -17,10 +17,12 @@ export default function ThemeToggle() {
 		setMounted(true);
 	}, []);
 
-	const toggleTheme = (event: React.MouseEvent<HTMLButtonElement>) => {
+	const toggleTheme = (_event: React.MouseEvent<HTMLButtonElement>) => {
 		const newTheme = theme === "dark" ? "light" : "dark";
 		const button = buttonRef.current;
-		if (!button) return;
+		if (!button) {
+			return;
+		}
 		const rect = button.getBoundingClientRect();
 		const x = rect.left + rect.width / 2;
 		const y = rect.top + rect.height / 2;

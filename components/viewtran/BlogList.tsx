@@ -1,12 +1,12 @@
 import { BlogCard } from "./BlogCard";
 
 interface BlogPost {
-	slug: string;
-	title: string;
-	description: string;
-	date: string;
-	tags: string[];
 	author: string;
+	date: string;
+	description: string;
+	slug: string;
+	tags: string[];
+	title: string;
 }
 
 interface BlogListProps {

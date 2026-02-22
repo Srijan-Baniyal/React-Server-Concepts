@@ -5,10 +5,10 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 
 interface InteractivePokemonCardProps {
-	name: string;
 	id: number;
-	types: string[];
 	image: string;
+	name: string;
+	types: string[];
 }
 
 export function InteractivePokemonCard({

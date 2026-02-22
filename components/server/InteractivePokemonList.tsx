@@ -5,10 +5,10 @@ import { InteractivePokemonCard } from "./InteractivePokemonCard";
 import { TypeFilter } from "./TypeFilter";
 
 interface PokemonData {
-	name: string;
 	id: number;
-	types: string[];
 	image: string;
+	name: string;
+	types: string[];
 }
 
 interface InteractivePokemonListProps {

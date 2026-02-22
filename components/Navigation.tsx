@@ -38,7 +38,7 @@ export default function Navigation() {
 							/>
 						</div>
 						<span className="hidden bg-linear-to-r from-foreground to-foreground/70 bg-clip-text font-bold text-lg sm:inline-block">
-							KG Builder
+							RSC Project
 						</span>
 					</Link>
 				</div>
@@ -67,7 +67,7 @@ export default function Navigation() {
 									<Separator className="bg-linear-to-r from-transparent via-border to-transparent" />
 									<NavigationMenuLink
 										className="group block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-all duration-300 hover:translate-x-1 hover:bg-linear-to-r hover:from-accent hover:to-accent/50 hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-										href="/concepts/streaming"
+										href="/concepts/streamingandsuspense"
 									>
 										<div className="flex items-center gap-2 font-semibold text-sm leading-none">
 											<span className="h-1.5 w-1.5 rounded-full bg-primary transition-all duration-300 group-hover:h-2 group-hover:w-2" />
@@ -75,6 +75,19 @@ export default function Navigation() {
 										</div>
 										<p className="line-clamp-2 pl-3.5 text-muted-foreground text-sm leading-snug">
 											Progressive rendering patterns
+										</p>
+									</NavigationMenuLink>
+									<Separator className="bg-linear-to-r from-transparent via-border to-transparent" />
+									<NavigationMenuLink
+										className="group block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-all duration-300 hover:translate-x-1 hover:bg-linear-to-r hover:from-accent hover:to-accent/50 hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+										href="/concepts/navigation"
+									>
+										<div className="flex items-center gap-2 font-semibold text-sm leading-none">
+											<span className="h-1.5 w-1.5 rounded-full bg-primary transition-all duration-300 group-hover:h-2 group-hover:w-2" />
+											Partial Prerendering
+										</div>
+										<p className="line-clamp-2 pl-3.5 text-muted-foreground text-sm leading-snug">
+											Static & dynamic content fusion
 										</p>
 									</NavigationMenuLink>
 									<Separator className="bg-linear-to-r from-transparent via-border to-transparent" />
@@ -246,6 +259,18 @@ export default function Navigation() {
 									</div>
 									<p className="mt-1 text-muted-foreground text-xs leading-relaxed">
 										Progressive rendering patterns
+									</p>
+								</Link>
+								<Link
+									className="group block rounded-lg border border-border/40 bg-linear-to-br from-accent/40 to-accent/20 p-4 backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:bg-linear-to-br hover:from-accent/60 hover:to-accent/30 hover:shadow-lg hover:shadow-primary/5"
+									href="/concepts/navigation"
+									onClick={() => setMobileMenuOpen(false)}
+								>
+									<div className="font-semibold text-sm">
+										Partial Prerendering
+									</div>
+									<p className="mt-1 text-muted-foreground text-xs leading-relaxed">
+										Static & dynamic content fusion
 									</p>
 								</Link>
 								<Link

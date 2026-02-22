@@ -1,11 +1,11 @@
 import Link from "next/link";
 
 interface BlogCardProps {
-	slug: string;
-	title: string;
-	description: string;
 	date: string;
+	description: string;
+	slug: string;
 	tags: string[];
+	title: string;
 }
 
 export function BlogCard({

@@ -35,10 +35,9 @@ interface PokemonStat {
 }
 
 interface Pokemon {
+	height: number;
 	id: number;
 	name: string;
-	height: number;
-	weight: number;
 	sprites: {
 		other: {
 			"official-artwork": {
@@ -46,8 +45,9 @@ interface Pokemon {
 			};
 		};
 	};
-	types: PokemonType[];
 	stats: PokemonStat[];
+	types: PokemonType[];
+	weight: number;
 }
 
 interface PokemonListResponse {

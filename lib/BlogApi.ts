@@ -2,22 +2,22 @@ import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 
 export interface BlogPost {
-	slug: string;
-	title: string;
+	author: string;
+	content: string;
 	date: string;
 	description: string;
-	author: string;
+	slug: string;
 	tags: string[];
-	content: string;
+	title: string;
 }
 
 export interface BlogMetadata {
-	slug: string;
-	title: string;
+	author: string;
 	date: string;
 	description: string;
-	author: string;
+	slug: string;
 	tags: string[];
+	title: string;
 }
 
 const BLOG_CONTENT_DIR = join(process.cwd(), "content/blog");

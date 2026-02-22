@@ -13,11 +13,11 @@ import {
 
 interface RequestLog {
 	id: string;
-	type: "server" | "client";
 	method: string;
-	url: string;
-	timestamp: Date;
 	status?: number;
+	timestamp: Date;
+	type: "server" | "client";
+	url: string;
 }
 
 export function NetworkDebugger() {

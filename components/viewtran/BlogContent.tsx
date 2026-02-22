@@ -1,10 +1,10 @@
 interface BlogContentProps {
-	slug: string;
-	title: string;
-	date: string;
-	content: string;
-	tags: string[];
 	author: string;
+	content: string;
+	date: string;
+	slug: string;
+	tags: string[];
+	title: string;
 }
 
 export function BlogContent({

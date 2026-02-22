@@ -46,15 +46,15 @@ function useHasSeenAnimation() {
 interface Node {
 	id: string;
 	label: string;
+	scale: number;
 	x: number;
 	y: number;
-	scale: number;
 }
 
 interface Edge {
 	from: string;
-	to: string;
 	progress: number;
+	to: string;
 }
 
 interface NodeSequence {
@@ -70,18 +70,18 @@ interface EdgeSequence {
 }
 
 interface Feature {
+	description: string;
 	icon: ComponentType<{
 		className?: string;
 		weight?: "thin" | "light" | "regular" | "bold" | "fill" | "duotone";
 	}>;
 	title: string;
-	description: string;
 }
 
 interface Step {
+	description: string;
 	number: string;
 	title: string;
-	description: string;
 }
 
 interface ScrollRevealProps {

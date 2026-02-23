@@ -208,11 +208,14 @@
 	}
 }
 
-/* View Transition API styles for smooth theme switching */
+/* ── View Transitions ─────────────────────────────────────────── */
+
+/* Theme-toggle transitions (JS startViewTransition).
+   mix-blend-mode + z-index create the "curtain" reveal: new theme
+   slides over the old one without a fade. */
 ::view-transition-old(root),
 ::view-transition-new(root) {
 	mix-blend-mode: normal;
-	animation: none;
 }
 
 ::view-transition-old(root) {
@@ -231,112 +234,89 @@
 	z-index: 1;
 }
 
-/* Blog View Transitions */
+/* ── Navigation View Transitions ──────────────────────────────── */
 @supports (view-transition-name: none) {
+	/* Enable automatic page navigation transitions */
 	@view-transition {
 		navigation: auto;
 	}
 
-	/* Enhanced transitions for all named elements */
-	::view-transition-group(root) {
-		animation-duration: 0.5s;
-		animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
-	}
-
+	/* Root page animation — elements not covered by a named transition */
 	::view-transition-old(root) {
-		animation: fade-scale-out 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+		animation: 260ms cubic-bezier(0.4, 0, 1, 1) both vt-root-out;
 	}
 
 	::view-transition-new(root) {
-		animation: fade-scale-in 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+		animation: 380ms cubic-bezier(0, 0, 0.2, 1) both vt-root-in;
 	}
 
-	/* Style all view transition groups with enhanced animations */
-	::view-transition-group(*) {
-		animation-duration: 0.5s;
-		animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+	/* Named morph elements (blog-title-*, blog-meta-*, blog-tags-*,
+	   blog-card-*) are intentionally NOT overridden here — the browser
+	   automatically morphs matched pairs from their old geometry to the
+	   new one (card → article headline, etc.) */
+
+	/* Article prose body — only on the article page, enters fresh */
+	::view-transition-new(article-body) {
+		animation: 520ms 80ms cubic-bezier(0, 0, 0.2, 1) both vt-slide-up-in;
 	}
 
-	::view-transition-old(*) {
-		animation: fade-scale-out 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+	/* Back-to-list button — only on article page */
+	::view-transition-new(back-btn) {
+		animation: 380ms 40ms cubic-bezier(0, 0, 0.2, 1) both vt-slide-right-in;
 	}
 
-	::view-transition-new(*) {
-		animation: fade-scale-in 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+	/* Blog list page header — only on list page */
+	::view-transition-new(blog-list-header) {
+		animation: 440ms cubic-bezier(0, 0, 0.2, 1) both vt-slide-down-in;
+	}
+
+	/* Blog list card grid — only on list page */
+	::view-transition-new(blog-list-grid) {
+		animation: 500ms 100ms cubic-bezier(0, 0, 0.2, 1) both vt-slide-up-in;
 	}
 }
 
-/* Keyframe animations for view transitions */
-@keyframes fade-scale-out {
-	from {
-		opacity: 1;
-		transform: scale(1);
-	}
+/* ── View Transition keyframes ───────────────────────────────── */
+
+/* Root page exit: shrink-up + blur out */
+@keyframes vt-root-out {
 	to {
 		opacity: 0;
-		transform: scale(0.95);
+		transform: scale(0.97) translateY(-10px);
+		filter: blur(3px);
 	}
 }
 
-@keyframes fade-scale-in {
+/* Root page enter: rise + blur in */
+@keyframes vt-root-in {
 	from {
 		opacity: 0;
-		transform: scale(1.05);
-	}
-	to {
-		opacity: 1;
-		transform: scale(1);
+		transform: scale(0.97) translateY(18px);
+		filter: blur(3px);
 	}
 }
 
-@keyframes slide-fade-up {
+/* Slide up into view */
+@keyframes vt-slide-up-in {
 	from {
-		opacity: 1;
-		transform: translateY(0);
-	}
-	to {
 		opacity: 0;
-		transform: translateY(-20px);
+		transform: translateY(36px);
 	}
 }
 
-@keyframes slide-fade-down {
+/* Slide in from the left */
+@keyframes vt-slide-right-in {
 	from {
 		opacity: 0;
-		transform: translateY(-20px);
-	}
-	to {
-		opacity: 1;
-		transform: translateY(0);
+		transform: translateX(-28px);
 	}
 }
 
-@keyframes slide-fade-up-delayed {
+/* Slide down into view (for list header arriving from above) */
+@keyframes vt-slide-down-in {
 	from {
 		opacity: 0;
-		transform: translateY(30px);
-	}
-	to {
-		opacity: 1;
-		transform: translateY(0);
-	}
-}
-
-@keyframes fade-out {
-	from {
-		opacity: 1;
-	}
-	to {
-		opacity: 0;
-	}
-}
-
-@keyframes fade-in {
-	from {
-		opacity: 0;
-	}
-	to {
-		opacity: 1;
+		transform: translateY(-28px);
 	}
 }
 

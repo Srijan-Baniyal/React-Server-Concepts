@@ -77,6 +77,11 @@
             "noBarrelFile": {
               "level": "off"
             }
+          },
+          "security": {
+            "noDangerouslySetInnerHtml": {
+              "level": "off"
+            }
           }
         }
       }

@@ -33,7 +33,7 @@ async function ServerClientInteropDemo() {
 		"jigglypuff",
 		"meowth",
 		"psyduck",
-		"machop",
+		"golduck",
 	];
 
 	// Parallel fetch all pokemon data on the server

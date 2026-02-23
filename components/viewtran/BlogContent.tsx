@@ -65,7 +65,7 @@ export function BlogContent({
 			<div
 				className="prose prose-lg dark:prose-invert max-w-none"
 				dangerouslySetInnerHTML={{ __html: content }}
-				style={{ viewTransitionName: `blog-content-${slug}` }}
+				style={{ viewTransitionName: "article-body" }}
 			/>
 		</article>
 	);

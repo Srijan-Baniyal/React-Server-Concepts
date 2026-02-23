@@ -62,6 +62,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 			<Link
 				className="mb-8 inline-flex items-center gap-2 text-blue-600 transition-all hover:gap-3 hover:underline dark:text-blue-400"
 				href="/about"
+				style={{ viewTransitionName: "back-btn" }}
 			>
 				<span className="transition-transform">←</span>
 				<span>Back to all posts</span>

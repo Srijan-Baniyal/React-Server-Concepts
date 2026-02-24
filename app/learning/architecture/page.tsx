@@ -18,41 +18,41 @@ import { StreamingSuspense } from "@/components/architecture/StreamingSuspense";
 import { Separator } from "@/components/ui/separator";
 
 export default function ArchitecturePage() {
-  return (
-    <div className="container mx-auto max-w-7xl space-y-16 px-4 py-12 sm:px-6 lg:px-8">
-      <ArchitectureHero />
-      <Separator />
-      <BigPicture />
-      <Separator />
-      <ServerVsClient />
-      <Separator />
-      <ComponentTree />
-      <Separator />
-      <FlightProtocol />
-      <Separator />
-      <SerializationBoundary />
-      <Separator />
-      <RenderingPipeline />
-      <Separator />
-      <RouteSegments />
-      <Separator />
-      <RequestLifecycle />
-      <Separator />
-      <CachingLayers />
-      <Separator />
-      <ServerActions />
-      <Separator />
-      <StreamingSuspense />
-      <Separator />
-      <HydrationDeepDive />
-      <Separator />
-      <BundleImpact />
-      <Separator />
-      <DataFetchingPatterns />
-      <Separator />
-      <CompositionPatterns />
-      <Separator />
-      <ArchitectureSummary />
-    </div>
-  );
+	return (
+		<div className="container mx-auto max-w-7xl space-y-16 px-4 py-12 sm:px-6 lg:px-8">
+			<ArchitectureHero />
+			<Separator />
+			<BigPicture />
+			<Separator />
+			<ServerVsClient />
+			<Separator />
+			<ComponentTree />
+			<Separator />
+			<FlightProtocol />
+			<Separator />
+			<SerializationBoundary />
+			<Separator />
+			<RenderingPipeline />
+			<Separator />
+			<RouteSegments />
+			<Separator />
+			<RequestLifecycle />
+			<Separator />
+			<CachingLayers />
+			<Separator />
+			<ServerActions />
+			<Separator />
+			<StreamingSuspense />
+			<Separator />
+			<HydrationDeepDive />
+			<Separator />
+			<BundleImpact />
+			<Separator />
+			<DataFetchingPatterns />
+			<Separator />
+			<CompositionPatterns />
+			<Separator />
+			<ArchitectureSummary />
+		</div>
+	);
 }

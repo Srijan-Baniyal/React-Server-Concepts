@@ -127,19 +127,6 @@ export default function Navigation() {
 									<Separator className="bg-linear-to-r from-transparent via-border to-transparent" />
 									<NavigationMenuLink
 										className="group block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-all duration-300 hover:translate-x-1 hover:bg-linear-to-r hover:from-accent hover:to-accent/50 hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-										href="/learning/examples"
-									>
-										<div className="flex items-center gap-2 font-semibold text-sm leading-none">
-											<span className="h-1.5 w-1.5 rounded-full bg-primary transition-all duration-300 group-hover:h-2 group-hover:w-2" />
-											Code Examples
-										</div>
-										<p className="line-clamp-2 pl-3.5 text-muted-foreground text-sm leading-snug">
-											Practical implementations
-										</p>
-									</NavigationMenuLink>
-									<Separator className="bg-linear-to-r from-transparent via-border to-transparent" />
-									<NavigationMenuLink
-										className="group block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-all duration-300 hover:translate-x-1 hover:bg-linear-to-r hover:from-accent hover:to-accent/50 hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
 										href="/learning/best-practices"
 									>
 										<div className="flex items-center gap-2 font-semibold text-sm leading-none">

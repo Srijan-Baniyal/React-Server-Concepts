@@ -32,7 +32,7 @@ export default function Navigation() {
 					>
 						<div className="flex size-9 items-center justify-center rounded-lg transition-all duration-300">
 							<Image
-								alt="KG Builder Logo"
+								alt="RSC Logo"
 								className="transition-transform duration-300 hover:rotate-12"
 								src={L}
 							/>

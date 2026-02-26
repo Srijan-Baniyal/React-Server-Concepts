@@ -499,18 +499,7 @@ function ClientPokemonTeam() {
 
 export default function ServerComponentsPage() {
 	return (
-		<div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
-			{/* Hero Section - Apple-style minimal */}
-			<div className="mb-20 text-center">
-				<h1 className="mb-4 font-semibold text-5xl tracking-tight sm:text-6xl lg:text-7xl">
-					React Server Components
-				</h1>
-				<p className="mx-auto max-w-2xl text-lg text-muted-foreground leading-relaxed">
-					Explore parallel fetching, streaming, and client-side data management
-				</p>
-			</div>
-
-			{/* Main content sections with better spacing */}
+		<>
 			<div className="space-y-16">
 				{/* Where Code Runs - NEW SECTION */}
 				<section>
@@ -705,6 +694,6 @@ export default function ServerComponentsPage() {
 			</div>
 
 			<NetworkDebugger />
-		</div>
+		</>
 	);
 }

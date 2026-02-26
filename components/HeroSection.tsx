@@ -184,6 +184,183 @@ const ANIMATION_CONFIG = {
 	SCROLL_SPRING_CONFIG: { stiffness: 80, damping: 25 },
 } as const;
 
+const STEP_FILENAMES = [
+	"UserProfile.tsx",
+	"LikeButton.tsx",
+	"Dashboard.tsx",
+	"EditForm.tsx",
+] as const;
+
+const STEP_SNIPPETS = [
+	// Step 01 – Server Components
+	`// No 'use client' — zero bundle cost
+async function UserProfile({ id }: { id: string }) {
+  const user = await db.users.findById(id)
+  const posts = await db.posts.byUser(id)
+
+  return (
+    <article className="profile">
+      <h1>{user.name}</h1>
+      <p>{user.email}</p>
+      <PostList posts={posts} />
+    </article>
+  )
+}`,
+
+	// Step 02 – Client Boundaries
+	`'use client'
+
+function LikeButton({ postId }: { postId: string }) {
+  const [liked, setLiked] = useState(false)
+
+  return (
+    <button
+      onClick={() => setLiked(!liked)}
+      className="flex items-center gap-2"
+    >
+      {liked ? '❤️ Liked' : '🤍 Like'}
+    </button>
+  )
+}`,
+
+	// Step 03 – Data Fetching Patterns
+	`async function Dashboard() {
+  // Parallel fetch — no waterfalls
+  const [user, posts] = await Promise.all([
+    fetchUser(),
+    fetchPosts(),
+  ])
+
+  return <UserDashboard user={user} posts={posts} />
+}
+
+// Stream with Suspense boundary
+<Suspense fallback={<DashboardSkeleton />}>
+  <Dashboard />
+</Suspense>`,
+
+	// Step 04 – React 19 Features
+	`const [state, action, isPending] =
+  useActionState(
+    async (prev: State, formData: FormData) => {
+      const name = formData.get('username')
+      await updateProfile(name)
+      return { status: 'success', name }
+    },
+    { status: 'idle' }
+  )
+
+// No useState, no loading flags —
+// React tracks it all automatically`,
+] as const;
+
+// Syntax-highlighting helpers
+const CODE_KEYWORDS = new Set([
+	"async",
+	"function",
+	"const",
+	"let",
+	"var",
+	"return",
+	"await",
+	"true",
+	"false",
+	"null",
+	"undefined",
+	"import",
+	"export",
+	"default",
+	"from",
+	"new",
+	"typeof",
+	"if",
+	"else",
+	"class",
+	"extends",
+	"interface",
+	"type",
+]);
+
+const RE_COMMENT = /^\s*\//;
+const RE_DIRECTIVE = /^\s*['"]use (client|server)['"]\s*;?\s*$/;
+const RE_CAPITAL = /^[A-Z]/;
+const RE_TOKEN =
+	/("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`)|(<\/?[A-Za-z][A-Za-z0-9.]*(?:\s*\/>)?\s*>?)|([A-Za-z_$][A-Za-z0-9_$]*)|([0-9]+(?:\.[0-9]+)?)|([\s\S])/g;
+
+function tokenizeLine(line: string): Array<{ cls: string; text: string }> {
+	if (RE_COMMENT.test(line) && line.trimStart().startsWith("//")) {
+		return [{ text: line, cls: "text-slate-500 italic" }];
+	}
+	if (RE_DIRECTIVE.test(line)) {
+		return [{ text: line, cls: "text-amber-400" }];
+	}
+	const tokens: Array<{ cls: string; text: string }> = [];
+	const re = new RegExp(RE_TOKEN.source, "g");
+	let m: RegExpExecArray | null;
+	// biome-ignore lint/suspicious/noAssignInExpressions: intentional regex loop
+	while ((m = re.exec(line)) !== null) {
+		const [, str, tag, ident, num] = m;
+		if (str) {
+			tokens.push({ text: str, cls: "text-amber-400" });
+		} else if (tag) {
+			tokens.push({ text: tag, cls: "text-blue-400" });
+		} else if (ident) {
+			if (CODE_KEYWORDS.has(ident)) {
+				tokens.push({ text: ident, cls: "text-purple-400" });
+			} else if (RE_CAPITAL.test(ident)) {
+				tokens.push({ text: ident, cls: "text-cyan-400" });
+			} else {
+				tokens.push({ text: ident, cls: "text-slate-200" });
+			}
+		} else if (num) {
+			tokens.push({ text: num, cls: "text-emerald-400" });
+		} else {
+			tokens.push({ text: m[0], cls: "text-slate-400" });
+		}
+	}
+	return tokens;
+}
+
+function StepCodeBlock({ code, filename }: { code: string; filename: string }) {
+	const lines = code.split("\n");
+	return (
+		<div className="flex h-full flex-col overflow-hidden rounded-xl border border-white/10 bg-zinc-950 font-mono text-xs shadow-2xl">
+			{/* macOS-style header */}
+			<div className="flex shrink-0 items-center gap-2 border-white/10 border-b bg-zinc-900 px-4 py-2.5">
+				<div className="flex gap-1.5">
+					<div className="size-3 rounded-full bg-red-500/80" />
+					<div className="size-3 rounded-full bg-yellow-500/80" />
+					<div className="size-3 rounded-full bg-green-500/80" />
+				</div>
+				<span className="ml-3 select-none text-slate-400 text-xs">
+					{filename}
+				</span>
+			</div>
+			{/* Code lines */}
+			<div className="overflow-auto p-4">
+				<pre className="leading-6">
+					{lines.map((line, i) => (
+						// biome-ignore lint/suspicious/noArrayIndexKey: static code snippet lines never reorder
+						<div className="flex" key={i}>
+							<span className="mr-4 w-5 shrink-0 select-none text-right text-slate-600">
+								{i + 1}
+							</span>
+							<span>
+								{tokenizeLine(line).map((tok, j) => (
+									// biome-ignore lint/suspicious/noArrayIndexKey: static token order is stable
+									<span className={tok.cls} key={j}>
+										{tok.text}
+									</span>
+								))}
+							</span>
+						</div>
+					))}
+				</pre>
+			</div>
+		</div>
+	);
+}
+
 // Animated Architecture Diagram Component - No Repeat
 function AnimatedGraph({ skipAnimation }: { skipAnimation: boolean }) {
 	// Initialize with all nodes and edges if animation should be skipped
@@ -787,7 +964,7 @@ export default function HeroSection() {
 											}`}
 										>
 											<motion.div
-												className="aspect-video rounded-xl border border-border/50 bg-linear-to-br from-primary/10 via-primary/5 to-background shadow-lg"
+												className="aspect-video overflow-hidden rounded-xl shadow-xl ring-1 ring-white/10"
 												initial={{ opacity: 0, scale: 0.9 }}
 												transition={{
 													duration: 0.6,
@@ -796,7 +973,12 @@ export default function HeroSection() {
 												}}
 												viewport={{ once: true }}
 												whileInView={{ opacity: 1, scale: 1 }}
-											/>
+											>
+												<StepCodeBlock
+													code={STEP_SNIPPETS[index]}
+													filename={STEP_FILENAMES[index]}
+												/>
+											</motion.div>
 										</div>
 									</div>
 								</ScrollReveal>

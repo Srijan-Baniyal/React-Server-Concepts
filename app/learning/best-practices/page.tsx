@@ -3,10 +3,10 @@ import { BestPracticesHero } from "@/components/best-practices/BestPracticesHero
 import { CachingStrategy } from "@/components/best-practices/CachingStrategy";
 import { ComponentBoundaries } from "@/components/best-practices/ComponentBoundaries";
 import { DataFetchingGuidelines } from "@/components/best-practices/DataFetchingGuidelines";
-import { ErrorHandlingBP } from "@/components/best-practices/ErrorHandlingBP";
+import { ErrorHandlingBP } from "@/components/best-practices/ErrorHandlingBp";
 import { PerformanceOptimizations } from "@/components/best-practices/PerformanceOptimizations";
 import { SecurityPractices } from "@/components/best-practices/SecurityPractices";
-import { ServerActionsBP } from "@/components/best-practices/ServerActionsBP";
+import { ServerActionsBP } from "@/components/best-practices/ServerActionsBp";
 import { StreamingPatterns } from "@/components/best-practices/StreamingPatterns";
 import { TypeScriptPatterns } from "@/components/best-practices/TypeScriptPatterns";
 import { Separator } from "@/components/ui/separator";

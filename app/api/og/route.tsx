@@ -195,29 +195,25 @@ export function GET() {
 
 					{/* Tags */}
 					<div style={{ display: "flex", gap: "10px" }}>
-						{[
-							"RSC",
-							"React 19",
-							"Next.js",
-							"Streaming",
-							"Server Actions",
-						].map((tag) => (
-							<span
-								key={tag}
-								style={{
-									fontSize: 13,
-									fontFamily: "monospace",
-									color: "#FDD888",
-									background: "#FFAC3315",
-									border: "1px solid #FFAC3330",
-									borderRadius: "6px",
-									padding: "5px 14px",
-									letterSpacing: "0.3px",
-								}}
-							>
-								{tag}
-							</span>
-						))}
+						{["RSC", "React 19", "Next.js", "Streaming", "Server Actions"].map(
+							(tag) => (
+								<span
+									key={tag}
+									style={{
+										fontSize: 13,
+										fontFamily: "monospace",
+										color: "#FDD888",
+										background: "#FFAC3315",
+										border: "1px solid #FFAC3330",
+										borderRadius: "6px",
+										padding: "5px 14px",
+										letterSpacing: "0.3px",
+									}}
+								>
+									{tag}
+								</span>
+							)
+						)}
 					</div>
 				</div>
 
@@ -250,6 +246,6 @@ export function GET() {
 				</div>
 			</div>
 		</div>,
-		{ width: 1200, height: 630 },
+		{ width: 1200, height: 630 }
 	);
 }

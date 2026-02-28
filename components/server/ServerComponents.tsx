@@ -214,87 +214,210 @@ async function ServerStats() {
 			neinResult.status === "fulfilled" ? "✅ Success" : "❌ Failed";
 
 		return (
-			<Card className="overflow-hidden border-border/40 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:border-border/60 hover:shadow-lg">
-				<CardHeader className="space-y-3 pb-6">
-					<div className="flex items-start justify-between">
-						<div className="space-y-1.5">
-							<CardTitle className="font-semibold text-2xl">
-								Server Statistics
-							</CardTitle>
-							<CardDescription className="text-base">
-								Parallel data fetching on the server
-							</CardDescription>
-						</div>
-						<Badge
-							className="rounded-full bg-purple-500/10 px-3 py-1 font-normal text-purple-600 text-sm dark:text-purple-400"
-							variant="secondary"
-						>
-							Parallel
-						</Badge>
+			<div className="space-y-6">
+				{/* Section hero */}
+				<div className="flex items-center gap-4">
+					<div className="flex h-11 w-11 items-center justify-center rounded-xl bg-purple-500/10 text-2xl">
+						⚡
 					</div>
-				</CardHeader>
-				<CardContent className="space-y-6">
-					{/* Fetch Strategy Indicator */}
-					<div className="rounded-2xl border border-purple-500/10 bg-purple-500/3 p-6">
-						<div className="mb-4 flex items-center gap-3">
-							<div className="flex h-8 w-8 items-center justify-center rounded-full bg-purple-500/10">
-								<span className="text-lg">⚡</span>
-							</div>
-							<div>
-								<p className="font-medium text-sm">Promise.allSettled</p>
-								<p className="text-muted-foreground text-xs">
-									Independent parallel requests
-								</p>
-							</div>
-						</div>
-						<div className="grid grid-cols-2 gap-3">
-							<div className="rounded-xl border border-border/50 bg-background/50 p-3 backdrop-blur-sm">
-								<p className="mb-1 text-muted-foreground text-xs">
-									Pokemon API
-								</p>
-								<p className="font-mono text-sm">{pokemonStatus}</p>
-							</div>
-							<div className="rounded-xl border border-border/50 bg-background/50 p-3 backdrop-blur-sm">
-								<p className="mb-1 text-muted-foreground text-xs">Nein API</p>
-								<p className="font-mono text-sm">{neinStatus}</p>
-							</div>
-						</div>
+					<div>
+						<h2 className="font-semibold text-2xl tracking-tight">
+							Parallel Data Fetching
+						</h2>
+						<p className="text-muted-foreground text-sm">
+							Multiple independent requests resolved simultaneously with{" "}
+							<code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">
+								Promise.allSettled
+							</code>
+						</p>
 					</div>
+				</div>
+				<Card className="overflow-hidden border-purple-500/20">
+					<CardHeader className="border-purple-500/10 border-b">
+						<div className="flex items-center justify-between">
+							<div className="flex items-center gap-3">
+								<div className="flex h-9 w-9 items-center justify-center rounded-lg bg-purple-500/10 text-lg">
+									🔀
+								</div>
+								<CardTitle className="text-base">Server Statistics</CardTitle>
+							</div>
+							<Badge
+								className="bg-purple-500/10 font-mono text-purple-600 text-xs dark:text-purple-400"
+								variant="secondary"
+							>
+								Promise.allSettled
+							</Badge>
+						</div>
+					</CardHeader>
+					<CardContent className="space-y-5">
+						{/* Code snippet */}
+						<div className="overflow-hidden rounded-lg border border-border/50">
+							{/* titlebar */}
+							<div className="flex items-center justify-between border-border/40 border-b bg-muted/60 px-4 py-2">
+								<div className="flex items-center gap-2">
+									<div className="flex gap-1.5">
+										<div className="h-2.5 w-2.5 rounded-full bg-red-400/70" />
+										<div className="h-2.5 w-2.5 rounded-full bg-yellow-400/70" />
+										<div className="h-2.5 w-2.5 rounded-full bg-green-400/70" />
+									</div>
+									<span className="font-mono text-muted-foreground text-xs">
+										server-stats.tsx
+									</span>
+								</div>
+							</div>
+							{/* body */}
+							<div className="bg-muted/30 p-4 dark:bg-zinc-900/40">
+								<pre className="overflow-x-auto font-mono text-xs leading-relaxed">
+									<span className="text-purple-400">const </span>
+									<span className="text-foreground/90">[pokemonListResult, neinResult] = </span>
+									<span className="text-purple-400">await </span>
+									<span className="text-blue-400">Promise</span>
+									<span className="text-foreground/90">.allSettled([{"\n"}</span>
+									{"  "}
+									<span className="text-green-400">PokemonAPI</span>
+									<span className="text-foreground/90">.get(</span>
+									<span className="text-orange-400">"/pokemon?limit=5"</span>
+									<span className="text-foreground/90">),  </span>
+									<span className="text-muted-foreground/70">{"// resolves independently"}</span>
+									{"\n"}
+									{"  "}
+									<span className="text-green-400">NeinAPI</span>
+									<span className="text-foreground/90">.get(</span>
+									<span className="text-orange-400">""</span>
+									<span className="text-foreground/90">),                      </span>
+									<span className="text-muted-foreground/70">{"// won't block if this fails"}</span>
+									{"\n"}
+									<span className="text-foreground/90">{"]);"}</span>
+								</pre>
+							</div>
+						</div>
 
-					<div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-						<div className="rounded-2xl border border-border/40 bg-background/50 p-6 backdrop-blur-sm">
-							<p className="mb-2 text-muted-foreground text-sm">
-								Total Pokémon Available
+						{/* Request status rows */}
+						<div className="space-y-2">
+							<p className="text-muted-foreground text-xs uppercase tracking-wide">
+								Request Status
 							</p>
-							<p className="font-semibold text-4xl tracking-tight">
-								{pokemonList?.count ?? "N/A"}
+							<div className="overflow-hidden rounded-lg border border-border/40">
+								<div
+									className={`flex items-center justify-between border-border/40 border-b px-4 py-3 ${
+										pokemonListResult.status === "fulfilled"
+											? "border-l-2 border-l-green-500"
+											: "border-l-2 border-l-destructive"
+									}`}
+								>
+									<div className="flex items-center gap-2">
+										<span className="font-medium text-sm">PokéAPI</span>
+										<code className="rounded bg-muted px-1.5 py-0.5 font-mono text-muted-foreground text-xs">
+											/pokemon?limit=5
+										</code>
+									</div>
+									<span
+										className={`font-mono text-xs ${
+											pokemonListResult.status === "fulfilled"
+												? "text-green-600 dark:text-green-400"
+												: "text-destructive"
+										}`}
+									>
+										{pokemonStatus}
+									</span>
+								</div>
+								<div
+									className={`flex items-center justify-between px-4 py-3 ${
+										neinResult.status === "fulfilled"
+											? "border-l-2 border-l-green-500"
+											: "border-l-2 border-l-destructive"
+									}`}
+								>
+									<div className="flex items-center gap-2">
+										<span className="font-medium text-sm">Nein API</span>
+										<code className="rounded bg-muted px-1.5 py-0.5 font-mono text-muted-foreground text-xs">
+											/
+										</code>
+									</div>
+									<span
+										className={`font-mono text-xs ${
+											neinResult.status === "fulfilled"
+												? "text-green-600 dark:text-green-400"
+												: "text-destructive"
+										}`}
+									>
+										{neinStatus}
+									</span>
+								</div>
+							</div>
+						</div>
+
+						{/* Metrics row */}
+						<div className="grid grid-cols-2 gap-4">
+							<div className="rounded-lg border border-border/40 bg-background/50 p-4">
+								<p className="mb-1 text-muted-foreground text-xs uppercase tracking-wide">
+									Total Pokémon
+								</p>
+								<p className="font-semibold text-4xl tracking-tight">
+									{pokemonList?.count ?? "N/A"}
+								</p>
+								{pokemonListResult.status === "rejected" && (
+									<p className="mt-1 text-destructive text-xs">
+										Failed to fetch
+									</p>
+								)}
+							</div>
+							<div className="rounded-lg border border-border/40 bg-background/50 p-4">
+								<p className="mb-1 text-muted-foreground text-xs uppercase tracking-wide">
+									Load Time
+								</p>
+								<p className="font-semibold text-4xl tracking-tight">
+									{loadTime}
+									<span className="text-muted-foreground text-xl">ms</span>
+								</p>
+								<p className="mt-1 text-muted-foreground text-xs">
+									both requests combined
+								</p>
+							</div>
+						</div>
+
+						{/* Pokémon list */}
+						{pokemonList && pokemonList.results.length > 0 && (
+							<div className="space-y-2">
+								<p className="text-muted-foreground text-xs uppercase tracking-wide">
+									Fetched Pokémon
+								</p>
+								<div className="flex flex-wrap gap-2">
+									{pokemonList.results.map((p, i) => (
+										<div
+											className="flex items-center gap-1.5 rounded-full border border-border/40 bg-background/50 px-3 py-1"
+											key={p.name}
+										>
+											<Badge
+												className="h-4 w-4 rounded-full p-0 text-center text-[10px]"
+												variant="outline"
+											>
+												{i + 1}
+											</Badge>
+											<span className="font-medium text-sm capitalize">
+												{p.name}
+											</span>
+										</div>
+									))}
+								</div>
+							</div>
+						)}
+
+						{/* Nein API response callout */}
+						<div className="rounded-lg border border-border/40 bg-muted/30 px-4 py-3">
+							<p className="mb-1 text-muted-foreground text-xs uppercase tracking-wide">
+								Nein API Response
 							</p>
-							{pokemonListResult.status === "rejected" && (
-								<p className="mt-2 text-destructive text-xs">Failed to fetch</p>
+							<p className="font-mono text-sm">{neinResponse.reason}</p>
+							{neinResult.status === "rejected" && (
+								<p className="mt-1.5 text-muted-foreground text-xs">
+									↳ using fallback — Promise.allSettled kept going
+								</p>
 							)}
 						</div>
-						<div className="rounded-2xl border border-border/40 bg-background/50 p-6 backdrop-blur-sm">
-							<p className="mb-2 text-muted-foreground text-sm">Load Time</p>
-							<p className="font-semibold text-4xl tracking-tight">
-								{loadTime}
-								<span className="text-2xl text-muted-foreground">ms</span>
-							</p>
-							<p className="mt-2 text-muted-foreground text-xs">
-								Parallel fetching
-							</p>
-						</div>
-					</div>
-					<div className="rounded-2xl border border-border/40 bg-background/50 p-6 backdrop-blur-sm">
-						<p className="mb-3 text-muted-foreground text-sm">API Response</p>
-						<p className="font-mono text-lg">{neinResponse.reason}</p>
-						{neinResult.status === "rejected" && (
-							<p className="mt-3 text-muted-foreground text-sm">
-								Using fallback response
-							</p>
-						)}
-					</div>
-				</CardContent>
-			</Card>
+					</CardContent>
+				</Card>
+			</div>
 		);
 	} catch (error) {
 		console.error("ServerStats error:", error);
@@ -499,201 +622,196 @@ function ClientPokemonTeam() {
 
 export default function ServerComponentsPage() {
 	return (
-		<>
-			<div className="space-y-16">
-				{/* Where Code Runs - NEW SECTION */}
-				<section>
-					<ErrorBoundary>
-						<CodeBoundariesExplainer />
-					</ErrorBoundary>
-				</section>
+		<div className="container mx-auto max-w-7xl space-y-16 px-4 pt-28 pb-16 sm:px-6 md:pt-32 lg:px-8">
+			{/* Where Code Runs - NEW SECTION */}
+			<section>
+				<ErrorBoundary>
+					<CodeBoundariesExplainer />
+				</ErrorBoundary>
+			</section>
 
-				{/* Caching & Revalidation - NEW SECTION */}
-				<section>
-					<ErrorBoundary>
-						<SuspenseProvider
-							fallback={<Skeleton className="h-96 w-full rounded-3xl" />}
-						>
-							<CachingExplainer />
-						</SuspenseProvider>
-					</ErrorBoundary>
-				</section>
+			{/* Caching & Revalidation - NEW SECTION */}
+			<section>
+				<ErrorBoundary>
+					<SuspenseProvider
+						fallback={<Skeleton className="h-96 w-full rounded-3xl" />}
+					>
+						<CachingExplainer />
+					</SuspenseProvider>
+				</ErrorBoundary>
+			</section>
 
-				{/* Server stats */}
-				<section>
-					<ErrorBoundary>
-						<SuspenseProvider
-							fallback={<Skeleton className="h-96 w-full rounded-3xl" />}
-						>
-							<ServerStats />
-						</SuspenseProvider>
-					</ErrorBoundary>
-				</section>
+			{/* Server stats */}
+			<section>
+				<ErrorBoundary>
+					<SuspenseProvider
+						fallback={<Skeleton className="h-96 w-full rounded-3xl" />}
+					>
+						<ServerStats />
+					</SuspenseProvider>
+				</ErrorBoundary>
+			</section>
 
-				{/* Sequential comparison */}
-				<section>
-					<ErrorBoundary>
-						<SuspenseProvider
-							fallback={<Skeleton className="h-96 w-full rounded-3xl" />}
-						>
-							<SequentialFetchDemo />
-						</SuspenseProvider>
-					</ErrorBoundary>
-				</section>
+			{/* Sequential comparison */}
+			<section>
+				<ErrorBoundary>
+					<SuspenseProvider
+						fallback={<Skeleton className="h-96 w-full rounded-3xl" />}
+					>
+						<SequentialFetchDemo />
+					</SuspenseProvider>
+				</ErrorBoundary>
+			</section>
 
-				{/* Server-Client Interop - NEW SECTION */}
-				<section>
-					<ErrorBoundary>
-						<SuspenseProvider
-							fallback={<Skeleton className="h-96 w-full rounded-3xl" />}
-						>
-							<ServerClientInteropDemo />
-						</SuspenseProvider>
-					</ErrorBoundary>
-				</section>
+			{/* Server-Client Interop - NEW SECTION */}
+			<section>
+				<ErrorBoundary>
+					<SuspenseProvider
+						fallback={<Skeleton className="h-96 w-full rounded-3xl" />}
+					>
+						<ServerClientInteropDemo />
+					</SuspenseProvider>
+				</ErrorBoundary>
+			</section>
 
-				{/* Server Components team */}
-				<section>
-					<ErrorBoundary>
-						<SuspenseProvider
-							fallback={
-								<div className="space-y-6">
-									<div className="space-y-1.5">
-										<Skeleton className="h-9 w-64" />
-										<Skeleton className="h-6 w-96" />
-									</div>
-									<div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-										{[1, 2, 3, 4].map((i) => (
-											<PokemonCardSkeleton key={i} />
-										))}
-									</div>
+			{/* Server Components team */}
+			<section>
+				<ErrorBoundary>
+					<SuspenseProvider
+						fallback={
+							<div className="space-y-6">
+								<div className="space-y-1.5">
+									<Skeleton className="h-9 w-64" />
+									<Skeleton className="h-6 w-96" />
 								</div>
-							}
-						>
-							<PokemonTeam />
-						</SuspenseProvider>
-					</ErrorBoundary>
-				</section>
-
-				{/* Client Components team */}
-				<section>
-					<ErrorBoundary>
-						<ClientPokemonTeam />
-					</ErrorBoundary>
-				</section>
-
-				{/* Error & Loading Patterns - NEW SECTION */}
-				<section>
-					<ErrorBoundary>
-						<ErrorLoadingPatterns />
-					</ErrorBoundary>
-				</section>
-
-				{/* Comparison Guide */}
-				<section className="space-y-8">
-					<div className="text-center">
-						<h2 className="mb-3 font-semibold text-3xl tracking-tight">
-							Technical Reference
-						</h2>
-						<p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-							Understanding the patterns and best practices
-						</p>
-					</div>
-
-					<div className="grid gap-6 lg:grid-cols-3">
-						<Card className="border-border/40 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:border-border/60 hover:shadow-lg">
-							<CardContent className="p-6">
-								<div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-500/10">
-									<span className="text-2xl">⚡</span>
+								<div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+									{[1, 2, 3, 4].map((i) => (
+										<PokemonCardSkeleton key={i} />
+									))}
 								</div>
-								<h3 className="mb-2 font-semibold text-lg">
-									Parallel Fetching
-								</h3>
-								<p className="mb-4 text-muted-foreground text-sm leading-relaxed">
-									Multiple independent requests execute simultaneously for
-									optimal performance
-								</p>
-								<div className="space-y-2 text-sm">
-									<p className="text-muted-foreground">Best for:</p>
-									<ul className="space-y-1 text-muted-foreground">
-										<li>• Independent data sources</li>
-										<li>• Maximum speed</li>
-										<li>• Unrelated requests</li>
-									</ul>
-								</div>
-							</CardContent>
-						</Card>
-
-						<Card className="border-border/40 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:border-border/60 hover:shadow-lg">
-							<CardContent className="p-6">
-								<div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-500/10">
-									<span className="text-2xl">🔗</span>
-								</div>
-								<h3 className="mb-2 font-semibold text-lg">
-									Sequential Fetching
-								</h3>
-								<p className="mb-4 text-muted-foreground text-sm leading-relaxed">
-									Requests execute one after another when dependencies exist
-								</p>
-								<div className="space-y-2 text-sm">
-									<p className="text-muted-foreground">Best for:</p>
-									<ul className="space-y-1 text-muted-foreground">
-										<li>• Dependent requests</li>
-										<li>• Ordered execution</li>
-										<li>• Rate limiting</li>
-									</ul>
-								</div>
-							</CardContent>
-						</Card>
-
-						<Card className="border-border/40 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:border-border/60 hover:shadow-lg">
-							<CardContent className="p-6">
-								<div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-green-500/10">
-									<span className="text-2xl">🌊</span>
-								</div>
-								<h3 className="mb-2 font-semibold text-lg">Streaming</h3>
-								<p className="mb-4 text-muted-foreground text-sm leading-relaxed">
-									Progressive rendering as data becomes available
-								</p>
-								<div className="space-y-2 text-sm">
-									<p className="text-muted-foreground">Best for:</p>
-									<ul className="space-y-1 text-muted-foreground">
-										<li>• Better perceived performance</li>
-										<li>• Content cards</li>
-										<li>• User profiles</li>
-									</ul>
-								</div>
-							</CardContent>
-						</Card>
-					</div>
-				</section>
-
-				{/* Navigation Demo Callout - NEW */}
-				<section>
-					<Card className="overflow-hidden border-blue-500/20 bg-linear-to-br from-blue-500/5 to-purple-500/5">
-						<CardContent className="p-8 text-center">
-							<div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-500/10">
-								<span className="text-4xl">🧭</span>
 							</div>
-							<h3 className="mb-2 font-semibold text-2xl">
-								Try Navigation & Partial Updates
-							</h3>
-							<p className="mx-auto mb-6 max-w-xl text-muted-foreground">
-								See how layouts persist while content streams in. Experience the
-								power of partial rendering.
+						}
+					>
+						<PokemonTeam />
+					</SuspenseProvider>
+				</ErrorBoundary>
+			</section>
+
+			{/* Client Components team */}
+			<section>
+				<ErrorBoundary>
+					<ClientPokemonTeam />
+				</ErrorBoundary>
+			</section>
+
+			{/* Error & Loading Patterns - NEW SECTION */}
+			<section>
+				<ErrorBoundary>
+					<ErrorLoadingPatterns />
+				</ErrorBoundary>
+			</section>
+
+			{/* Comparison Guide */}
+			<section className="space-y-8">
+				<div className="text-center">
+					<h2 className="mb-3 font-semibold text-3xl tracking-tight">
+						Technical Reference
+					</h2>
+					<p className="mx-auto max-w-2xl text-lg text-muted-foreground">
+						Understanding the patterns and best practices
+					</p>
+				</div>
+
+				<div className="grid gap-6 lg:grid-cols-3">
+					<Card className="border-border/40 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:border-border/60 hover:shadow-lg">
+						<CardContent className="p-6">
+							<div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-500/10">
+								<span className="text-2xl">⚡</span>
+							</div>
+							<h3 className="mb-2 font-semibold text-lg">Parallel Fetching</h3>
+							<p className="mb-4 text-muted-foreground text-sm leading-relaxed">
+								Multiple independent requests execute simultaneously for optimal
+								performance
 							</p>
-							<a
-								className="inline-flex items-center justify-center rounded-full bg-blue-600 px-6 py-3 font-medium text-sm text-white transition-all duration-200 hover:bg-blue-700 hover:shadow-lg dark:bg-blue-500 dark:hover:bg-blue-600"
-								href="/concepts/navigation"
-							>
-								Explore Navigation Demo →
-							</a>
+							<div className="space-y-2 text-sm">
+								<p className="text-muted-foreground">Best for:</p>
+								<ul className="space-y-1 text-muted-foreground">
+									<li>• Independent data sources</li>
+									<li>• Maximum speed</li>
+									<li>• Unrelated requests</li>
+								</ul>
+							</div>
 						</CardContent>
 					</Card>
-				</section>
-			</div>
 
+					<Card className="border-border/40 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:border-border/60 hover:shadow-lg">
+						<CardContent className="p-6">
+							<div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-500/10">
+								<span className="text-2xl">🔗</span>
+							</div>
+							<h3 className="mb-2 font-semibold text-lg">
+								Sequential Fetching
+							</h3>
+							<p className="mb-4 text-muted-foreground text-sm leading-relaxed">
+								Requests execute one after another when dependencies exist
+							</p>
+							<div className="space-y-2 text-sm">
+								<p className="text-muted-foreground">Best for:</p>
+								<ul className="space-y-1 text-muted-foreground">
+									<li>• Dependent requests</li>
+									<li>• Ordered execution</li>
+									<li>• Rate limiting</li>
+								</ul>
+							</div>
+						</CardContent>
+					</Card>
+
+					<Card className="border-border/40 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:border-border/60 hover:shadow-lg">
+						<CardContent className="p-6">
+							<div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-green-500/10">
+								<span className="text-2xl">🌊</span>
+							</div>
+							<h3 className="mb-2 font-semibold text-lg">Streaming</h3>
+							<p className="mb-4 text-muted-foreground text-sm leading-relaxed">
+								Progressive rendering as data becomes available
+							</p>
+							<div className="space-y-2 text-sm">
+								<p className="text-muted-foreground">Best for:</p>
+								<ul className="space-y-1 text-muted-foreground">
+									<li>• Better perceived performance</li>
+									<li>• Content cards</li>
+									<li>• User profiles</li>
+								</ul>
+							</div>
+						</CardContent>
+					</Card>
+				</div>
+			</section>
+
+			{/* Navigation Demo Callout - NEW */}
+			<section>
+				<Card className="overflow-hidden border-blue-500/20 bg-linear-to-br from-blue-500/5 to-purple-500/5">
+					<CardContent className="p-8 text-center">
+						<div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-500/10">
+							<span className="text-4xl">🧭</span>
+						</div>
+						<h3 className="mb-2 font-semibold text-2xl">
+							Try Navigation & Partial Updates
+						</h3>
+						<p className="mx-auto mb-6 max-w-xl text-muted-foreground">
+							See how layouts persist while content streams in. Experience the
+							power of partial rendering.
+						</p>
+						<a
+							className="inline-flex items-center justify-center rounded-full bg-blue-600 px-6 py-3 font-medium text-sm text-white transition-all duration-200 hover:bg-blue-700 hover:shadow-lg dark:bg-blue-500 dark:hover:bg-blue-600"
+							href="/concepts/navigation"
+						>
+							Explore Navigation Demo →
+						</a>
+					</CardContent>
+				</Card>
+			</section>
 			<NetworkDebugger />
-		</>
+		</div>
 	);
 }

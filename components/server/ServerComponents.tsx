@@ -269,23 +269,31 @@ async function ServerStats() {
 							<div className="bg-muted/30 p-4 dark:bg-zinc-900/40">
 								<pre className="overflow-x-auto font-mono text-xs leading-relaxed">
 									<span className="text-purple-400">const </span>
-									<span className="text-foreground/90">[pokemonListResult, neinResult] = </span>
+									<span className="text-foreground/90">
+										[pokemonListResult, neinResult] ={" "}
+									</span>
 									<span className="text-purple-400">await </span>
 									<span className="text-blue-400">Promise</span>
-									<span className="text-foreground/90">.allSettled([{"\n"}</span>
+									<span className="text-foreground/90">
+										.allSettled([{"\n"}
+									</span>
 									{"  "}
 									<span className="text-green-400">PokemonAPI</span>
 									<span className="text-foreground/90">.get(</span>
 									<span className="text-orange-400">"/pokemon?limit=5"</span>
-									<span className="text-foreground/90">),  </span>
-									<span className="text-muted-foreground/70">{"// resolves independently"}</span>
+									<span className="text-foreground/90">), </span>
+									<span className="text-muted-foreground/70">
+										{"// resolves independently"}
+									</span>
 									{"\n"}
 									{"  "}
 									<span className="text-green-400">NeinAPI</span>
 									<span className="text-foreground/90">.get(</span>
 									<span className="text-orange-400">""</span>
-									<span className="text-foreground/90">),                      </span>
-									<span className="text-muted-foreground/70">{"// won't block if this fails"}</span>
+									<span className="text-foreground/90">), </span>
+									<span className="text-muted-foreground/70">
+										{"// won't block if this fails"}
+									</span>
 									{"\n"}
 									<span className="text-foreground/90">{"]);"}</span>
 								</pre>

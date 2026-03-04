@@ -1,6 +1,6 @@
-import { Code, Info, Layers } from "@phosphor-icons/react/dist/ssr";
-import { ContentSection } from "@/components/ui/ContentSection";
-import { PageHeader } from "@/components/ui/PageHeader";
+// import { CodeIcon, InfoIcon, LayoutIcon } from "@phosphor-icons/react/dist/ssr";
+// import { ContentSection } from "@/components/ui/ContentSection";
+// import { PageHeader } from "@/components/ui/PageHeader";
 
 export default function AboutPage() {
 	return (
@@ -8,18 +8,18 @@ export default function AboutPage() {
 			{/* ── About Header ── */}
 			<div className="mx-auto max-w-4xl space-y-12">
 				<div className="mb-12 flex flex-col items-center gap-6 md:flex-row">
-					<PageHeader
+					{/* <PageHeader
 						description="A deep dive into the future of React, Server Components, and the modern web architecture."
-						icon={<Info size={48} weight="duotone" />}
+						icon={<InfoIcon size={48} weight="duotone" />}
 						title="About this project"
-					/>
+					/> */}
 				</div>
 
 				{/* Why */}
-				<ContentSection className="mb-16" delay={0.2}>
+				{/* <ContentSection className="mb-16" delay={0.2}>
 					<h2 className="mb-6 flex items-center gap-3 font-semibold text-3xl">
 						<span className="rounded-lg bg-primary/10 p-2 text-primary">
-							<Code size={32} weight="duotone" />
+							<CodeIcon size={32} weight="duotone" />
 						</span>
 						Why this exists
 					</h2>
@@ -44,13 +44,13 @@ export default function AboutPage() {
 							jumping between isolated demos.
 						</p>
 					</div>
-				</ContentSection>
+				</ContentSection> */}
 
 				{/* What was built */}
-				<ContentSection delay={0.3}>
+				{/* <ContentSection delay={0.3}>
 					<h2 className="mb-6 flex items-center gap-3 font-semibold text-3xl">
 						<span className="rounded-lg bg-primary/10 p-2 text-primary">
-							<Layers size={32} weight="duotone" />
+							<LayoutIcon size={32} weight="duotone" />
 						</span>
 						What was built
 					</h2>
@@ -105,7 +105,7 @@ export default function AboutPage() {
 							directly.
 						</p>
 					</div>
-				</ContentSection>
+				</ContentSection> */}
 			</div>
 		</div>
 	);

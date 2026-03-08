@@ -19,7 +19,7 @@ import { Separator } from "@/components/ui/separator";
 
 export default function ArchitecturePage() {
 	return (
-		<div className="container mx-auto max-w-7xl space-y-16 px-4 py-12 sm:px-6 lg:px-8">
+		<div className="container mx-auto max-w-7xl space-y-16 px-4 pt-24 pb-16 sm:px-6 md:pt-28 lg:px-8">
 			<ArchitectureHero />
 			<Separator />
 			<BigPicture />

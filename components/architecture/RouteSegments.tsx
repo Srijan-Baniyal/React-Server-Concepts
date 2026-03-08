@@ -6,6 +6,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { hl } from "@/lib/Hl";
 
 export function RouteSegments() {
 	return (
@@ -109,8 +110,8 @@ export function RouteSegments() {
 						<CardTitle className="text-base">Nested Layout Anatomy</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<pre className="overflow-x-auto rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`app/
+						<pre className="overflow-x-auto rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`app/
 ├── layout.tsx        ← RootLayout (always)
 ├── page.tsx          ← /
 ├── dashboard/
@@ -126,7 +127,7 @@ Render stack for /dashboard/settings:
 RootLayout
   └── DashboardLayout
        └── SettingsLayout
-            └── SettingsPage`}
+            └── SettingsPage`)}
 						</pre>
 					</CardContent>
 				</Card>
@@ -138,8 +139,8 @@ RootLayout
 						</CardTitle>
 					</CardHeader>
 					<CardContent className="space-y-3">
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`// layout.tsx — PERSISTENT
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`// layout.tsx — PERSISTENT
 // - Created ONCE, never unmounted
 // - useState survives route changes
 // - Use for navbars, sidebars, providers
@@ -152,7 +153,7 @@ RootLayout
 
 // Both receive {children} and wrap the page.
 // Use layout unless you specifically need
-// the re-mount behaviour.`}
+// the re-mount behaviour.`)}
 						</pre>
 						<p className="text-muted-foreground text-xs">
 							A layout that wraps multiple pages will have its{" "}
@@ -174,8 +175,8 @@ RootLayout
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="space-y-4">
-					<pre className="overflow-x-auto rounded-md bg-muted p-4 font-mono text-xs leading-relaxed">
-						{`// error.tsx — catches errors from page.tsx & children
+					<pre className="overflow-x-auto rounded-md bg-muted/30 p-4 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+						{hl(`// error.tsx — catches errors from page.tsx & children
 // Must be a Client Component (React error boundaries require this)
 "use client";
 
@@ -197,7 +198,7 @@ export default function DashboardError({
 }
 
 // global-error.tsx — catches errors in RootLayout
-// Replaces the entire document when triggered`}
+// Replaces the entire document when triggered`)}
 					</pre>
 
 					<div className="grid gap-3 sm:grid-cols-3">
@@ -244,8 +245,8 @@ export default function DashboardError({
 					<div className="grid gap-4 md:grid-cols-2">
 						<div className="space-y-2">
 							<p className="font-medium text-sm">Parallel Routes (@slot)</p>
-							<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-								{`app/dashboard/
+							<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+								{hl(`app/dashboard/
 ├── layout.tsx   ← receives @team & @analytics
 ├── page.tsx
 ├── @team/
@@ -266,15 +267,15 @@ export default function Layout({
       {analytics}
     </>
   );
-}`}
+}`)}
 							</pre>
 						</div>
 						<div className="space-y-2">
 							<p className="font-medium text-sm">
 								Intercepting Routes ((.)path)
 							</p>
-							<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-								{`// Intercept /photo/[id] when navigating from
+							<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+								{hl(`// Intercept /photo/[id] when navigating from
 // the gallery — show a modal instead
 
 app/gallery/
@@ -290,7 +291,7 @@ app/gallery/
 Convention prefixes:
 (.)   — same level
 (..)  — one level up
-(...) — from root`}
+(...) — from root`)}
 							</pre>
 						</div>
 					</div>

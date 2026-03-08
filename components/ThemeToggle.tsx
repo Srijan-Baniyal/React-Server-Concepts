@@ -123,7 +123,7 @@ export default function ThemeToggle() {
 				<div className="relative flex h-full w-full items-center justify-center">
 					<SunIcon
 						className={cn(
-							"absolute h-5 w-5 transition-all duration-500",
+							"absolute h-5 w-5 text-foreground transition-all duration-500",
 							resolvedTheme === "light"
 								? "rotate-0 scale-100 opacity-100"
 								: "rotate-180 scale-0 opacity-0"
@@ -132,7 +132,7 @@ export default function ThemeToggle() {
 					/>
 					<MoonIcon
 						className={cn(
-							"absolute h-5 w-5 transition-all duration-500",
+							"absolute h-5 w-5 text-foreground transition-all duration-500",
 							resolvedTheme === "dark"
 								? "rotate-0 scale-100 opacity-100"
 								: "-rotate-180 scale-0 opacity-0"

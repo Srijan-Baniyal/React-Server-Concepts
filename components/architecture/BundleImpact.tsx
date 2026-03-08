@@ -6,6 +6,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { hl } from "@/lib/Hl";
 
 const BUNDLE_SAVINGS = [
 	{
@@ -78,8 +79,8 @@ export function BundleImpact() {
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`// BlogPost.tsx (shipped to every visitor)
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`// BlogPost.tsx (shipped to every visitor)
 import { marked } from "marked";       // +185kB
 import { format } from "date-fns";     //  +75kB
 import { codeToHtml } from "shiki";    // +350kB
@@ -94,7 +95,7 @@ function BlogPost({ post }) {
 Total impact on client bundle:
   +680 kB of JS the user must download,
   parse, and execute before seeing content.
-  Initial page load: ~3.5 seconds on 3G.`}
+  Initial page load: ~3.5 seconds on 3G.`)}
 						</pre>
 					</CardContent>
 				</Card>
@@ -105,8 +106,8 @@ Total impact on client bundle:
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`// BlogPost.tsx (Server Component — runs on server)
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`// BlogPost.tsx (Server Component — runs on server)
 import { marked } from "marked";       // 0 bytes
 import { format } from "date-fns";     // 0 bytes
 import { codeToHtml } from "shiki";    // 0 bytes
@@ -121,7 +122,7 @@ export default async function BlogPost({ post }) {
 Client bundle impact: 0 kB ✓
 All processing happens on the server.
 User downloads pre-rendered HTML instead.
-Initial page load: ~0.4 seconds on 3G.`}
+Initial page load: ~0.4 seconds on 3G.`)}
 						</pre>
 					</CardContent>
 				</Card>

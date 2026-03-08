@@ -5,6 +5,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { hl } from "@/lib/Hl";
 
 export function DataFetchingPatterns() {
 	return (
@@ -31,8 +32,8 @@ export function DataFetchingPatterns() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-2">
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`// ✓ Promise.all — both run in parallel
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`// ✓ Promise.all — both run in parallel
 async function Page({ params }) {
   const [user, posts] = await Promise.all([
     fetchUser(params.id),
@@ -44,7 +45,7 @@ async function Page({ params }) {
 // Total time = max(user, posts) instead of sum.
 // If user=80ms and posts=120ms:
 //   Sequential: 200ms
-//   Parallel:   120ms ✓`}
+//   Parallel:   120ms ✓`)}
 						</pre>
 					</CardContent>
 				</Card>
@@ -60,8 +61,8 @@ async function Page({ params }) {
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-2">
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`// Sequential — necessary because recommendations
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`// Sequential — necessary because recommendations
 // depend on the user's profile for personalisation
 async function Page({ params }) {
   const user = await fetchUser(params.id);
@@ -75,7 +76,7 @@ async function Page({ params }) {
 
 // Minimise sequential waterfalls.
 // If you can restructure the query to avoid
-// the dependency, always do so.`}
+// the dependency, always do so.`)}
 						</pre>
 					</CardContent>
 				</Card>
@@ -91,8 +92,8 @@ async function Page({ params }) {
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-2">
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`// lib/queries.ts — wrap with cache()
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`// lib/queries.ts — wrap with cache()
 import { cache } from "react";
 
 export const getUser = cache(async (id: string) => {
@@ -115,7 +116,7 @@ async function Page({ params }) {
     </>
   );
 }
-// Only ONE DB query executes. No prop drilling!`}
+// Only ONE DB query executes. No prop drilling!`)}
 						</pre>
 					</CardContent>
 				</Card>
@@ -131,8 +132,8 @@ async function Page({ params }) {
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-2">
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`// lib/queries.ts
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`// lib/queries.ts
 import { cache } from "react";
 
 // Expose preload() so callers can warm the cache
@@ -151,7 +152,7 @@ async function ProductList({ ids }) {
 }
 
 // Each ProductCard can also call getProduct(id)
-// and will get the pre-warmed cached result instantly.`}
+// and will get the pre-warmed cached result instantly.`)}
 						</pre>
 					</CardContent>
 				</Card>
@@ -163,8 +164,8 @@ async function ProductList({ ids }) {
 					<CardTitle>Pattern Decision Guide</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<pre className="overflow-x-auto rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-						{`Multiple independent data needs?
+					<pre className="overflow-x-auto rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+						{hl(`Multiple independent data needs?
   └──► Use Promise.all([fetchA(), fetchB(), fetchC()])
 
 Request B depends on result of request A?
@@ -179,7 +180,7 @@ Need to start a fetch before you actually await it?
   └──► Use the preload pattern (void getX(id) to warm the cache)
 
 Client-side data that changes in real time?
-  └──► That's fine as a Client Component with React Query / SWR`}
+  └──► That's fine as a Client Component with React Query / SWR`)}
 					</pre>
 				</CardContent>
 			</Card>

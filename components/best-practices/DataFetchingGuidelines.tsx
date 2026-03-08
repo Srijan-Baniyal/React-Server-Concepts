@@ -6,6 +6,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { hl } from "@/lib/Hl";
 
 export function DataFetchingGuidelines() {
 	return (
@@ -51,8 +52,8 @@ export function DataFetchingGuidelines() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`// ✓ Both fetches run concurrently
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`// ✓ Both fetches run concurrently
 async function ProfilePage({ userId }: { userId: string }) {
   const [user, posts, followers] = await Promise.all([
     getUser(userId),
@@ -70,7 +71,7 @@ async function ProfilePage({ userId }: { userId: string }) {
       <PostFeed posts={posts} />
     </>
   );
-}`}
+}`)}
 						</pre>
 					</CardContent>
 				</Card>
@@ -85,8 +86,8 @@ async function ProfilePage({ userId }: { userId: string }) {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`// ✗ Waterfall — posts waits for user to finish!
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`// ✗ Waterfall — posts waits for user to finish!
 async function ProfilePage({ userId }: { userId: string }) {
   const user = await getUser(userId);      // 100ms
   const posts = await getUserPosts(userId); // 100ms (waits!)
@@ -110,7 +111,7 @@ async function Page({ userId }) {
   // Recommendations need user.preferences — can't parallelize
   const recs = await getRecommendations(user.preferences);
   return <Feed user={user} items={recs} />;
-}`}
+}`)}
 						</pre>
 					</CardContent>
 				</Card>
@@ -135,8 +136,8 @@ async function Page({ userId }) {
 						<p className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
 							lib/queries.ts — wrap with cache()
 						</p>
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`import { cache } from "react";
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`import { cache } from "react";
 import { db } from "@/lib/db";
 
 // Deduplicated per React render tree
@@ -147,15 +148,15 @@ export const getUser = cache(async (id: string) => {
 
 export const getProduct = cache(
   async (id: string) => db.product.findUnique({ where: { id } })
-);`}
+);`)}
 						</pre>
 					</div>
 					<div className="space-y-2">
 						<p className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
 							Multiple components calling the same query
 						</p>
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`// Header.tsx — Server Component
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`// Header.tsx — Server Component
 import { getUser } from "@/lib/queries";
 async function Header() {
   const user = await getUser("u_1"); // ← DB hit #1
@@ -170,7 +171,7 @@ async function Sidebar() {
 }
 
 // Both called in the same render tree.
-// React.cache() ensures only ONE DB query fires.`}
+// React.cache() ensures only ONE DB query fires.`)}
 						</pre>
 					</div>
 				</CardContent>
@@ -188,8 +189,8 @@ async function Sidebar() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`"use client";
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`"use client";
 
 // ✗ Avoid unless you genuinely can't use a SC
 function ProductList() {
@@ -210,7 +211,7 @@ function ProductList() {
   // Problem: fetch happens AFTER hydration
   // Problem: no server caching
   return products.map(p => <ProductCard key={p.id} product={p} />);
-}`}
+}`)}
 						</pre>
 					</CardContent>
 				</Card>
@@ -225,8 +226,8 @@ function ProductList() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`import { Suspense } from "react";
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`import { Suspense } from "react";
 import { ProductCardSkeleton } from "./skeletons";
 
 // ✓ Server Component — no "use client" needed
@@ -253,7 +254,7 @@ function ProductPage() {
     </Suspense>
   );
 }
-// Result: HTML streams in, no useEffect, no flicker`}
+// Result: HTML streams in, no useEffect, no flicker`)}
 						</pre>
 					</CardContent>
 				</Card>
@@ -278,8 +279,8 @@ function ProductPage() {
 						>
 							✗ Before RSC — prop drilling
 						</Badge>
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`// Page fetches everything and drills it down
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`// Page fetches everything and drills it down
 async function Page({ userId }) {
   const user = await getUser(userId);
   return <Layout user={user} />;
@@ -291,7 +292,7 @@ function Sidebar({ user }) {
   return <Avatar user={user} />;
 }
 // user passed through Layout and Sidebar
-// just to reach Avatar — fragile & verbose`}
+// just to reach Avatar — fragile & verbose`)}
 						</pre>
 					</div>
 					<div className="space-y-2">
@@ -301,8 +302,8 @@ function Sidebar({ user }) {
 						>
 							✓ With RSC — colocated, no prop drilling
 						</Badge>
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`// Each component fetches exactly what it needs
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`// Each component fetches exactly what it needs
 async function Page({ userId }) {
   return <Layout userId={userId} />;
 }
@@ -315,7 +316,7 @@ async function Avatar({ userId }) {
   const user = await getUser(userId); // cache hit if called before
   return <img src={user.avatarUrl} />;
 }
-// No prop drilling. user is fetched once thanks to cache()`}
+// No prop drilling. user is fetched once thanks to cache()`)}
 						</pre>
 					</div>
 				</CardContent>
@@ -334,7 +335,7 @@ async function Avatar({ userId }) {
 				</CardHeader>
 				<CardContent className="grid gap-4 md:grid-cols-2">
 					<pre className="rounded-md bg-red-500/10 p-3 font-mono text-xs leading-relaxed">
-						{`// ✗ N+1 — one DB query per post
+						{hl(`// ✗ N+1 — one DB query per post
 async function PostFeed({ authorId }) {
   const posts = await getPosts(authorId); // 1 query
 
@@ -348,10 +349,10 @@ async function PostCard({ post }) {
   const author = await getUser(post.authorId);
   return <div>{author.name}: {post.title}</div>;
 }
-// 1 + N queries total — very expensive at scale`}
+// 1 + N queries total — very expensive at scale`)}
 					</pre>
 					<pre className="rounded-md bg-green-500/10 p-3 font-mono text-xs leading-relaxed">
-						{`// ✓ Batch fetch — one query for all authors
+						{hl(`// ✓ Batch fetch — one query for all authors
 async function PostFeed({ authorId }) {
   const posts = await getPosts(authorId); // 1 query
 
@@ -368,7 +369,7 @@ async function PostFeed({ authorId }) {
     />
   ));
 }
-// Total: 2 queries regardless of post count ✓`}
+// Total: 2 queries regardless of post count ✓`)}
 					</pre>
 				</CardContent>
 			</Card>

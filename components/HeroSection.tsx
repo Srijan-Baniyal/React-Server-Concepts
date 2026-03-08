@@ -9,6 +9,7 @@ import {
 	SparkleIcon,
 } from "@phosphor-icons/react";
 import {
+	type HTMLMotionProps,
 	motion,
 	useInView,
 	useScroll,
@@ -24,24 +25,7 @@ import {
 	useRef,
 	useState,
 } from "react";
-import { Button } from "@/components/ui/button";
-
-// Hook to track if user has seen the hero animations before
-function useHasSeenAnimation() {
-	const [hasSeen, setHasSeen] = useState<boolean | null>(null);
-
-	useEffect(() => {
-		const seen = localStorage.getItem("hero-animation-seen") === "true";
-		setHasSeen(seen);
-	}, []);
-
-	const markAsSeen = useCallback(() => {
-		localStorage.setItem("hero-animation-seen", "true");
-		setHasSeen(true);
-	}, []);
-
-	return { hasSeen, markAsSeen };
-}
+import { cn } from "@/lib/Utils";
 
 interface Node {
 	id: string;
@@ -252,6 +236,12 @@ function LikeButton({ postId }: { postId: string }) {
 
 // No useState, no loading flags —
 // React tracks it all automatically`,
+] as const;
+
+const HERO_STATS = [
+	{ label: "Faster TTFB", value: "87%" },
+	{ label: "Less JS Bundle", value: "−60%" },
+	{ label: "Type Safe", value: "100%" },
 ] as const;
 
 // Syntax-highlighting helpers
@@ -560,7 +550,7 @@ function AnimatedGraph({ skipAnimation }: { skipAnimation: boolean }) {
 // Scroll Reveal Component
 function ScrollReveal({ children, delay = 0 }: ScrollRevealProps) {
 	const ref = useRef<HTMLDivElement>(null);
-	const isInView = useInView(ref, { once: true, margin: "-80px" });
+	const isInView = useInView(ref, { once: false, margin: "-80px" });
 
 	return (
 		<motion.div
@@ -577,7 +567,7 @@ function ScrollReveal({ children, delay = 0 }: ScrollRevealProps) {
 // Stagger Reveal Container
 function StaggerReveal({ children }: StaggerRevealProps) {
 	const ref = useRef<HTMLDivElement>(null);
-	const isInView = useInView(ref, { once: true, margin: "-80px" });
+	const isInView = useInView(ref, { once: false, margin: "-80px" });
 
 	return (
 		<motion.div
@@ -613,276 +603,438 @@ function StaggerItem({ children }: StaggerItemProps) {
 	);
 }
 
+// Section Label
+function SectionLabel({ label }: { label: string }) {
+	return (
+		<motion.div
+			className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/8 px-4 py-1.5"
+			whileHover={{ scale: 1.04 }}
+		>
+			<span className="size-1.5 rounded-full bg-primary" />
+			<span className="font-semibold text-primary text-xs uppercase tracking-widest">
+				{label}
+			</span>
+		</motion.div>
+	);
+}
+
+// Magnetic Button Component
+const MagneticButton = ({
+	children,
+	className,
+	...props
+}: HTMLMotionProps<"button">) => {
+	const ref = useRef<HTMLButtonElement>(null);
+	const [position, setPosition] = useState({ x: 0, y: 0 });
+
+	const handleMouseMove = (e: React.MouseEvent) => {
+		const { clientX, clientY } = e;
+		if (!ref.current) {
+			return;
+		}
+		const { left, top, width, height } = ref.current.getBoundingClientRect();
+		const x = clientX - (left + width / 2);
+		const y = clientY - (top + height / 2);
+		setPosition({ x: x * 0.3, y: y * 0.3 });
+	};
+
+	const handleMouseLeave = () => {
+		setPosition({ x: 0, y: 0 });
+	};
+
+	return (
+		<motion.button
+			animate={{ x: position.x, y: position.y }}
+			className={className}
+			onMouseLeave={handleMouseLeave}
+			onMouseMove={handleMouseMove}
+			ref={ref}
+			transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
+			{...props}
+		>
+			{children}
+		</motion.button>
+	);
+};
+
+// Staggered Text Component
+const StaggeredText = ({
+	text,
+	className,
+	delay = 0,
+}: {
+	text: string;
+	className?: string;
+	delay?: number;
+}) => {
+	const chars = text.split("").map((char, i) => ({ char, index: i }));
+	return (
+		<span className={cn("inline-block", className)}>
+			{chars.map(({ char, index }) => (
+				<motion.span
+					animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+					className="inline-block"
+					initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
+					key={`${char}-${index}`}
+					transition={{
+						duration: 0.4,
+						delay: delay + index * 0.03,
+						ease: "easeOut",
+					}}
+				>
+					{char === " " ? "\u00A0" : char}
+				</motion.span>
+			))}
+		</span>
+	);
+};
+
 // Main Hero Section Component
 export default function HeroSection() {
 	const containerRef = useRef<HTMLDivElement>(null);
-	const { hasSeen, markAsSeen } = useHasSeenAnimation();
 	const { scrollYProgress } = useScroll({ target: containerRef });
 	const smoothProgress = useSpring(scrollYProgress, {
 		stiffness: ANIMATION_CONFIG.SCROLL_SPRING_CONFIG.stiffness,
 		damping: ANIMATION_CONFIG.SCROLL_SPRING_CONFIG.damping,
 	});
 
-	const heroY = useTransform(smoothProgress, [0, 1], [0, -80]);
-	const heroOpacity = useTransform(smoothProgress, [0, 0.4], [1, 0]);
-	const graphScale = useTransform(smoothProgress, [0, 0.5], [1, 0.92]);
-	const graphY = useTransform(smoothProgress, [0, 0.5], [0, 20]);
-
-	// Mark animations as seen after they complete
-	useEffect(() => {
-		if (hasSeen === false) {
-			const timer = setTimeout(() => {
-				markAsSeen();
-			}, 5000);
-			return () => clearTimeout(timer);
-		}
-	}, [hasSeen, markAsSeen]);
-
-	// Skip animations if already seen or still loading from localStorage
-	const shouldAnimate = hasSeen === false;
+	const heroY = useTransform(smoothProgress, [0, 1], [0, -60]);
+	const heroOpacity = useTransform(smoothProgress, [0, 0.45], [1, 0]);
+	const graphScale = useTransform(smoothProgress, [0, 0.5], [1, 0.93]);
+	const graphY = useTransform(smoothProgress, [0, 0.5], [0, 18]);
 
 	return (
-		<div className="relative min-h-screen overflow-hidden" ref={containerRef}>
-			{/* Hero Section */}
+		<div className="relative overflow-hidden bg-background" ref={containerRef}>
+			{/* ── HERO ── */}
 			<motion.section
-				className="relative flex min-h-screen items-center justify-center px-4 py-20"
+				className="relative flex min-h-screen items-center justify-center px-4 py-24 sm:py-28"
 				style={{ y: heroY, opacity: heroOpacity }}
 			>
-				<div className="container mx-auto max-w-7xl">
-					<div className="grid items-center gap-16 lg:grid-cols-2">
-						{/* Left Content */}
-						<div className="space-y-8">
+				{/* Layered background */}
+				<div className="pointer-events-none absolute inset-0">
+					<div className="absolute inset-0 bg-[linear-gradient(to_right,#80808010_1px,transparent_1px),linear-gradient(to_bottom,#80808010_1px,transparent_1px)] bg-size-[28px_28px]" />
+					<div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,hsl(var(--primary)/0.12),transparent)]" />
+					<motion.div
+						animate={{ scale: [1, 1.25, 1], opacity: [0.06, 0.14, 0.06] }}
+						className="absolute top-1/4 -right-1/4 size-[600px] rounded-full bg-primary blur-[120px]"
+						transition={{
+							duration: 16,
+							repeat: Number.POSITIVE_INFINITY,
+							ease: "easeInOut",
+						}}
+					/>
+					<motion.div
+						animate={{ scale: [1, 1.15, 1], opacity: [0.04, 0.1, 0.04] }}
+						className="absolute bottom-1/4 -left-1/4 size-[700px] rounded-full bg-primary blur-[140px]"
+						transition={{
+							duration: 22,
+							repeat: Number.POSITIVE_INFINITY,
+							ease: "easeInOut",
+						}}
+					/>
+				</div>
+
+				<div className="container relative z-10 mx-auto max-w-7xl">
+					<div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+						{/* ── Left: Copy ── */}
+						<div className="flex flex-col gap-7">
+							{/* Eyebrow badge */}
 							<motion.div
-								animate={{ opacity: 1, y: 0, scale: 1 }}
-								className="inline-block"
-								initial={
-									shouldAnimate
-										? { opacity: 0, y: 20, scale: 0.9 }
-										: { opacity: 1, y: 0, scale: 1 }
-								}
-								transition={{
-									duration: shouldAnimate ? 0.8 : 0,
-									ease: [0.22, 1, 0.36, 1],
-								}}
+								animate={{ opacity: 1, y: 0 }}
+								initial={{ opacity: 0, y: 16 }}
+								transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
 							>
-								<span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-linear-to-r from-primary/10 to-primary/5 px-4 py-2 font-medium text-primary text-sm backdrop-blur-sm">
-									<SparkleIcon className="size-4" weight="fill" />
-									React Server Components
+								<span className="inline-flex items-center gap-2.5 rounded-full border border-primary/25 bg-primary/8 px-4 py-2 font-semibold text-primary text-sm shadow-[0_0_20px_hsl(var(--primary)/0.15)] backdrop-blur-sm">
+									<motion.span
+										animate={{ opacity: [1, 0.3, 1] }}
+										className="size-2 rounded-full bg-primary"
+										transition={{
+											duration: 2,
+											repeat: Number.POSITIVE_INFINITY,
+										}}
+									/>
+									React 19 · Next.js 15 · RSC
 								</span>
 							</motion.div>
 
-							<motion.h1
-								animate={{ opacity: 1, y: 0 }}
-								className="font-bold text-4xl text-foreground leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl"
-								initial={
-									shouldAnimate ? { opacity: 0, y: 20 } : { opacity: 1, y: 0 }
-								}
-								transition={{
-									duration: shouldAnimate ? 0.8 : 0,
-									delay: shouldAnimate ? 0.1 : 0,
-									ease: [0.22, 1, 0.36, 1],
-								}}
-							>
-								Master React Server Components{" "}
-								<span className="bg-linear-to-r from-primary via-primary to-primary/70 bg-clip-text text-transparent">
-									The Future of React
-								</span>
-							</motion.h1>
+							{/* Headline */}
+							<div>
+								<h1 className="font-extrabold leading-[1.06] tracking-tight">
+									<span className="block text-4xl text-foreground sm:text-5xl lg:text-6xl xl:text-7xl">
+										<StaggeredText
+											className="text-6xl"
+											delay={0.15}
+											text="Master React Server"
+										/>
+									</span>
+									<span className="mt-1 block text-4xl sm:text-5xl lg:text-6xl xl:text-7xl">
+										<span className="relative inline-block">
+											<StaggeredText
+												className="bg-linear-to-r from-primary via-primary/80 to-primary/50 bg-clip-text text-6xl text-primary"
+												delay={0.35}
+												text="Components"
+											/>
+											<motion.span
+												animate={{ scaleX: 1 }}
+												className="absolute -bottom-1.5 left-0 -z-10 h-3 w-full origin-left -rotate-1 rounded-full bg-primary/15"
+												initial={{ scaleX: 0 }}
+												transition={{
+													delay: 1.2,
+													duration: 0.9,
+													ease: "circOut",
+												}}
+											/>
+										</span>
+									</span>
+								</h1>
+							</div>
 
+							{/* Description */}
 							<motion.p
 								animate={{ opacity: 1, y: 0 }}
-								className="text-lg text-muted-foreground leading-relaxed sm:text-xl"
-								initial={
-									shouldAnimate ? { opacity: 0, y: 20 } : { opacity: 1, y: 0 }
-								}
+								className="max-w-lg text-lg text-muted-foreground leading-relaxed sm:text-xl"
+								initial={{ opacity: 0, y: 16 }}
 								transition={{
-									duration: shouldAnimate ? 0.8 : 0,
-									delay: shouldAnimate ? 0.2 : 0,
+									duration: 0.8,
+									delay: 0.5,
 									ease: [0.22, 1, 0.36, 1],
 								}}
 							>
 								Explore the paradigm shift in React development. Learn server
-								components, streaming, and React 19 features through interactive
-								demos and real-world patterns that showcase the future of web
-								applications.
+								components, streaming, and React 19 features through{" "}
+								<span className="font-semibold text-foreground">
+									interactive demos
+								</span>{" "}
+								and{" "}
+								<span className="font-semibold text-foreground">
+									real-world patterns
+								</span>
+								.
 							</motion.p>
 
+							{/* CTAs */}
 							<motion.div
 								animate={{ opacity: 1, y: 0 }}
-								className="flex flex-wrap gap-4"
-								initial={
-									shouldAnimate ? { opacity: 0, y: 20 } : { opacity: 1, y: 0 }
-								}
+								className="flex flex-wrap gap-3 sm:gap-4"
+								initial={{ opacity: 0, y: 16 }}
 								transition={{
-									duration: shouldAnimate ? 0.8 : 0,
-									delay: shouldAnimate ? 0.3 : 0,
+									duration: 0.8,
+									delay: 0.62,
 									ease: [0.22, 1, 0.36, 1],
 								}}
 							>
-								<Button className="group" size="lg">
-									<Link className="flex items-center gap-2" href="/about">
+								<MagneticButton className="group relative overflow-hidden rounded-full bg-primary px-7 py-3.5 font-semibold text-base text-primary-foreground shadow-lg shadow-primary/30 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-primary/40 hover:shadow-xl sm:px-8 sm:py-4">
+									<span className="absolute inset-0 -translate-x-full skew-x-12 bg-white/15 transition-transform duration-700 group-hover:translate-x-full" />
+									<Link
+										className="relative z-10 flex items-center gap-2"
+										href="/learning/architecture"
+									>
 										Get Started
 										<ArrowRightIcon
-											className="ml-2 size-4 transition-transform duration-300 group-hover:translate-x-1"
+											className="size-5 transition-transform duration-300 group-hover:translate-x-1"
 											weight="bold"
 										/>
 									</Link>
-								</Button>
-								<Button className="group" size="lg" variant="outline">
-									<Link className="flex items-center gap-2" href="/demo">
-										<PlayIcon
-											className="mr-2 size-4 transition-transform duration-300 group-hover:scale-110"
-											weight="fill"
-										/>
+								</MagneticButton>
+
+								<MagneticButton className="group flex items-center gap-2 rounded-full border-2 border-border bg-background/60 px-7 py-3.5 font-semibold text-base text-foreground backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:bg-primary/5 sm:px-8 sm:py-4">
+									<Link
+										className="flex items-center gap-2"
+										href="/concepts/server-components"
+									>
+										<span className="flex size-6 items-center justify-center rounded-full bg-primary/15 transition-all duration-300 group-hover:bg-primary/25">
+											<PlayIcon className="size-3 text-primary" weight="fill" />
+										</span>
 										Watch Demo
 									</Link>
-								</Button>
+								</MagneticButton>
+							</motion.div>
+
+							{/* Stats strip */}
+							<motion.div
+								animate={{ opacity: 1, y: 0 }}
+								className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-1"
+								initial={{ opacity: 0, y: 12 }}
+								transition={{
+									duration: 0.8,
+									delay: 0.75,
+									ease: [0.22, 1, 0.36, 1],
+								}}
+							>
+								{HERO_STATS.map((stat, i) => (
+									<div className="flex items-center gap-2" key={stat.label}>
+										{i !== 0 && (
+											<span className="hidden h-4 w-px bg-border sm:block" />
+										)}
+										<span className="font-bold text-base text-primary sm:text-lg">
+											{stat.value}
+										</span>
+										<span className="text-muted-foreground text-sm">
+											{stat.label}
+										</span>
+									</div>
+								))}
 							</motion.div>
 						</div>
 
-						{/* Right Content - Animated Graph */}
+						{/* ── Right: Animated Graph Panel ── */}
 						<motion.div
 							animate={{ opacity: 1, scale: 1 }}
-							className="relative"
-							initial={
-								shouldAnimate
-									? { opacity: 0, scale: 0.9 }
-									: { opacity: 1, scale: 1 }
-							}
+							className="relative z-10"
+							initial={{ opacity: 0, scale: 0.92 }}
 							style={{ scale: graphScale, y: graphY }}
 							transition={{
-								duration: shouldAnimate ? 1 : 0,
-								delay: shouldAnimate ? 0.3 : 0,
+								duration: 1.1,
+								delay: 0.25,
 								ease: [0.22, 1, 0.36, 1],
 							}}
 						>
-							<div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-border/50 bg-linear-to-br from-primary/5 via-primary/3 to-background p-8 shadow-2xl shadow-primary/5 backdrop-blur-sm">
-								<div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(var(--primary-rgb),0.03),transparent_50%)]" />
-								<AnimatedGraph skipAnimation={!shouldAnimate} />
-							</div>
-
-							{/* Floating Stats */}
 							<motion.div
-								animate={{ y: [-2, 2, -2] }}
-								className="absolute top-1/4 -right-4 rounded-xl border border-border/50 bg-background/95 p-4 shadow-primary/5 shadow-xl backdrop-blur-xl"
-								initial={
-									shouldAnimate
-										? { opacity: 0, scale: 0.8, y: 20 }
-										: { opacity: 1, scale: 1, y: 0 }
-								}
+								className="relative aspect-square w-full overflow-hidden rounded-3xl border border-border/60 bg-background/50 shadow-2xl backdrop-blur-xl"
+								style={{ transformStyle: "preserve-3d" }}
+								transition={{ type: "spring", stiffness: 350, damping: 28 }}
+								whileHover={{ scale: 1.015, rotateY: 4, rotateX: -4 }}
+							>
+								<div className="pointer-events-none absolute inset-0 bg-linear-to-br from-primary/12 via-transparent to-primary/6" />
+								<div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,hsl(var(--primary)/0.08),transparent_65%)]" />
+
+								{/* Live indicator */}
+								<div className="absolute top-5 left-5 z-10 flex items-center gap-2 rounded-full border border-border/50 bg-background/70 px-3 py-1.5 backdrop-blur-sm">
+									<motion.span
+										animate={{ opacity: [1, 0.3, 1] }}
+										className="size-1.5 rounded-full bg-emerald-500"
+										transition={{
+											duration: 1.8,
+											repeat: Number.POSITIVE_INFINITY,
+										}}
+									/>
+									<span className="font-mono text-muted-foreground text-xs">
+										RSC Architecture
+									</span>
+								</div>
+
+								<div className="p-8 pt-16">
+									<AnimatedGraph skipAnimation={false} />
+								</div>
+							</motion.div>
+
+							{/* Floating stat pills — desktop only */}
+							<motion.div
+								animate={{ y: [-4, 4, -4] }}
+								className="absolute top-[22%] -right-4 hidden rounded-2xl border border-border/50 bg-background/90 px-4 py-3 shadow-primary/8 shadow-xl backdrop-blur-xl lg:flex"
+								initial={{ opacity: 0, x: 16 }}
 								transition={{
 									y: {
 										duration: 4,
 										repeat: Number.POSITIVE_INFINITY,
 										ease: "easeInOut",
 									},
-									opacity: {
-										duration: shouldAnimate ? 0.6 : 0,
-										delay: shouldAnimate ? 1.2 : 0,
-									},
-									scale: {
-										duration: shouldAnimate ? 0.6 : 0,
-										delay: shouldAnimate ? 1.2 : 0,
-									},
+									opacity: { duration: 0.5, delay: 1.3 },
+									x: { duration: 0.5, delay: 1.3 },
 								}}
-								whileInView={{ opacity: 1, scale: 1, y: 0 }}
+								whileInView={{ opacity: 1, x: 0 }}
 							>
-								<div className="font-bold text-2xl text-primary">87%</div>
-								<div className="text-muted-foreground text-xs">Faster Load</div>
+								<div className="flex items-center gap-3">
+									<div className="flex size-9 items-center justify-center rounded-xl bg-primary/12 text-primary">
+										<LightningIcon className="size-4" weight="fill" />
+									</div>
+									<div>
+										<div className="font-bold text-foreground text-xl leading-none">
+											87%
+										</div>
+										<div className="mt-0.5 text-muted-foreground text-xs">
+											Faster TTFB
+										</div>
+									</div>
+								</div>
 							</motion.div>
 
 							<motion.div
-								animate={{ y: [2, -2, 2] }}
-								className="absolute bottom-1/4 -left-4 rounded-xl border border-border/50 bg-background/95 p-4 shadow-primary/5 shadow-xl backdrop-blur-xl"
-								initial={
-									shouldAnimate
-										? { opacity: 0, scale: 0.8, y: -20 }
-										: { opacity: 1, scale: 1, y: 0 }
-								}
+								animate={{ y: [4, -4, 4] }}
+								className="absolute bottom-[22%] -left-4 hidden rounded-2xl border border-border/50 bg-background/90 px-4 py-3 shadow-primary/8 shadow-xl backdrop-blur-xl lg:flex"
+								initial={{ opacity: 0, x: -16 }}
 								transition={{
 									y: {
-										duration: 3.5,
+										duration: 3.6,
 										repeat: Number.POSITIVE_INFINITY,
 										ease: "easeInOut",
 									},
-									opacity: {
-										duration: shouldAnimate ? 0.6 : 0,
-										delay: shouldAnimate ? 1.4 : 0,
-									},
-									scale: {
-										duration: shouldAnimate ? 0.6 : 0,
-										delay: shouldAnimate ? 1.4 : 0,
-									},
+									opacity: { duration: 0.5, delay: 1.5 },
+									x: { duration: 0.5, delay: 1.5 },
 								}}
-								whileInView={{ opacity: 1, scale: 1, y: 0 }}
+								whileInView={{ opacity: 1, x: 0 }}
 							>
-								<div className="font-bold text-2xl text-primary">-60%</div>
-								<div className="text-muted-foreground text-xs">Bundle Size</div>
+								<div className="flex items-center gap-3">
+									<div className="flex size-9 items-center justify-center rounded-xl bg-primary/12 text-primary">
+										<CpuIcon className="size-4" weight="fill" />
+									</div>
+									<div>
+										<div className="font-bold text-foreground text-xl leading-none">
+											−60%
+										</div>
+										<div className="mt-0.5 text-muted-foreground text-xs">
+											Bundle Size
+										</div>
+									</div>
+								</div>
 							</motion.div>
+
+							{/* Glow ring behind card */}
+							<div className="pointer-events-none absolute inset-0 -z-10 scale-110 rounded-3xl bg-primary/6 blur-3xl" />
 						</motion.div>
 					</div>
 				</div>
-
-				{/* Background Elements */}
-				<div className="pointer-events-none absolute inset-0 overflow-hidden">
-					<motion.div
-						animate={{ scale: [1, 1.2, 1], opacity: [0.03, 0.05, 0.03] }}
-						className="absolute top-1/4 -right-1/4 size-96 rounded-full bg-primary blur-3xl"
-						transition={{
-							duration: 8,
-							repeat: Number.POSITIVE_INFINITY,
-							ease: "easeInOut",
-						}}
-					/>
-					<motion.div
-						animate={{ scale: [1, 1.1, 1], opacity: [0.03, 0.06, 0.03] }}
-						className="absolute bottom-1/4 -left-1/4 size-96 rounded-full bg-primary blur-3xl"
-						transition={{
-							duration: 10,
-							repeat: Number.POSITIVE_INFINITY,
-							ease: "easeInOut",
-						}}
-					/>
-				</div>
 			</motion.section>
 
-			{/* Features Section */}
-			<section className="relative bg-background py-32">
-				<div className="container mx-auto max-w-7xl px-4">
+			{/* ── FEATURES ── */}
+			<section className="relative overflow-hidden bg-background py-28 sm:py-36">
+				<div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-size-[44px_44px]" />
+				<div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-linear-to-b from-background to-transparent" />
+
+				<div className="container relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
 					<ScrollReveal>
-						<div className="mb-20 text-center">
-							<h2 className="mb-4 font-bold text-3xl text-foreground tracking-tight sm:text-4xl">
-								Powerful React Server Components
+						<div className="mb-16 flex flex-col items-center text-center sm:mb-20">
+							<SectionLabel label="Features" />
+							<h2 className="mb-5 font-extrabold text-3xl text-foreground tracking-tight sm:text-4xl lg:text-5xl">
+								Everything you need to master RSC
 							</h2>
 							<p className="mx-auto max-w-2xl text-lg text-muted-foreground leading-relaxed">
-								Discover the cutting-edge features that make React Server
+								Discover the cutting-edge capabilities that make React Server
 								Components the future of modern web development.
 							</p>
 						</div>
 					</ScrollReveal>
 
 					<StaggerReveal>
-						<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-							{FEATURES.map((feature) => (
+						<div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+							{FEATURES.map((feature, idx) => (
 								<StaggerItem key={feature.title}>
 									<motion.div
-										className="group relative h-full overflow-hidden rounded-xl border border-border/50 bg-linear-to-br from-card to-background p-6 transition-all duration-300 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5"
-										transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-										whileHover={{ y: -4 }}
+										className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/60 bg-card p-7 transition-all duration-300 hover:border-primary/40 hover:shadow-primary/8 hover:shadow-xl"
+										whileHover={{ y: -6 }}
 									>
-										<motion.div
-											className="mb-4 inline-flex size-12 items-center justify-center rounded-xl bg-linear-to-br from-primary/15 to-primary/5 text-primary"
-											transition={{ duration: 0.3 }}
-											whileHover={{ scale: 1.1, rotate: 5 }}
-										>
+										{/* Top accent shimmer */}
+										<div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-primary/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
+										{/* Ghost number */}
+										<span className="mb-5 self-start font-black font-mono text-4xl text-primary/8 tabular-nums leading-none transition-colors duration-300 group-hover:text-primary/18">
+											{String(idx + 1).padStart(2, "0")}
+										</span>
+
+										{/* Icon */}
+										<div className="mb-5 flex size-12 items-center justify-center rounded-xl border border-primary/15 bg-primary/8 text-primary transition-all duration-300 group-hover:border-primary/30 group-hover:bg-primary/15">
 											<feature.icon className="size-6" weight="duotone" />
-										</motion.div>
-										<h3 className="mb-3 font-semibold text-foreground text-lg">
+										</div>
+
+										<h3 className="mb-3 font-bold text-foreground text-lg">
 											{feature.title}
 										</h3>
-										<p className="text-muted-foreground text-sm leading-relaxed">
+										<p className="flex-1 text-muted-foreground text-sm leading-relaxed">
 											{feature.description}
 										</p>
+
+										{/* Bottom slide bar */}
+										<div className="absolute bottom-0 left-0 h-0.5 w-0 rounded-full bg-primary transition-all duration-500 group-hover:w-full" />
 									</motion.div>
 								</StaggerItem>
 							))}
@@ -891,13 +1043,18 @@ export default function HeroSection() {
 				</div>
 			</section>
 
-			{/* How It Works Section */}
-			<section className="relative bg-linear-to-b from-muted/30 to-background py-32">
-				<div className="container mx-auto max-w-7xl px-4">
+			{/* ── JOURNEY ── */}
+			<section className="relative overflow-hidden py-28 sm:py-36">
+				<div className="pointer-events-none absolute inset-0 bg-linear-to-b from-background via-muted/20 to-background" />
+				<div className="pointer-events-none absolute top-0 right-0 -z-10 h-[600px] w-[600px] translate-x-1/3 -translate-y-1/3 rounded-full bg-primary/5 blur-[120px]" />
+				<div className="pointer-events-none absolute bottom-0 left-0 -z-10 h-[600px] w-[600px] -translate-x-1/3 translate-y-1/3 rounded-full bg-primary/5 blur-[120px]" />
+
+				<div className="container relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
 					<ScrollReveal>
-						<div className="mb-20 text-center">
-							<h2 className="mb-4 font-bold text-3xl text-foreground tracking-tight sm:text-4xl">
-								Your Learning Journey
+						<div className="mb-16 flex flex-col items-center text-center sm:mb-20">
+							<SectionLabel label="Journey" />
+							<h2 className="mb-5 font-extrabold text-3xl text-foreground tracking-tight sm:text-4xl lg:text-5xl">
+								Your Learning Path
 							</h2>
 							<p className="mx-auto max-w-2xl text-lg text-muted-foreground leading-relaxed">
 								Four progressive steps to master React Server Components and
@@ -906,134 +1063,185 @@ export default function HeroSection() {
 						</div>
 					</ScrollReveal>
 
-					<div className="relative">
-						{/* Progress Line */}
-						<motion.div
-							className="absolute top-0 left-8 h-full w-0.5 origin-top bg-linear-to-b from-primary/40 via-primary/20 to-transparent md:left-1/2"
-							initial={{ scaleY: 0 }}
-							transition={{
-								duration: 1.2,
-								delay: 0.3,
-								ease: [0.22, 1, 0.36, 1],
-							}}
-							viewport={{ once: true }}
-							whileInView={{ scaleY: 1 }}
-						/>
+					<div className="space-y-20 sm:space-y-28">
+						{STEPS.map((step, index) => (
+							<ScrollReveal delay={index * 0.08} key={step.number}>
+								<div
+									className={cn(
+										"grid items-center gap-8 sm:gap-12 lg:grid-cols-2",
+										index % 2 === 1 && "lg:[&>*:first-child]:order-2"
+									)}
+								>
+									{/* Text side */}
+									<div className="flex flex-col gap-5">
+										<div className="flex items-center gap-4">
+											<motion.div
+												className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-primary font-black text-primary-foreground text-xl shadow-lg shadow-primary/30"
+												initial={{ scale: 0, rotate: -20 }}
+												transition={{
+													type: "spring",
+													bounce: 0.45,
+													delay: index * 0.12 + 0.2,
+												}}
+												viewport={{ once: true, margin: "-80px" }}
+												whileHover={{ scale: 1.08, rotate: 4 }}
+												whileInView={{ scale: 1, rotate: 0 }}
+											>
+												{step.number}
+											</motion.div>
+											<div className="h-px flex-1 bg-linear-to-r from-border to-transparent" />
+										</div>
 
-						<div className="space-y-24">
-							{STEPS.map((step, index) => (
-								<ScrollReveal delay={index * 0.15} key={step.number}>
-									<div className="relative grid gap-8 md:grid-cols-2 md:items-start">
-										{/* Number Circle */}
-										<motion.div
-											className="absolute top-0 left-8 z-10 flex size-16 items-center justify-center rounded-full border-4 border-border bg-background font-bold text-2xl text-primary shadow-lg shadow-primary/10 md:left-1/2 md:-translate-x-1/2"
-											initial={{ scale: 0, rotate: -180 }}
-											transition={{
-												duration: 0.6,
-												delay: index * 0.15 + 0.2,
-												ease: [0.22, 1, 0.36, 1],
-											}}
-											viewport={{ once: true }}
-											whileInView={{ scale: 1, rotate: 0 }}
-										>
-											{step.number}
-										</motion.div>
-
-										{/* Content - Left on even, Right on odd */}
-										<div
-											className={`ml-24 md:ml-0 ${
-												index % 2 === 0
-													? "md:order-1 md:pr-12 md:text-right"
-													: "md:order-2 md:pl-12 md:text-left"
-											}`}
-										>
-											<h3 className="mb-3 font-bold text-2xl text-foreground">
+										<div>
+											<h3 className="mb-3 font-extrabold text-2xl text-foreground sm:text-3xl">
 												{step.title}
 											</h3>
-											<p className="text-muted-foreground leading-relaxed">
+											<p className="text-base text-muted-foreground leading-relaxed sm:text-lg">
 												{step.description}
 											</p>
 										</div>
 
-										{/* Visual - Right on even, Left on odd */}
-										<div
-											className={`ml-24 md:ml-0 ${
-												index % 2 === 0
-													? "md:order-2 md:pl-12"
-													: "md:order-1 md:pr-12"
-											}`}
+										<Link
+											className="group inline-flex w-fit items-center gap-2 rounded-full border border-primary/20 bg-primary/8 px-5 py-2.5 font-medium text-primary text-sm transition-all duration-300 hover:gap-3 hover:border-primary/40 hover:bg-primary/15"
+											href="/learning/architecture"
 										>
-											<motion.div
-												className="aspect-video overflow-hidden rounded-xl shadow-xl ring-1 ring-white/10"
-												initial={{ opacity: 0, scale: 0.9 }}
-												transition={{
-													duration: 0.6,
-													delay: index * 0.15 + 0.3,
-													ease: [0.22, 1, 0.36, 1],
-												}}
-												viewport={{ once: true }}
-												whileInView={{ opacity: 1, scale: 1 }}
-											>
-												<StepCodeBlock
-													code={STEP_SNIPPETS[index]}
-													filename={STEP_FILENAMES[index]}
-												/>
-											</motion.div>
-										</div>
+											Explore this step
+											<ArrowRightIcon
+												className="size-4 transition-transform duration-300 group-hover:translate-x-0.5"
+												weight="bold"
+											/>
+										</Link>
 									</div>
-								</ScrollReveal>
-							))}
-						</div>
+
+									{/* Code side */}
+									<motion.div
+										className="group relative overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/10"
+										initial={{
+											opacity: 0,
+											scale: 0.93,
+											rotateY: index % 2 === 0 ? -12 : 12,
+										}}
+										style={{ transformPerspective: 1000 }}
+										transition={{
+											duration: 0.8,
+											delay: index * 0.12 + 0.3,
+											ease: [0.22, 1, 0.36, 1],
+										}}
+										viewport={{ once: true, margin: "-80px" }}
+										whileHover={{ scale: 1.02 }}
+										whileInView={{ opacity: 1, scale: 1, rotateY: 0 }}
+									>
+										<div className="pointer-events-none absolute inset-0 z-10 bg-linear-to-br from-primary/15 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+										<StepCodeBlock
+											code={STEP_SNIPPETS[index]}
+											filename={STEP_FILENAMES[index]}
+										/>
+									</motion.div>
+								</div>
+							</ScrollReveal>
+						))}
 					</div>
 				</div>
 			</section>
 
-			{/* CTA Section */}
-			<section className="relative bg-background py-32">
-				<div className="container mx-auto max-w-4xl px-4 text-center">
-					<ScrollReveal>
-						<div className="space-y-8">
-							<h2 className="font-bold text-3xl text-foreground tracking-tight sm:text-4xl lg:text-5xl">
-								Ready to Build Faster Apps?
-							</h2>
-							<p className="mx-auto max-w-2xl text-lg text-muted-foreground leading-relaxed">
-								Join developers mastering React Server Components and creating
-								ultra-fast, modern web applications.
-							</p>
-							<div className="flex flex-wrap items-center justify-center gap-4">
-								<Button className="group" size="lg">
-									<Link
-										className="flex items-center gap-2"
-										href="/learning/architecture"
-									>
-										Start Learning Now
-										<ArrowRightIcon
-											className="ml-2 size-4 transition-transform duration-300 group-hover:translate-x-1"
-											weight="bold"
-										/>
-									</Link>
-								</Button>
-								<Button size="lg" variant="outline">
-									<Link className="flex items-center gap-2" href="/about">
-										Learn More
-									</Link>
-								</Button>
-							</div>
-						</div>
-					</ScrollReveal>
-				</div>
-
-				{/* Background Glow */}
-				<div className="pointer-events-none absolute inset-0 overflow-hidden">
+			{/* ── CTA ── */}
+			<section className="relative overflow-hidden py-32 sm:py-40">
+				<div className="pointer-events-none absolute inset-0">
+					<div className="absolute inset-0 bg-background" />
+					<div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_50%,hsl(var(--primary)/0.13),transparent)]" />
+					<div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-size-[32px_32px]" />
 					<motion.div
-						animate={{ scale: [1, 1.1, 1], opacity: [0.05, 0.08, 0.05] }}
-						className="absolute top-1/2 left-1/2 size-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary blur-3xl"
+						animate={{ scale: [1, 1.12, 1], opacity: [0.07, 0.13, 0.07] }}
+						className="absolute top-1/2 left-1/2 size-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary blur-[160px]"
 						transition={{
-							duration: 8,
+							duration: 11,
 							repeat: Number.POSITIVE_INFINITY,
 							ease: "easeInOut",
 						}}
 					/>
+				</div>
+
+				<div className="container relative z-10 mx-auto max-w-4xl px-4 sm:px-6">
+					<ScrollReveal>
+						<motion.div
+							className="relative overflow-hidden rounded-3xl border border-border/50 bg-background/60 px-8 py-14 text-center shadow-2xl backdrop-blur-xl sm:px-14 sm:py-20"
+							transition={{ type: "spring", stiffness: 280 }}
+							whileHover={{ scale: 1.008 }}
+						>
+							<div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_0%,hsl(var(--primary)/0.1),transparent)]" />
+							<div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-primary/40 to-transparent" />
+
+							<div className="relative z-10 flex flex-col items-center gap-7">
+								<motion.div
+									animate={{ rotate: [0, 10, -10, 0] }}
+									className="flex size-16 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10 sm:size-20"
+									transition={{
+										duration: 4,
+										repeat: Number.POSITIVE_INFINITY,
+										ease: "easeInOut",
+									}}
+								>
+									<SparkleIcon
+										className="size-8 text-primary sm:size-10"
+										weight="duotone"
+									/>
+								</motion.div>
+
+								<div className="space-y-4">
+									<h2 className="font-extrabold text-3xl text-foreground tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl">
+										Ready to Build{" "}
+										<span className="bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+											Faster Apps?
+										</span>
+									</h2>
+									<p className="mx-auto max-w-xl text-base text-muted-foreground leading-relaxed sm:text-lg">
+										Join developers mastering React Server Components and
+										creating ultra-fast, modern web applications.
+									</p>
+								</div>
+
+								<div className="flex flex-col items-center gap-3 pt-2 sm:flex-row sm:gap-4">
+									<MagneticButton className="group relative w-full overflow-hidden rounded-full bg-primary px-8 py-4 font-semibold text-base text-primary-foreground shadow-lg shadow-primary/30 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-primary/40 hover:shadow-xl sm:w-auto sm:px-10">
+										<span className="absolute inset-0 -translate-x-full skew-x-12 bg-white/15 transition-transform duration-700 group-hover:translate-x-full" />
+										<Link
+											className="relative z-10 flex items-center justify-center gap-2"
+											href="/learning/architecture"
+										>
+											Start Learning Now
+											<ArrowRightIcon
+												className="size-5 transition-transform duration-300 group-hover:translate-x-1"
+												weight="bold"
+											/>
+										</Link>
+									</MagneticButton>
+
+									<MagneticButton className="group w-full rounded-full border-2 border-border bg-transparent px-8 py-4 font-semibold text-base text-foreground transition-all duration-300 hover:border-primary/40 hover:bg-primary/6 sm:w-auto sm:px-10">
+										<Link
+											className="flex items-center justify-center gap-2"
+											href="/about"
+										>
+											Learn More
+										</Link>
+									</MagneticButton>
+								</div>
+
+								{/* Mini stat row */}
+								<div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 pt-2">
+									{HERO_STATS.map((stat) => (
+										<span
+											className="flex items-center gap-1.5 text-muted-foreground text-sm"
+											key={stat.label}
+										>
+											<span className="font-bold text-primary">
+												{stat.value}
+											</span>
+											{stat.label}
+										</span>
+									))}
+								</div>
+							</div>
+						</motion.div>
+					</ScrollReveal>
 				</div>
 			</section>
 		</div>

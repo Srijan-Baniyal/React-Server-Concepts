@@ -5,6 +5,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { hl } from "@/lib/Hl";
 
 export function ComponentTree() {
 	return (
@@ -31,8 +32,8 @@ export function ComponentTree() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<pre className="overflow-x-auto rounded-md bg-muted p-4 font-mono text-xs leading-relaxed">
-							{`RootLayout             [Server]
+						<pre className="overflow-x-auto rounded-md bg-muted/30 p-4 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`RootLayout             [Server]
 └── Page               [Server]
     ├── Header         [Server]
     │   └── NavLinks   [Server]
@@ -46,7 +47,7 @@ export function ComponentTree() {
             └── Heart  [Client] (inherited)       │
 
 Key: "use client" marks a boundary, NOT the whole
-subtree. Siblings of Search remain Server. ✓`}
+subtree. Siblings of Search remain Server. ✓`)}
 						</pre>
 					</CardContent>
 				</Card>
@@ -61,8 +62,8 @@ subtree. Siblings of Search remain Server. ✓`}
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-3">
-						<pre className="overflow-x-auto rounded-md bg-muted p-4 font-mono text-xs leading-relaxed">
-							{`// modal.tsx  ("use client")
+						<pre className="overflow-x-auto rounded-md bg-muted/30 p-4 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`// modal.tsx  ("use client")
 "use client";
 export function Modal({ children }) {
   const [open, setOpen] = useState(false);
@@ -72,6 +73,7 @@ export function Modal({ children }) {
 // page.tsx  (Server Component)
 import { Modal } from "./modal";
 import { HeavyServerContent } from "./heavy"; // Server!
+import { hl } from "@/lib/Hl";
 
 export default function Page() {
   return (
@@ -81,7 +83,7 @@ export default function Page() {
       <HeavyServerContent />
     </Modal>
   );
-}`}
+}`)}
 						</pre>
 						<p className="text-muted-foreground text-xs">
 							<code className="rounded bg-muted px-1">HeavyServerContent</code>{" "}
@@ -106,8 +108,8 @@ export default function Page() {
 							<p className="font-medium text-destructive text-sm">
 								❌ Anti-pattern: importing SC inside CC
 							</p>
-							<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-								{`// ClientNav.tsx
+							<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+								{hl(`// ClientNav.tsx
 "use client";
 // ✗ HeavyChart is a Server Component.
 // Importing it here "promotes" it to Client,
@@ -117,15 +119,15 @@ import { HeavyChart } from "./HeavyChart";
 
 export function ClientNav() {
   return <><HeavyChart /></>;
-}`}
+}`)}
 							</pre>
 						</div>
 						<div className="space-y-2">
 							<p className="font-medium text-green-600 text-sm">
 								✅ Fix: pass as a prop from a Server parent
 							</p>
-							<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-								{`// page.tsx (Server Component)
+							<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+								{hl(`// page.tsx (Server Component)
 import { ClientNav } from "./ClientNav";
 import { HeavyChart } from "./HeavyChart";
 
@@ -140,7 +142,7 @@ export default function Page() {
 "use client";
 export function ClientNav({ chart }) {
   return <>{chart}</>; // renders the slot
-}`}
+}`)}
 							</pre>
 						</div>
 					</div>

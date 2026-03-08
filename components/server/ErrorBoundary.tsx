@@ -1,12 +1,14 @@
 "use client";
 
-import { Component, type ErrorInfo, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import { Component, type ErrorInfo, type ReactNode, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
-interface ErrorBoundaryProps {
+interface ErrorBoundaryClassProps {
 	children: ReactNode;
 	fallback?: ReactNode;
+	onReset?: () => void;
 }
 
 interface ErrorBoundaryState {
@@ -14,11 +16,11 @@ interface ErrorBoundaryState {
 	hasError: boolean;
 }
 
-export class ErrorBoundary extends Component<
-	ErrorBoundaryProps,
+class ErrorBoundaryClass extends Component<
+	ErrorBoundaryClassProps,
 	ErrorBoundaryState
 > {
-	constructor(props: ErrorBoundaryProps) {
+	constructor(props: ErrorBoundaryClassProps) {
 		super(props);
 		this.state = { hasError: false, error: null };
 	}
@@ -61,7 +63,7 @@ export class ErrorBoundary extends Component<
 							</div>
 							<Button
 								className="w-full"
-								onClick={() => this.setState({ hasError: false, error: null })}
+								onClick={() => this.props.onReset?.()}
 								variant="outline"
 							>
 								Try Again
@@ -74,4 +76,28 @@ export class ErrorBoundary extends Component<
 
 		return this.props.children;
 	}
+}
+
+export function ErrorBoundary({
+	children,
+	fallback,
+}: {
+	children: ReactNode;
+	fallback?: ReactNode;
+}) {
+	const router = useRouter();
+	const [resetKey, setResetKey] = useState(0);
+
+	return (
+		<ErrorBoundaryClass
+			fallback={fallback}
+			key={resetKey}
+			onReset={() => {
+				router.refresh();
+				setResetKey((k) => k + 1);
+			}}
+		>
+			{children}
+		</ErrorBoundaryClass>
+	);
 }

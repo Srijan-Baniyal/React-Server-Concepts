@@ -6,6 +6,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { hl } from "@/lib/Hl";
 
 export function StreamingSuspense() {
 	return (
@@ -33,8 +34,8 @@ export function StreamingSuspense() {
 						</div>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`t=0    Request arrives
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`t=0    Request arrives
        ├── DB query A (~50ms)
        ├── DB query B (~200ms)
        └── DB query C (~80ms)
@@ -47,7 +48,7 @@ t=220  Browser receives everything
        └── First paint (TTFB = 200ms!)
 
 User sees blank screen for 200ms.
-One slow query blocks everything.`}
+One slow query blocks everything.`)}
 						</pre>
 					</CardContent>
 				</Card>
@@ -64,8 +65,8 @@ One slow query blocks everything.`}
 						</div>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`t=0    Request arrives
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`t=0    Request arrives
        ├── DB query A (~50ms) ──► flush at t=50
        ├── DB query B (~200ms) ─► flush at t=200
        └── DB query C (~80ms) ──► flush at t=80
@@ -76,7 +77,7 @@ t=80   Chunk C streamed & swapped in browser
 t=200  Chunk B streamed & swapped in browser
 
 User sees page shell at t=1ms.
-Each section appears as data resolves!`}
+Each section appears as data resolves!`)}
 						</pre>
 					</CardContent>
 				</Card>
@@ -91,8 +92,8 @@ Each section appears as data resolves!`}
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="space-y-3">
-					<pre className="overflow-x-auto rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-						{`// Server Component tree with Suspense
+					<pre className="overflow-x-auto rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+						{hl(`// Server Component tree with Suspense
 export default function Dashboard() {
   return (
     <div>
@@ -116,7 +117,7 @@ export default function Dashboard() {
 }
 
 // UserProfile, FeedItems, Notifications all await data concurrently.
-// They DON'T block each other.`}
+// They DON'T block each other.`)}
 					</pre>
 
 					<div className="grid gap-3 text-xs sm:grid-cols-3">
@@ -155,8 +156,8 @@ export default function Dashboard() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<pre className="overflow-x-auto rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-						{`export default function ProductPage({ params }) {
+					<pre className="overflow-x-auto rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+						{hl(`export default function ProductPage({ params }) {
   return (
     // ① Fast — product info resolves first (~30ms)
     <Suspense fallback={<ProductSkeleton />}>
@@ -175,7 +176,7 @@ Timeline:
   t=30   <ProductDetails> resolves → outer skeleton replaced
            <ReviewsSkeleton> still visible inside
   t=300  <Reviews> resolves → inner skeleton replaced
-           Page fully populated`}
+           Page fully populated`)}
 					</pre>
 				</CardContent>
 			</Card>
@@ -192,8 +193,8 @@ Timeline:
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<pre className="overflow-x-auto rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-						{`// Server Component — create promise and pass it down
+					<pre className="overflow-x-auto rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+						{hl(`// Server Component — create promise and pass it down
 import { use } from "react";
 
 async function Page() {
@@ -216,7 +217,7 @@ function UserProfile({ userPromise }: { userPromise: Promise<User> }) {
 
 // Why? The Server Component kicks off the fetch immediately.
 // The Client Component suspends without blocking hydration.
-// Waterfall avoided: data fetch starts at server, not after hydration.`}
+// Waterfall avoided: data fetch starts at server, not after hydration.`)}
 					</pre>
 				</CardContent>
 			</Card>

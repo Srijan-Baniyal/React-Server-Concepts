@@ -5,6 +5,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { hl } from "@/lib/Hl";
 
 export function PerformanceOptimizations() {
 	return (
@@ -53,11 +54,12 @@ export function PerformanceOptimizations() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`// ✗ Sends ~2MB of syntax-highlighting library to browser
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`// ✗ Sends ~2MB of syntax-highlighting library to browser
 "use client";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { hl } from "@/lib/Hl";
 
 function CodeBlock({ code, language }) {
   return (
@@ -67,7 +69,7 @@ function CodeBlock({ code, language }) {
   );
 }
 // react-syntax-highlighter: ~2.5 MB minified!
-// Every user downloads this on first load.`}
+// Every user downloads this on first load.`)}
 						</pre>
 					</CardContent>
 				</Card>
@@ -82,8 +84,8 @@ function CodeBlock({ code, language }) {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`// ✓ Runs on server — library doesn't ship to browser
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`// ✓ Runs on server — library doesn't ship to browser
 import { codeToHtml } from "shiki";
 
 // Server Component — no "use client"
@@ -107,7 +109,7 @@ async function CodeBlock({
     />
   );
 }
-// Client bundle impact: 0 bytes — only HTML/CSS sent ✓`}
+// Client bundle impact: 0 bytes — only HTML/CSS sent ✓`)}
 						</pre>
 					</CardContent>
 				</Card>
@@ -125,8 +127,8 @@ async function CodeBlock({
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="grid gap-4 md:grid-cols-2">
-					<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-						{`// ✓ Lazy-load heavy Client Components
+					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+						{hl(`// ✓ Lazy-load heavy Client Components
 import dynamic from "next/dynamic";
 
 // Only loads when this component renders
@@ -154,10 +156,10 @@ function DashboardPage() {
       <RichTextEditor />       {/* browser-only, loads on demand */}
     </>
   );
-}`}
+}`)}
 					</pre>
-					<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-						{`// ✓ Dynamic import with named export
+					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+						{hl(`// ✓ Dynamic import with named export
 const HeavyModal = dynamic(
   () => import("@/components/modals").then((m) => m.HeavyModal),
   { loading: () => <ModalSkeleton /> },
@@ -179,7 +181,7 @@ function Page() {
 
 // Without dynamic import, RichTextEditor would be
 // downloaded on page load even if never opened.
-// With dynamic + condition: downloaded only when needed.`}
+// With dynamic + condition: downloaded only when needed.`)}
 					</pre>
 				</CardContent>
 			</Card>
@@ -196,7 +198,7 @@ function Page() {
 				</CardHeader>
 				<CardContent className="grid gap-4 md:grid-cols-2">
 					<pre className="rounded-md bg-red-500/10 p-3 font-mono text-xs leading-relaxed">
-						{`// ✗ Raw img tag — no optimization
+						{hl(`// ✗ Raw img tag — no optimization
 <img
   src="/hero.jpg"
   alt="Hero"
@@ -208,10 +210,10 @@ function Page() {
 // - No lazy loading by default
 // - No CLS prevention (no size reservation)
 // - No blur placeholder
-// Hero image: potentially 2-8 MB to mobile users!`}
+// Hero image: potentially 2-8 MB to mobile users!`)}
 					</pre>
 					<pre className="rounded-md bg-green-500/10 p-3 font-mono text-xs leading-relaxed">
-						{`import Image from "next/image";
+						{hl(`import Image from "next/image";
 
 // ✓ next/image — automatic optimization
 <Image
@@ -234,7 +236,7 @@ function Page() {
   width={400} height={400}
   // lazy loaded automatically ✓
 />
-// Result: WebP/AVIF, right size per device, lazy, CLS-free`}
+// Result: WebP/AVIF, right size per device, lazy, CLS-free`)}
 					</pre>
 				</CardContent>
 			</Card>
@@ -251,8 +253,8 @@ function Page() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="grid gap-4 md:grid-cols-2">
-					<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-						{`import Link from "next/link";
+					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+						{hl(`import Link from "next/link";
 
 // ✓ Default <Link> — prefetches on hover/viewport entry
 // Ideal for main navigation
@@ -273,7 +275,7 @@ router.push("/cart");
 router.refresh();
 
 // Replace current history entry (no back button entry)
-router.replace("/login");`}
+router.replace("/login");`)}
 					</pre>
 					<div className="space-y-3">
 						<p className="font-medium text-sm">Prefetch Behaviour Summary</p>
@@ -322,8 +324,8 @@ router.replace("/login");`}
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-						{`// app/layout.tsx
+					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+						{hl(`// app/layout.tsx
 // ✓ next/font — downloaded at build time, self-hosted
 import { Inter, JetBrains_Mono } from "next/font/google";
 import localFont from "next/font/local";
@@ -351,7 +353,7 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={\`\${inter.variable} \${mono.variable}\`}
+      className={\`\${inter.variable} \${mono.variable}\`)}
     >
       <body className="font-sans">{children}</body>
     </html>
@@ -359,7 +361,7 @@ export default function RootLayout({ children }) {
 }
 // ✓ No external network request for fonts at runtime
 // ✓ Font files served from your own domain
-// ✓ Automatic size-adjust prevents CLS`}
+// ✓ Automatic size-adjust prevents CLS`)}
 					</pre>
 				</CardContent>
 			</Card>

@@ -5,6 +5,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { hl } from "@/lib/Hl";
 
 export function ServerActions() {
 	return (
@@ -47,12 +48,13 @@ export function ServerActions() {
 							<p className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
 								Approach 1 — dedicated "use server" file (recommended)
 							</p>
-							<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-								{`// actions/cart.ts
+							<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+								{hl(`// actions/cart.ts
 "use server";
 
 import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { hl } from "@/lib/Hl";
 
 export async function addToCart(productId: string) {
   // Always authenticate in Server Actions!
@@ -72,7 +74,7 @@ export async function removeFromCart(itemId: string) {
   if (!session) throw new Error("Unauthorised");
   await db.cartItem.delete({ where: { id: itemId } });
   revalidatePath("/cart");
-}`}
+}`)}
 							</pre>
 						</div>
 
@@ -80,8 +82,8 @@ export async function removeFromCart(itemId: string) {
 							<p className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
 								Approach 2 — inline in Server Component
 							</p>
-							<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-								{`// app/subscribe/page.tsx  (Server Component)
+							<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+								{hl(`// app/subscribe/page.tsx  (Server Component)
 export default function Page() {
   async function subscribe(formData: FormData) {
     "use server"; // ← inline Server Action
@@ -96,7 +98,7 @@ export default function Page() {
       <button type="submit">Subscribe</button>
     </form>
   );
-}`}
+}`)}
 							</pre>
 						</div>
 					</CardContent>
@@ -109,8 +111,8 @@ export default function Page() {
 						</CardTitle>
 					</CardHeader>
 					<CardContent className="space-y-3">
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`"use client";
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`"use client";
 import { addToCart } from "@/actions/cart";
 import { useTransition, useOptimistic } from "react";
 
@@ -137,7 +139,7 @@ export function AddToCartButton({ productId, cartCount }) {
       </button>
     </div>
   );
-}`}
+}`)}
 						</pre>
 						<div className="rounded-lg border border-border/50 bg-accent/30 p-3 text-xs">
 							<p className="font-medium">Security model</p>
@@ -159,8 +161,8 @@ export function AddToCartButton({ productId, cartCount }) {
 					<CardTitle>Server Action Network Lifecycle</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<pre className="overflow-x-auto rounded-md bg-muted p-4 font-mono text-xs leading-relaxed">
-						{`Client Component
+					<pre className="overflow-x-auto rounded-md bg-muted/30 p-4 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+						{hl(`Client Component
   │  user interaction (click / form submit)
   └─► startTransition(() => myAction(args))
               │
@@ -183,7 +185,7 @@ export function AddToCartButton({ productId, cartCount }) {
          Client receives response
            ├─► React updates UI with return value
            ├─► Revalidated paths re-fetch in background
-           └─► useOptimistic confirms / reverts`}
+           └─► useOptimistic confirms / reverts`)}
 					</pre>
 				</CardContent>
 			</Card>

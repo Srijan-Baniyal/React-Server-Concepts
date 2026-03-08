@@ -6,6 +6,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { hl } from "@/lib/Hl";
 
 export function ServerVsClient() {
 	return (
@@ -185,8 +186,8 @@ function Counter() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<pre className="overflow-x-auto rounded-md bg-muted p-4 font-mono text-xs leading-relaxed">
-						{`Need interactivity? (onClick / onChange / useEffect / hooks)
+					<pre className="overflow-x-auto rounded-md bg-muted/30 p-4 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+						{hl(`Need interactivity? (onClick / onChange / useEffect / hooks)
 │
 ├─ YES ──► Does it also need server data?
 │           ├─ YES ──► Split boundaries:
@@ -201,7 +202,7 @@ function Counter() {
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Golden rule: push "use client" as FAR DOWN the
 component tree as possible. Every ancestor that
-stays Server = smaller bundle + colocated fetch.`}
+stays Server = smaller bundle + colocated fetch.`)}
 					</pre>
 				</CardContent>
 			</Card>

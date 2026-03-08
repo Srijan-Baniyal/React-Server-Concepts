@@ -5,6 +5,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { hl } from "@/lib/Hl";
 
 export function RequestLifecycle() {
 	return (
@@ -19,8 +20,8 @@ export function RequestLifecycle() {
 
 			<Card>
 				<CardContent className="pt-6">
-					<pre className="overflow-x-auto rounded-md bg-muted p-4 font-mono text-xs leading-relaxed">
-						{`Incoming HTTP Request
+					<pre className="overflow-x-auto rounded-md bg-muted/30 p-4 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+						{hl(`Incoming HTTP Request
         │
         ▼
 ┌───────────────────┐
@@ -57,7 +58,7 @@ export function RequestLifecycle() {
               │  2. Download CC JS    │ ← only Client Component
               │  3. Hydrate CC        │ ← attach event handlers
               │  4. Stream Suspense   │ ← deferred chunks arrive
-              └──────────────────────┘`}
+              └──────────────────────┘`)}
 					</pre>
 				</CardContent>
 			</Card>
@@ -71,8 +72,8 @@ export function RequestLifecycle() {
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`1. Middleware runs (Edge)
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`1. Middleware runs (Edge)
 2. Route matched, segment files loaded
 3. Server Component tree renders
 4. HTML + Flight payload streamed
@@ -84,7 +85,7 @@ Result:
   ✓ Full HTML for SEO / crawlers
   ✓ Fast LCP (no JS needed to paint)
   ✓ Hydration uses Flight, not HTML
-    (Flight is the source of truth)`}
+    (Flight is the source of truth)`)}
 						</pre>
 					</CardContent>
 				</Card>
@@ -95,8 +96,8 @@ Result:
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`1. <Link> prefetches RSC payload on hover
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`1. <Link> prefetches RSC payload on hover
 2. User clicks → router intercepts
 3. GET /?_rsc=<hash> → pure Flight payload
 4. Only CHANGED segments re-render
@@ -110,7 +111,7 @@ Router Cache:
 
 Result:
   ✓ Sub-100ms transitions
-  ✓ No full page reload`}
+  ✓ No full page reload`)}
 						</pre>
 					</CardContent>
 				</Card>
@@ -127,8 +128,8 @@ Result:
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="space-y-3">
-					<pre className="overflow-x-auto rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-						{`React processes the Server Component tree CONCURRENTLY:
+					<pre className="overflow-x-auto rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+						{hl(`React processes the Server Component tree CONCURRENTLY:
 
   ① Start rendering all non-suspended nodes immediately
   ② When an async Server Component suspends (awaits data):
@@ -144,7 +145,7 @@ Timeline example (three async components):
   t=1ms  Send HTML shell + Suspense placeholders
   t=50ms Resolve UserProfile → flush chunk 1
   t=80ms Resolve Notifications → flush chunk 2
-  t=200ms Resolve Feed → flush chunk 3 (stream closes)`}
+  t=200ms Resolve Feed → flush chunk 3 (stream closes)`)}
 					</pre>
 					<div className="rounded-lg border border-primary/20 bg-primary/5 p-3 text-xs">
 						<p className="font-medium">Key insight</p>

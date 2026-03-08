@@ -6,6 +6,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { hl } from "@/lib/Hl";
 
 const CACHES = [
 	{
@@ -70,6 +71,7 @@ export default async function Page() {
 
 // ✗ Dynamic route — Full Route Cache bypassed
 import { cookies } from "next/headers";
+import { hl } from "@/lib/Hl";
 export default async function Page() {
   await cookies(); // dynamic signal → no cache
   const user = await getUser();
@@ -148,8 +150,8 @@ export function CachingLayers() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<pre className="overflow-x-auto rounded-md bg-muted p-4 font-mono text-xs leading-relaxed">
-						{`Incoming Request
+					<pre className="overflow-x-auto rounded-md bg-muted/30 p-4 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+						{hl(`Incoming Request
    │
    ▼  CACHE HIT ────────────────────────────────► Response (instant)
 Router Cache (browser)
@@ -173,7 +175,7 @@ React Server Component render
    ▼
 Rendered RSC Payload →──► populate Full Route Cache (if static)
                        →──► send to browser
-                       →──► browser stores in Router Cache`}
+                       →──► browser stores in Router Cache`)}
 					</pre>
 				</CardContent>
 			</Card>

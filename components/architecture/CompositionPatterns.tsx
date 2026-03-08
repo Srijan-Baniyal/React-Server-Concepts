@@ -5,6 +5,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { hl } from "@/lib/Hl";
 
 export function CompositionPatterns() {
 	return (
@@ -33,7 +34,7 @@ export function CompositionPatterns() {
 						</p>
 						<div className="grid gap-2 sm:grid-cols-2">
 							<pre className="rounded-md bg-red-500/10 p-3 font-mono text-[10px] leading-relaxed">
-								{`// ✗ WRONG — will throw an error
+								{hl(`// ✗ WRONG — will throw an error
 "use client";
 import { UserAvatar } from "./UserAvatar";
 // ↑ Server Component (async, accesses DB)
@@ -42,10 +43,10 @@ function Container() {
   return <UserAvatar userId={state.id} />;
   // React can't render async Server
   // Components inside Client boundary
-}`}
+}`)}
 							</pre>
 							<pre className="rounded-md bg-green-500/10 p-3 font-mono text-[10px] leading-relaxed">
-								{`// ✓ CORRECT — pass as children prop
+								{hl(`// ✓ CORRECT — pass as children prop
 
 // Server Component parent controls the tree
 async function Page() {
@@ -61,7 +62,7 @@ async function Page() {
 "use client";
 function Container({ children }) {
   return <div onClick={...}>{children}</div>;
-}`}
+}`)}
 							</pre>
 						</div>
 					</div>
@@ -73,15 +74,16 @@ function Container({ children }) {
 						</p>
 						<div className="grid gap-2 sm:grid-cols-2">
 							<pre className="rounded-md bg-red-500/10 p-3 font-mono text-[10px] leading-relaxed">
-								{`// ✗ WRONG — layout.tsx is a Server Component
+								{hl(`// ✗ WRONG — layout.tsx is a Server Component
 // createContext + useContext are client-only
 
 import { MyContext } from "./context";
+import { hl } from "@/lib/Hl";
 // This throws because Server Components
-// cannot be a Context Provider`}
+// cannot be a Context Provider`)}
 							</pre>
 							<pre className="rounded-md bg-green-500/10 p-3 font-mono text-[10px] leading-relaxed">
-								{`// ✓ CORRECT — wrap in a thin Client Component
+								{hl(`// ✓ CORRECT — wrap in a thin Client Component
 
 // providers/ThemeProvider.tsx
 "use client";
@@ -100,7 +102,7 @@ export default function Layout({ children }) {
       {children}     {/* ← SC children pass through */}
     </ThemeProvider>
   );
-}`}
+}`)}
 							</pre>
 						</div>
 					</div>
@@ -119,8 +121,8 @@ export default function Layout({ children }) {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`// ✓ Works — children are passed from SERVER
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`// ✓ Works — children are passed from SERVER
 //   so they have already been rendered when
 //   the Client Component receives them
 
@@ -139,7 +141,7 @@ async function DashboardPage() {
 }
 
 // The SC children are rendered server-side.
-// SidebarLayout just renders {children} on client.`}
+// SidebarLayout just renders {children} on client.`)}
 						</pre>
 					</CardContent>
 				</Card>
@@ -152,8 +154,8 @@ async function DashboardPage() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-2">
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`// lib/db.ts
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`// lib/db.ts
 import "server-only"; // ← next line throws at BUILD TIME
                        //   if this file is imported from
                        //   a Client Component
@@ -169,7 +171,7 @@ export const STRIPE_SECRET = process.env.STRIPE_SECRET_KEY!;
 // the build fails with:
 //   "This module cannot be imported from a Client Component"
 //
-// Also useful: "client-only" for browser-only code.`}
+// Also useful: "client-only" for browser-only code.`)}
 						</pre>
 					</CardContent>
 				</Card>
@@ -185,8 +187,8 @@ export const STRIPE_SECRET = process.env.STRIPE_SECRET_KEY!;
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`// ✗ Too broad — entire article is a CC
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`// ✗ Too broad — entire article is a CC
 "use client";
 async function BlogArticle({ slug }) {
   // Can't use async here either...
@@ -210,7 +212,7 @@ export async function BlogArticle({ slug }) {
       <LikeButton postId={post.id} />  {/* CC */}
     </article>
   );
-}`}
+}`)}
 						</pre>
 					</CardContent>
 				</Card>
@@ -223,8 +225,8 @@ export async function BlogArticle({ slug }) {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`// Pattern: fetch at top, pass down to CC subtree
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`// Pattern: fetch at top, pass down to CC subtree
 
 // Server Component (layout.tsx)
 async function Layout({ children }) {
@@ -244,7 +246,7 @@ function NavAvatar() {
 }
 
 // The fetch happens once on the server.
-// The context is only in client subtree.`}
+// The context is only in client subtree.`)}
 						</pre>
 					</CardContent>
 				</Card>

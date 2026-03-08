@@ -6,7 +6,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { hl } from "@/lib/Hl";
 
 const REFERENCE_TABLE = [
 	{
@@ -89,7 +89,7 @@ export function ArchitectureSummary() {
 	return (
 		<section className="space-y-8" id="summary">
 			<div>
-				<h2 className="mb-1 font-semibold text-3xl">Architecture Summary 🗺️</h2>
+				<h2 className="mb-1 font-semibold text-3xl">Architecture Summary 📊</h2>
 				<p className="text-muted-foreground">
 					A concise reference covering every key concept: Server vs Client
 					Component capabilities, the three golden rules, and the mental model
@@ -158,8 +158,6 @@ export function ArchitectureSummary() {
 				))}
 			</div>
 
-			<Separator />
-
 			{/* Big picture mental model — final summary */}
 			<Card>
 				<CardHeader>
@@ -167,8 +165,8 @@ export function ArchitectureSummary() {
 					<CardDescription>How all the pieces fit together</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<pre className="overflow-x-auto rounded-md bg-muted p-4 font-mono text-xs leading-relaxed">
-						{`Your Next.js 15 App
+					<pre className="overflow-x-auto rounded-md bg-muted/30 p-4 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+						{hl(`Your Next.js 15 App
 │
 ├── Server Runtime (Node.js / Edge)
 │   ├── Server Components — zero bundle, direct DB, async/await
@@ -191,7 +189,7 @@ The result:
   ✓ Fast time-to-first-byte (HTML streamed from server)
   ✓ Fast time-to-interactive (only CC code needs to hydrate)
   ✓ Excellent Core Web Vitals (LCP, INP, CLS all improve)
-  ✓ Co-located data fetching without prop-drilling or global stores`}
+  ✓ Co-located data fetching without prop-drilling or global stores`)}
 					</pre>
 				</CardContent>
 			</Card>

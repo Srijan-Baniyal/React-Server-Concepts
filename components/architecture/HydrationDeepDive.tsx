@@ -5,6 +5,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { hl } from "@/lib/Hl";
 
 export function HydrationDeepDive() {
 	return (
@@ -27,8 +28,8 @@ export function HydrationDeepDive() {
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`1. Wait for ALL JavaScript to download
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`1. Wait for ALL JavaScript to download
 2. Wait for React to initialise
 3. Walk ENTIRE component tree from root
 4. Attach event listeners to every node
@@ -40,7 +41,7 @@ Problems:
   ✗ Components deeper in the tree
     wait for those above them
   ✗ All-or-nothing — slow components
-    block faster siblings`}
+    block faster siblings`)}
 						</pre>
 					</CardContent>
 				</Card>
@@ -51,8 +52,8 @@ Problems:
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`1. HTML shell is painted immediately
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`1. HTML shell is painted immediately
 2. Each Suspense boundary = isolated unit
 3. React hydrates boundaries as their JS
    and Flight payload arrive
@@ -65,7 +66,7 @@ Problems:
 Benefits:
   ✓ No "hydration waterfall"
   ✓ Interactive components unblock ASAP
-  ✓ Slow Suspense chunks don't block fast ones`}
+  ✓ Slow Suspense chunks don't block fast ones`)}
 						</pre>
 					</CardContent>
 				</Card>
@@ -80,8 +81,8 @@ Benefits:
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="space-y-3">
-					<pre className="overflow-x-auto rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-						{`Traditional SSR Hydration:
+					<pre className="overflow-x-auto rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+						{hl(`Traditional SSR Hydration:
   Server → HTML string
   Client → ReactDOM.hydrateRoot(html)
            React re-runs component tree
@@ -100,7 +101,7 @@ RSC Hydration:
     • Server Component subtrees are already "done" — no JS needed
 
   Result: Server Component nodes are treated as opaque HTML.
-          Only Client Component nodes attach event listeners.`}
+          Only Client Component nodes attach event listeners.`)}
 					</pre>
 					<div className="rounded-lg border border-primary/20 bg-primary/5 p-3 text-xs">
 						<p className="font-medium">The key mental model</p>

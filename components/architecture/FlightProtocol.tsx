@@ -6,6 +6,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { hl } from "@/lib/Hl";
 
 export function FlightProtocol() {
 	return (
@@ -87,8 +88,8 @@ export function FlightProtocol() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="space-y-4">
-					<pre className="overflow-x-auto rounded-md bg-muted p-4 font-mono text-xs leading-relaxed">
-						{`// Example RSC payload for a simple page
+					<pre className="overflow-x-auto rounded-md bg-muted/30 p-4 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+						{hl(`// Example RSC payload for a simple page
 // (simplified — real format uses binary-safe encoding)
 
 0:["$","div",null,{"className":"container"},
@@ -101,7 +102,7 @@ export function FlightProtocol() {
     "UserCard"
   ]
 
-2:["$","$L1",null,{"userId":"u_123","name":"Alice"}]`}
+2:["$","$L1",null,{"userId":"u_123","name":"Alice"}]`)}
 					</pre>
 
 					<div className="space-y-3">
@@ -164,8 +165,8 @@ export function FlightProtocol() {
 					<div className="grid gap-4 md:grid-cols-2">
 						<div className="space-y-2">
 							<p className="font-medium text-sm">React Component</p>
-							<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-								{`export default function Page() {
+							<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+								{hl(`export default function Page() {
   return (
     <div>
       <Header />          {/* fast */}
@@ -174,15 +175,15 @@ export function FlightProtocol() {
       </Suspense>
     </div>
   );
-}`}
+}`)}
 							</pre>
 						</div>
 						<div className="space-y-2">
 							<p className="font-medium text-sm">
 								Resulting Flight stream (simplified)
 							</p>
-							<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-								{`// Chunk 0 — sent immediately
+							<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+								{hl(`// Chunk 0 — sent immediately
 0:["$","div",null,{},
     ["$","header",null,{"children":"..."}],
     ["$","$S1",null,{}]   ← Suspense placeholder
@@ -192,7 +193,7 @@ export function FlightProtocol() {
 1:["$","ul",null,{},
     ["$","li",null,{"children":"Post 1"}],
     ["$","li",null,{"children":"Post 2"}]
-  ]`}
+  ]`)}
 							</pre>
 						</div>
 					</div>
@@ -231,8 +232,8 @@ export function FlightProtocol() {
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`Server sends TWO things in parallel:
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`Server sends TWO things in parallel:
 
 1. HTML string  (from renderToString)
    └── Full HTML for SEO & fast paint
@@ -244,7 +245,7 @@ export function FlightProtocol() {
    └── Avoids hydration mismatch
 
 The HTML is temporary scaffolding.
-The Flight payload is the source of truth.`}
+The Flight payload is the source of truth.`)}
 						</pre>
 					</CardContent>
 				</Card>
@@ -255,8 +256,8 @@ The Flight payload is the source of truth.`}
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`Client router prefetches RSC payload
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`Client router prefetches RSC payload
 (no HTML, no full page reload)
 
 Server returns ONLY the Flight payload
@@ -268,7 +269,7 @@ React router:
   3. Preserves scroll / modal / form state
   4. Hydrates new Client Components
 
-Result: sub-100ms page transitions ✓`}
+Result: sub-100ms page transitions ✓`)}
 						</pre>
 					</CardContent>
 				</Card>
@@ -295,12 +296,12 @@ Result: sub-100ms page transitions ✓`}
 									GET /products
 								</span>
 							</div>
-							<pre className="rounded-md bg-muted p-3 font-mono text-xs">
-								{`Status: 200 OK
+							<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs dark:bg-zinc-900/40">
+								{hl(`Status: 200 OK
 Content-Type: text/html
 Transfer-Encoding: chunked
 
-(streamed HTML + inline RSC payload)`}
+(streamed HTML + inline RSC payload)`)}
 							</pre>
 						</div>
 						<div className="space-y-2">
@@ -312,14 +313,14 @@ Transfer-Encoding: chunked
 									GET /products?_rsc=1
 								</span>
 							</div>
-							<pre className="rounded-md bg-muted p-3 font-mono text-xs">
-								{`Status: 200 OK
+							<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs dark:bg-zinc-900/40">
+								{hl(`Status: 200 OK
 Content-Type: text/x-component
 Transfer-Encoding: chunked
 
 (pure Flight payload, no HTML wrapper)
 0:["$","div",null,{"className":"..."}...]
-1:I["(app-client)/components/..."]`}
+1:I["(app-client)/components/..."]`)}
 							</pre>
 						</div>
 					</div>
@@ -343,8 +344,8 @@ Transfer-Encoding: chunked
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="space-y-3">
-					<pre className="overflow-x-auto rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-						{`import { cache } from "react";
+					<pre className="overflow-x-auto rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+						{hl(`import { cache } from "react";
 
 // Memoised per-request — same arguments = same Promise
 export const getUser = cache(async (id: string) => {
@@ -361,7 +362,7 @@ async function Header() {
 async function Sidebar() {
   const user = await getUser("u_1"); // cache hit ← same request
   return <UserMenu user={user} />;
-}`}
+}`)}
 					</pre>
 					<p className="text-muted-foreground text-xs">
 						<code className="rounded bg-muted px-1">react.cache</code> is scoped

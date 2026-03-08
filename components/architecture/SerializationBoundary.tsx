@@ -6,6 +6,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { hl } from "@/lib/Hl";
 
 export function SerializationBoundary() {
 	return (
@@ -49,8 +50,8 @@ export function SerializationBoundary() {
 						<CardDescription>Serialisable by Flight</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-3">
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`// ✓ Primitives
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`// ✓ Primitives
 <Client name="Alice" count={42} flag={true} />
 
 // ✓ Plain objects & arrays
@@ -68,7 +69,7 @@ async function save(data) { "use server"; ... }
 <Client onSave={save} />
 
 // ✓ React elements / JSX (as children)
-<Client><ServerChild /></Client>`}
+<Client><ServerChild /></Client>`)}
 						</pre>
 					</CardContent>
 				</Card>
@@ -83,8 +84,8 @@ async function save(data) { "use server"; ... }
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-3">
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`// ✗ Regular functions
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`// ✗ Regular functions
 <Client onClick={() => console.log("hi")} />
 
 // ✗ Class instances
@@ -100,7 +101,7 @@ async function save(data) { "use server"; ... }
 <Client promise={fetchUser()} />
 
 // ✗ BigInt
-<Client value={BigInt(9007199254740991)} />`}
+<Client value={BigInt(9007199254740991)} />`)}
 						</pre>
 					</CardContent>
 				</Card>
@@ -195,15 +196,15 @@ function Client({ userPromise }) {
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-2">
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`// lib/db.ts
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`// lib/db.ts
 import "server-only";
 // ↑ Build will throw if this module is imported
 // anywhere inside a "use client" module graph
 
 export async function getSensitiveData() {
   return db.query("SELECT * FROM secrets");
-}`}
+}`)}
 						</pre>
 						<p className="text-muted-foreground text-xs">
 							Install with:{" "}
@@ -224,14 +225,14 @@ export async function getSensitiveData() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-2">
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`// lib/analytics.ts
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`// lib/analytics.ts
 import "client-only";
 // ↑ Build throws if imported in a Server Component
 
 export function trackEvent(name: string) {
   window.gtag("event", name); // browser-only ✓
-}`}
+}`)}
 						</pre>
 						<p className="text-muted-foreground text-xs">
 							Install with:{" "}

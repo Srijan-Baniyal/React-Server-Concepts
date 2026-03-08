@@ -5,13 +5,15 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { hl } from "@/lib/Hl";
+import { cn } from "@/lib/Utils";
 
 export function BigPicture() {
 	return (
 		<section className="space-y-8" id="big-picture">
 			<div>
 				<h2 className="mb-1 font-semibold text-3xl">The Big Picture 🗺️</h2>
-				<p className="mb-6 text-muted-foreground">
+				<p className="text-muted-foreground">
 					Before RSC, React was purely client-side. Here is how the two models
 					compare and how they physically execute.
 				</p>
@@ -28,8 +30,8 @@ export function BigPicture() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<pre className="overflow-x-auto rounded-md bg-muted p-4 font-mono text-xs leading-relaxed">
-							{`Browser
+						<pre className="overflow-x-auto rounded-md bg-muted/30 p-4 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`Browser
  └─ Download full JS bundle (MB+)
  └─ Execute React runtime
  └─ Fetch data (client-side)
@@ -40,7 +42,7 @@ Problems
  ✗ Secrets leaked (API keys in env)
  ✗ Request waterfalls on load
  ✗ No direct DB / file-system access
- ✗ Empty HTML (bad for SEO / LCP)`}
+ ✗ Empty HTML (bad for SEO / LCP)`)}
 						</pre>
 					</CardContent>
 				</Card>
@@ -55,8 +57,8 @@ Problems
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<pre className="overflow-x-auto rounded-md bg-muted p-4 font-mono text-xs leading-relaxed">
-							{`Server                     Browser
+						<pre className="overflow-x-auto rounded-md bg-muted/30 p-4 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`Server                     Browser
  └─ Run Server Components   └─ Receive RSC payload
  └─ Direct DB / FS access   └─ Hydrate Client only
  └─ Render → Flight stream  └─ Interact
@@ -66,7 +68,7 @@ Benefits
  ✓ Secrets never leave the server
  ✓ No client-side data waterfalls
  ✓ Full HTML for SEO & fast LCP
- ✓ Direct DB / file system access`}
+ ✓ Direct DB / file system access`)}
 						</pre>
 					</CardContent>
 				</Card>
@@ -80,8 +82,8 @@ Benefits
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<pre className="overflow-x-auto rounded-md bg-muted p-4 font-mono text-xs leading-relaxed">
-						{`┌──────────────────────────────────────────────────────────────────┐
+					<pre className="overflow-x-auto rounded-md bg-muted/30 p-4 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+						{hl(`┌──────────────────────────────────────────────────────────────────┐
 │                      HTTP REQUEST                                │
 │                            │                                     │
 │               ┌────────────▼─────────────┐                      │
@@ -103,7 +105,7 @@ Benefits
 │               │  │   • event handlers   │ │                      │
 │               │  └──────────────────────┘ │                      │
 │               └───────────────────────────┘                      │
-└──────────────────────────────────────────────────────────────────┘`}
+└──────────────────────────────────────────────────────────────────┘`)}
 					</pre>
 				</CardContent>
 			</Card>
@@ -142,7 +144,7 @@ Benefits
 								color: "border-green-500/20 bg-green-500/5",
 							},
 						].map(({ label, desc, color }) => (
-							<div className={`rounded-lg border p-3 ${color}`} key={label}>
+							<div className={cn("rounded-lg border p-3", color)} key={label}>
 								<p className="mb-1 font-medium text-sm">{label}</p>
 								<p className="text-muted-foreground text-xs leading-relaxed">
 									{desc}

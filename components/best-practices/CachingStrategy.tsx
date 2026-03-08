@@ -6,6 +6,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { hl } from "@/lib/Hl";
 
 const CACHE_LAYERS = [
 	{
@@ -90,7 +91,7 @@ export function CachingStrategy() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="grid gap-4 md:grid-cols-2">
-					<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
+					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
 						{`// Static data — cache indefinitely (default)
 const config = await fetch("/api/config");
 
@@ -112,7 +113,7 @@ const products = await fetch("/api/products", {
   },
 });`}
 					</pre>
-					<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
+					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
 						{`// Invalidation from a Server Action
 "use server";
 import {
@@ -155,8 +156,8 @@ export async function POST(req: Request) {
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="grid gap-4 md:grid-cols-2">
-					<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-						{`// Any of these opts the ENTIRE route out of
+					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+						{hl(`// Any of these opts the ENTIRE route out of
 // Full Route Cache:
 
 import { cookies, headers } from "next/headers";
@@ -175,9 +176,9 @@ noStore(); // force-dynamic for this component
 await fetch(url, { cache: "no-store" });
 
 // ⚠ Only call these when you actually need
-// per-request dynamic data. Static is always faster.`}
+// per-request dynamic data. Static is always faster.`)}
 					</pre>
-					<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
+					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
 						{`// ✓ Route caching config via segment options
 // app/dashboard/layout.tsx
 
@@ -214,8 +215,8 @@ export const revalidate = 300; // 5 min for this page only
 				</CardHeader>
 				<CardContent className="space-y-4">
 					<div className="grid gap-4 md:grid-cols-2">
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
-							{`// ✓ Wrap at the data-access layer, not at
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
+							{hl(`// ✓ Wrap at the data-access layer, not at
 // the component level
 
 // lib/queries/user.ts
@@ -236,9 +237,9 @@ export const getUserWithPosts = cache(
     });
   }
 );
-// Each unique (function + args) gets one cached result.`}
+// Each unique (function + args) gets one cached result.`)}
 						</pre>
-						<pre className="rounded-md bg-muted p-3 font-mono text-xs leading-relaxed">
+						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
 							{`// ✓ OK to call in multiple components
 // React.cache is per-render, not global state
 

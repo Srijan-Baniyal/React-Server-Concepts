@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import { BlockingVsStreamingFlow } from "@/components/flow/BlockingVsStreamingFlow";
+import { StreamingFlow } from "@/components/flow/StreamingFlow";
 import { BasicSuspenseDemo } from "@/components/streaming/BasicSuspenseDemo";
 import { ErrorBoundaryDemo } from "@/components/streaming/ErrorBoundaryDemo";
 import { NestedSuspenseDemo } from "@/components/streaming/NestedSuspenseDemo";
@@ -117,40 +119,8 @@ export default function StreamingAndSuspense() {
 							waiting for all data to load on the server.
 						</p>
 
-						{/* SSR comparison — styled code panels */}
-						<div className="grid gap-4 md:grid-cols-2">
-							<div className="overflow-hidden rounded-xl border border-destructive/20">
-								<div className="border-destructive/20 border-b bg-destructive/5 px-4 py-2.5">
-									<p className="font-medium text-destructive text-sm">
-										❌ Traditional SSR (Blocking)
-									</p>
-								</div>
-								<pre className="bg-muted/30 p-4 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-									{`1. Server fetches ALL data
-2. Server renders ALL HTML
-3. Server sends COMPLETE page
-4. Client receives & hydrates
-
-⏱  Total: wait for slowest data`}
-								</pre>
-							</div>
-
-							<div className="overflow-hidden rounded-xl border border-green-500/20">
-								<div className="border-green-500/20 border-b bg-green-500/5 px-4 py-2.5">
-									<p className="font-medium text-green-600 text-sm dark:text-green-400">
-										✅ Streaming SSR (Progressive)
-									</p>
-								</div>
-								<pre className="bg-muted/30 p-4 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-									{`1. Server sends page shell
-2. Client renders shell
-3. Server streams in sections
-4. Client updates incrementally
-
-⚡ Fast initial paint`}
-								</pre>
-							</div>
-						</div>
+						{/* SSR comparison — interactive flow diagrams */}
+						<BlockingVsStreamingFlow />
 
 						{/* Benefit pills */}
 						<div className="grid gap-3 md:grid-cols-3">
@@ -404,50 +374,7 @@ export default function StreamingAndSuspense() {
 							</CardTitle>
 						</CardHeader>
 						<CardContent>
-							<pre className="overflow-x-auto rounded-xl bg-muted/40 p-4 font-mono text-xs leading-relaxed dark:bg-zinc-900/50">
-								{`┌─────────────────────────────────────────────────────────────┐
-│ CLIENT REQUEST                                              │
-└────────────────────────────┬────────────────────────────────┘
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────────┐
-│ SERVER: Generate Page Shell (Synchronous)                   │
-│  ├─ Static HTML structure                                   │
-│  ├─ <Suspense> boundaries marked                            │
-│  └─ Send to client immediately ⚡                            │
-└────────────────────────────┬────────────────────────────────┘
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────────┐
-│ CLIENT: Displays Page Shell                                 │
-│  └─ Shows fallback UI for suspended components              │
-└────────────────────────────┬────────────────────────────────┘
-                             │
-              ┌──────────────┴──────────────┐
-              │                             │
-              ▼                             ▼
-┌───────────────────────┐    ┌───────────────────────┐
-│ SERVER: Async Data 1  │    │ SERVER: Async Data 2  │
-│  (Fast — 1s)          │    │  (Slow — 3s)          │
-└──────────┬────────────┘    └──────────┬────────────┘
-           │                            │
-           ▼                            │
-┌────────────────────────┐              │
-│ Stream Chunk 1         │              │
-│  to client at ~1s      │              │
-└────────────────────────┘              │
-                                        ▼
-                             ┌────────────────────────┐
-                             │ Stream Chunk 2         │
-                             │  to client at ~3s      │
-                             └────────────────────────┘
-                                        │
-                                        ▼
-┌─────────────────────────────────────────────────────────────┐
-│ CLIENT: Fully Interactive Page                              │
-│  └─ All async components rendered and hydrated              │
-└─────────────────────────────────────────────────────────────┘`}
-							</pre>
+							<StreamingFlow />
 						</CardContent>
 					</Card>
 

@@ -1,3 +1,4 @@
+import { HydrationComparisonFlow, RSCHydrationFlow } from "@/components/flow";
 import {
 	Card,
 	CardContent,
@@ -5,7 +6,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { hl } from "@/lib/Hl";
 
 export function HydrationDeepDive() {
 	return (
@@ -20,57 +20,7 @@ export function HydrationDeepDive() {
 			</div>
 
 			{/* Classic vs selective hydration */}
-			<div className="grid gap-4 md:grid-cols-2">
-				<Card className="border-yellow-500/20">
-					<CardHeader>
-						<CardTitle className="text-base">
-							Classic Hydration (React 17)
-						</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`1. Wait for ALL JavaScript to download
-2. Wait for React to initialise
-3. Walk ENTIRE component tree from root
-4. Attach event listeners to every node
-5. Page becomes interactive
-
-Problems:
-  ✗ Entire JS bundle must arrive first
-  ✗ Long Tasks block the main thread
-  ✗ Components deeper in the tree
-    wait for those above them
-  ✗ All-or-nothing — slow components
-    block faster siblings`)}
-						</pre>
-					</CardContent>
-				</Card>
-				<Card className="border-green-500/20">
-					<CardHeader>
-						<CardTitle className="text-base">
-							Selective Hydration (React 18 + RSC)
-						</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`1. HTML shell is painted immediately
-2. Each Suspense boundary = isolated unit
-3. React hydrates boundaries as their JS
-   and Flight payload arrive
-4. User interactions PRIORITISE hydration:
-   clicking an unhydrated component forces
-   it to hydrate first
-5. Long Tasks are yielded back to browser
-   to keep the main thread responsive
-
-Benefits:
-  ✓ No "hydration waterfall"
-  ✓ Interactive components unblock ASAP
-  ✓ Slow Suspense chunks don't block fast ones`)}
-						</pre>
-					</CardContent>
-				</Card>
-			</div>
+			<HydrationComparisonFlow />
 
 			{/* How React hydrates RSC */}
 			<Card>
@@ -81,28 +31,7 @@ Benefits:
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="space-y-3">
-					<pre className="overflow-x-auto rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`Traditional SSR Hydration:
-  Server → HTML string
-  Client → ReactDOM.hydrateRoot(html)
-           React re-runs component tree
-           in the browser to attach handlers
-
-RSC Hydration:
-  Server → HTML string + RSC Flight payload (inline script tags)
-  Client → ReactDOM.hydrateRoot(html, { hydrate: true })
-           React uses the FLIGHT PAYLOAD to reconcile,
-           not re-rendering Server Components
-           
-  Why Flight, not HTML?
-    • HTML is lossy (loses JSX metadata, component boundaries)
-    • Flight preserves the exact React tree structure
-    • Client Components hydrate against their serialised props
-    • Server Component subtrees are already "done" — no JS needed
-
-  Result: Server Component nodes are treated as opaque HTML.
-          Only Client Component nodes attach event listeners.`)}
-					</pre>
+					<RSCHydrationFlow />
 					<div className="rounded-lg border border-primary/20 bg-primary/5 p-3 text-xs">
 						<p className="font-medium">The key mental model</p>
 						<p className="mt-1 text-muted-foreground">

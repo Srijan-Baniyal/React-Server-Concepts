@@ -1,3 +1,4 @@
+import { DataFetchingFlow } from "@/components/flow";
 import {
 	Card,
 	CardContent,
@@ -164,24 +165,7 @@ async function ProductList({ ids }) {
 					<CardTitle>Pattern Decision Guide</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<pre className="overflow-x-auto rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`Multiple independent data needs?
-  └──► Use Promise.all([fetchA(), fetchB(), fetchC()])
-
-Request B depends on result of request A?
-  └──► Sequential await is unavoidable
-       But: can you restructure the DB query to do it in ONE round-trip?
-
-Same function called in multiple components?
-  └──► Wrap with react.cache() and colocate the call
-       → automatic deduplication within a render pass
-
-Need to start a fetch before you actually await it?
-  └──► Use the preload pattern (void getX(id) to warm the cache)
-
-Client-side data that changes in real time?
-  └──► That's fine as a Client Component with React Query / SWR`)}
-					</pre>
+					<DataFetchingFlow />
 				</CardContent>
 			</Card>
 		</section>

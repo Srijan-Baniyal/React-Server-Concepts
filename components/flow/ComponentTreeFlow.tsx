@@ -1,0 +1,262 @@
+import type { Edge, Node } from "@xyflow/react";
+import { FlowDiagram } from "./FlowWrapper";
+
+const nodes: Node[] = [
+	{
+		id: "root",
+		position: { x: 250, y: 0 },
+		data: { label: "RootLayout [Server]" },
+		type: "input",
+		style: {
+			background: "#22c55e",
+			color: "#fff",
+			border: "none",
+			borderRadius: 8,
+			fontWeight: 600,
+			fontSize: 12,
+			width: 180,
+			textAlign: "center" as const,
+		},
+	},
+	{
+		id: "page",
+		position: { x: 250, y: 80 },
+		data: { label: "Page [Server]" },
+		style: {
+			background: "#22c55e20",
+			border: "1px solid #22c55e60",
+			borderRadius: 8,
+			fontSize: 11,
+			width: 160,
+			textAlign: "center" as const,
+		},
+	},
+	{
+		id: "header",
+		position: { x: 40, y: 170 },
+		data: { label: "Header [Server]" },
+		style: {
+			background: "#22c55e20",
+			border: "1px solid #22c55e60",
+			borderRadius: 8,
+			fontSize: 11,
+			width: 150,
+			textAlign: "center" as const,
+		},
+	},
+	{
+		id: "nav",
+		position: { x: 40, y: 250 },
+		data: { label: "NavLinks [Server]" },
+		style: {
+			background: "#22c55e20",
+			border: "1px solid #22c55e60",
+			borderRadius: 8,
+			fontSize: 11,
+			width: 150,
+			textAlign: "center" as const,
+		},
+	},
+	{
+		id: "sidebar",
+		position: { x: 230, y: 170 },
+		data: { label: "Sidebar [Server]" },
+		style: {
+			background: "#22c55e20",
+			border: "1px solid #22c55e60",
+			borderRadius: 8,
+			fontSize: 11,
+			width: 150,
+			textAlign: "center" as const,
+		},
+	},
+	{
+		id: "search",
+		position: { x: 230, y: 250 },
+		data: { label: '🔶 Search "use client"' },
+		style: {
+			background: "#3b82f620",
+			border: "2px solid #3b82f680",
+			borderRadius: 8,
+			fontSize: 11,
+			fontWeight: 600,
+			width: 170,
+			textAlign: "center" as const,
+		},
+	},
+	{
+		id: "input",
+		position: { x: 210, y: 340 },
+		data: { label: "Input [Client] ⬇ inherited" },
+		style: {
+			background: "#3b82f610",
+			border: "1px dashed #3b82f660",
+			borderRadius: 8,
+			fontSize: 10,
+			width: 170,
+			textAlign: "center" as const,
+		},
+	},
+	{
+		id: "icon",
+		position: { x: 210, y: 415 },
+		data: { label: "Icon [Client] ⬇ inherited" },
+		style: {
+			background: "#3b82f610",
+			border: "1px dashed #3b82f660",
+			borderRadius: 8,
+			fontSize: 10,
+			width: 170,
+			textAlign: "center" as const,
+		},
+	},
+	{
+		id: "content",
+		position: { x: 430, y: 170 },
+		data: { label: "Content [Server]" },
+		style: {
+			background: "#22c55e20",
+			border: "1px solid #22c55e60",
+			borderRadius: 8,
+			fontSize: 11,
+			width: 150,
+			textAlign: "center" as const,
+		},
+	},
+	{
+		id: "article",
+		position: { x: 430, y: 260 },
+		data: { label: "Article [Server] ✓" },
+		style: {
+			background: "#22c55e20",
+			border: "1px solid #22c55e60",
+			borderRadius: 8,
+			fontSize: 11,
+			width: 150,
+			textAlign: "center" as const,
+		},
+	},
+	{
+		id: "likebtn",
+		position: { x: 430, y: 345 },
+		data: { label: '🔶 LikeBtn "use client"' },
+		style: {
+			background: "#3b82f620",
+			border: "2px solid #3b82f680",
+			borderRadius: 8,
+			fontSize: 11,
+			fontWeight: 600,
+			width: 170,
+			textAlign: "center" as const,
+		},
+	},
+	{
+		id: "heart",
+		position: { x: 430, y: 430 },
+		data: { label: "Heart [Client] ⬇ inherited" },
+		style: {
+			background: "#3b82f610",
+			border: "1px dashed #3b82f660",
+			borderRadius: 8,
+			fontSize: 10,
+			width: 170,
+			textAlign: "center" as const,
+		},
+	},
+	{
+		id: "note",
+		position: { x: 150, y: 500 },
+		data: {
+			label:
+				'"use client" marks a boundary, NOT the whole subtree.\nSiblings of Search remain Server. ✓',
+		},
+		type: "output",
+		style: {
+			background: "#f59e0b15",
+			border: "2px dashed #f59e0b50",
+			borderRadius: 12,
+			fontSize: 11,
+			whiteSpace: "pre-line" as const,
+			width: 360,
+			textAlign: "center" as const,
+			fontWeight: 500,
+			padding: "10px",
+		},
+	},
+];
+
+const edges: Edge[] = [
+	{
+		id: "e1",
+		source: "root",
+		target: "page",
+		style: { stroke: "#22c55e" },
+	},
+	{
+		id: "e2",
+		source: "page",
+		target: "header",
+		style: { stroke: "#22c55e" },
+	},
+	{
+		id: "e3",
+		source: "header",
+		target: "nav",
+		style: { stroke: "#22c55e" },
+	},
+	{
+		id: "e4",
+		source: "page",
+		target: "sidebar",
+		style: { stroke: "#22c55e" },
+	},
+	{
+		id: "e5",
+		source: "sidebar",
+		target: "search",
+		style: { stroke: "#3b82f6", strokeWidth: 2 },
+	},
+	{
+		id: "e6",
+		source: "search",
+		target: "input",
+		animated: true,
+		style: { stroke: "#3b82f6" },
+	},
+	{
+		id: "e7",
+		source: "input",
+		target: "icon",
+		animated: true,
+		style: { stroke: "#3b82f6" },
+	},
+	{
+		id: "e8",
+		source: "page",
+		target: "content",
+		style: { stroke: "#22c55e" },
+	},
+	{
+		id: "e9",
+		source: "content",
+		target: "article",
+		style: { stroke: "#22c55e" },
+	},
+	{
+		id: "e10",
+		source: "content",
+		target: "likebtn",
+		style: { stroke: "#3b82f6", strokeWidth: 2 },
+	},
+	{
+		id: "e11",
+		source: "likebtn",
+		target: "heart",
+		animated: true,
+		style: { stroke: "#3b82f6" },
+	},
+];
+
+export function ComponentTreeFlow() {
+	return <FlowDiagram edges={edges} height="600px" nodes={nodes} />;
+}

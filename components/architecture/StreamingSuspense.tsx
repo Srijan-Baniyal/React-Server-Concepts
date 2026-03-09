@@ -1,4 +1,4 @@
-import { Badge } from "@/components/ui/badge";
+import { BlockingVsStreamingFlow } from "@/components/flow";
 import {
 	Card,
 	CardContent,
@@ -23,65 +23,7 @@ export function StreamingSuspense() {
 			</div>
 
 			{/* Blocking vs streaming timeline */}
-			<div className="grid gap-4 md:grid-cols-2">
-				<Card className="border-red-500/20">
-					<CardHeader>
-						<div className="flex items-center gap-2">
-							<CardTitle className="text-base">Blocking SSR (old)</CardTitle>
-							<Badge className="text-[10px]" variant="destructive">
-								No Streaming
-							</Badge>
-						</div>
-					</CardHeader>
-					<CardContent>
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`t=0    Request arrives
-       ├── DB query A (~50ms)
-       ├── DB query B (~200ms)
-       └── DB query C (~80ms)
-              ↓
-t=200  ALL queries done
-       ├── Render full page
-       └── Send entire HTML
-              ↓
-t=220  Browser receives everything
-       └── First paint (TTFB = 200ms!)
-
-User sees blank screen for 200ms.
-One slow query blocks everything.`)}
-						</pre>
-					</CardContent>
-				</Card>
-				<Card className="border-green-500/20">
-					<CardHeader>
-						<div className="flex items-center gap-2">
-							<CardTitle className="text-base">Streaming SSR (RSC)</CardTitle>
-							<Badge
-								className="bg-green-500/10 text-[10px] text-green-600"
-								variant="outline"
-							>
-								Progressive
-							</Badge>
-						</div>
-					</CardHeader>
-					<CardContent>
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`t=0    Request arrives
-       ├── DB query A (~50ms) ──► flush at t=50
-       ├── DB query B (~200ms) ─► flush at t=200
-       └── DB query C (~80ms) ──► flush at t=80
-              ↓
-t=1ms  HTML shell + Suspense fallbacks sent
-t=50   Chunk A streamed & swapped in browser
-t=80   Chunk C streamed & swapped in browser
-t=200  Chunk B streamed & swapped in browser
-
-User sees page shell at t=1ms.
-Each section appears as data resolves!`)}
-						</pre>
-					</CardContent>
-				</Card>
-			</div>
+			<BlockingVsStreamingFlow />
 
 			{/* Suspense anatomy */}
 			<Card>

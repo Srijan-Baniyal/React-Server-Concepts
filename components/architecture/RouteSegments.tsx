@@ -1,3 +1,8 @@
+import {
+	LayoutVsTemplateFlow,
+	NestedLayoutFlow,
+	ParallelRoutesFlow,
+} from "@/components/flow";
 import { Badge } from "@/components/ui/badge";
 import {
 	Card,
@@ -110,25 +115,7 @@ export function RouteSegments() {
 						<CardTitle className="text-base">Nested Layout Anatomy</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<pre className="overflow-x-auto rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`app/
-├── layout.tsx        ← RootLayout (always)
-├── page.tsx          ← /
-├── dashboard/
-│   ├── layout.tsx    ← DashboardLayout
-│   ├── page.tsx      ← /dashboard
-│   ├── loading.tsx   ← Suspense boundary
-│   ├── error.tsx     ← Error boundary
-│   └── settings/
-│       ├── layout.tsx ← SettingsLayout
-│       └── page.tsx   ← /dashboard/settings
-
-Render stack for /dashboard/settings:
-RootLayout
-  └── DashboardLayout
-       └── SettingsLayout
-            └── SettingsPage`)}
-						</pre>
+						<NestedLayoutFlow />
 					</CardContent>
 				</Card>
 
@@ -139,22 +126,7 @@ RootLayout
 						</CardTitle>
 					</CardHeader>
 					<CardContent className="space-y-3">
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`// layout.tsx — PERSISTENT
-// - Created ONCE, never unmounted
-// - useState survives route changes
-// - Use for navbars, sidebars, providers
-
-// template.tsx — RE-MOUNTS on every nav
-// - New instance on every navigation
-// - useState resets to initial value
-// - Use for page transitions, analytics
-//   or when you need useEffect on nav
-
-// Both receive {children} and wrap the page.
-// Use layout unless you specifically need
-// the re-mount behaviour.`)}
-						</pre>
+						<LayoutVsTemplateFlow />
 						<p className="text-muted-foreground text-xs">
 							A layout that wraps multiple pages will have its{" "}
 							<code className="rounded bg-muted px-1">useState</code> from
@@ -242,59 +214,7 @@ export default function DashboardError({
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="space-y-3">
-					<div className="grid gap-4 md:grid-cols-2">
-						<div className="space-y-2">
-							<p className="font-medium text-sm">Parallel Routes (@slot)</p>
-							<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-								{hl(`app/dashboard/
-├── layout.tsx   ← receives @team & @analytics
-├── page.tsx
-├── @team/
-│   └── page.tsx ← /dashboard with team slot
-└── @analytics/
-    └── page.tsx ← /dashboard with analytics slot
-
-// layout.tsx
-export default function Layout({
-  children,
-  team,       // @team slot
-  analytics,  // @analytics slot
-}) {
-  return (
-    <>
-      {children}
-      {team}
-      {analytics}
-    </>
-  );
-}`)}
-							</pre>
-						</div>
-						<div className="space-y-2">
-							<p className="font-medium text-sm">
-								Intercepting Routes ((.)path)
-							</p>
-							<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-								{hl(`// Intercept /photo/[id] when navigating from
-// the gallery — show a modal instead
-
-app/gallery/
-├── page.tsx
-└── (.)photo/
-    └── [id]/
-        └── page.tsx ← modal view
-
-// Direct URL /photo/123 → full page
-// Click from gallery → shows as modal
-// Back button → closes modal
-
-Convention prefixes:
-(.)   — same level
-(..)  — one level up
-(...) — from root`)}
-							</pre>
-						</div>
-					</div>
+					<ParallelRoutesFlow />
 				</CardContent>
 			</Card>
 		</section>

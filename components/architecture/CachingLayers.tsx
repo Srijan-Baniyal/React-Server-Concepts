@@ -1,3 +1,4 @@
+import { CacheInteractionFlow } from "@/components/flow";
 import { Badge } from "@/components/ui/badge";
 import {
 	Card,
@@ -6,7 +7,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { hl } from "@/lib/Hl";
 
 const CACHES = [
 	{
@@ -150,33 +150,7 @@ export function CachingLayers() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<pre className="overflow-x-auto rounded-md bg-muted/30 p-4 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`Incoming Request
-   │
-   ▼  CACHE HIT ────────────────────────────────► Response (instant)
-Router Cache (browser)
-   │ MISS
-   ▼  CACHE HIT ────────────────────────────────► Response (fast)
-Full Route Cache (server filesystem)
-   │ MISS
-   ▼
-React Server Component render
-   │
-   ├── fetch(url) / db query
-   │      │  HIT ──────────────────────────────► use cached data
-   │   Data Cache (persistent)
-   │      │ MISS
-   │      │  HIT (same URL in same render) ────► deduplicated
-   │   Request Memoization (in-memory)
-   │      │ MISS
-   │      ▼
-   │   Network / Database ← actual I/O
-   │
-   ▼
-Rendered RSC Payload →──► populate Full Route Cache (if static)
-                       →──► send to browser
-                       →──► browser stores in Router Cache`)}
-					</pre>
+					<CacheInteractionFlow />
 				</CardContent>
 			</Card>
 

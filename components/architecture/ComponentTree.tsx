@@ -1,3 +1,4 @@
+import { ComponentTreeFlow } from "@/components/flow";
 import {
 	Card,
 	CardContent,
@@ -32,23 +33,7 @@ export function ComponentTree() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<pre className="overflow-x-auto rounded-md bg-muted/30 p-4 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`RootLayout             [Server]
-└── Page               [Server]
-    ├── Header         [Server]
-    │   └── NavLinks   [Server]
-    ├── Sidebar        [Server]
-    │   └── Search ────────────── "use client" ◄─┐
-    │       └── Input  [Client]  (inherited)      │
-    │           └── Icon [Client] (inherited)      │
-    └── Content        [Server]                   │
-        ├── Article    [Server] ← STILL Server!   │
-        └── LikeBtn ──────────── "use client"     │
-            └── Heart  [Client] (inherited)       │
-
-Key: "use client" marks a boundary, NOT the whole
-subtree. Siblings of Search remain Server. ✓`)}
-						</pre>
+						<ComponentTreeFlow />
 					</CardContent>
 				</Card>
 

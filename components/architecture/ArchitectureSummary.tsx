@@ -1,3 +1,4 @@
+import { BigPictureFlow } from "@/components/flow";
 import { Badge } from "@/components/ui/badge";
 import {
 	Card,
@@ -6,7 +7,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { hl } from "@/lib/Hl";
 
 const REFERENCE_TABLE = [
 	{
@@ -165,32 +165,7 @@ export function ArchitectureSummary() {
 					<CardDescription>How all the pieces fit together</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<pre className="overflow-x-auto rounded-md bg-muted/30 p-4 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`Your Next.js 15 App
-│
-├── Server Runtime (Node.js / Edge)
-│   ├── Server Components — zero bundle, direct DB, async/await
-│   ├── Server Actions — mutations as typed functions, no API routes
-│   ├── Caching — Request Memo → Data Cache → Full Route Cache
-│   └── RSC Flight — compact serialisation format streamed to browser
-│
-├── Network Boundary
-│   ├── Serialisation — only JSON-safe values & Server Actions cross
-│   └── "use client" / "use server" directives mark the boundary
-│
-└── Browser Runtime
-    ├── Client Components — JS bundle, hooks, events, browser APIs
-    ├── Selective Hydration — concurrent React hydrates in priority order
-    ├── Router Cache — browser-side Flight payload cache (30s / 5min)
-    └── Streaming — Suspense boundaries replace skeletons with real content
-
-The result:
-  ✓ Minimal JS shipped (~0 bytes for SC-only subtrees)
-  ✓ Fast time-to-first-byte (HTML streamed from server)
-  ✓ Fast time-to-interactive (only CC code needs to hydrate)
-  ✓ Excellent Core Web Vitals (LCP, INP, CLS all improve)
-  ✓ Co-located data fetching without prop-drilling or global stores`)}
-					</pre>
+					<BigPictureFlow />
 				</CardContent>
 			</Card>
 		</section>

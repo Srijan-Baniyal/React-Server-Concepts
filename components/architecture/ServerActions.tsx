@@ -1,3 +1,4 @@
+import { ServerActionFlow } from "@/components/flow";
 import {
 	Card,
 	CardContent,
@@ -161,32 +162,7 @@ export function AddToCartButton({ productId, cartCount }) {
 					<CardTitle>Server Action Network Lifecycle</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<pre className="overflow-x-auto rounded-md bg-muted/30 p-4 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`Client Component
-  │  user interaction (click / form submit)
-  └─► startTransition(() => myAction(args))
-              │
-              │  POST /_next/action/<signed-id>
-              │  Body: serialised args (Flight format)
-              ▼
-         Next.js Server
-           │  verify HMAC signature
-           │  deserialise args
-           └─► execute myAction()
-                     │  direct DB / service calls
-                     │  revalidatePath / revalidateTag
-                     │    └─► invalidate caches
-                     │  redirect() / notFound()
-                     │
-                     ▼
-               Return value (serialised via Flight)
-                     │
-                     ▼
-         Client receives response
-           ├─► React updates UI with return value
-           ├─► Revalidated paths re-fetch in background
-           └─► useOptimistic confirms / reverts`)}
-					</pre>
+					<ServerActionFlow />
 				</CardContent>
 			</Card>
 

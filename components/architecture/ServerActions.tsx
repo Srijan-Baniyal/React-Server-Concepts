@@ -6,7 +6,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { hl } from "@/lib/Hl";
+import { CodeBlock } from "@/components/ui/code-block";
 
 export function ServerActions() {
 	return (
@@ -49,8 +49,8 @@ export function ServerActions() {
 							<p className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
 								Approach 1 — dedicated "use server" file (recommended)
 							</p>
-							<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-								{hl(`// actions/cart.ts
+							<CodeBlock
+								code={`// actions/cart.ts
 "use server";
 
 import { auth } from "@/lib/auth";
@@ -75,16 +75,17 @@ export async function removeFromCart(itemId: string) {
   if (!session) throw new Error("Unauthorised");
   await db.cartItem.delete({ where: { id: itemId } });
   revalidatePath("/cart");
-}`)}
-							</pre>
+}`}
+								variant="muted"
+							/>
 						</div>
 
 						<div className="space-y-2">
 							<p className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
 								Approach 2 — inline in Server Component
 							</p>
-							<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-								{hl(`// app/subscribe/page.tsx  (Server Component)
+							<CodeBlock
+								code={`// app/subscribe/page.tsx  (Server Component)
 export default function Page() {
   async function subscribe(formData: FormData) {
     "use server"; // ← inline Server Action
@@ -99,8 +100,9 @@ export default function Page() {
       <button type="submit">Subscribe</button>
     </form>
   );
-}`)}
-							</pre>
+}`}
+								variant="muted"
+							/>
 						</div>
 					</CardContent>
 				</Card>
@@ -112,8 +114,8 @@ export default function Page() {
 						</CardTitle>
 					</CardHeader>
 					<CardContent className="space-y-3">
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`"use client";
+						<CodeBlock
+							code={`"use client";
 import { addToCart } from "@/actions/cart";
 import { useTransition, useOptimistic } from "react";
 
@@ -140,8 +142,9 @@ export function AddToCartButton({ productId, cartCount }) {
       </button>
     </div>
   );
-}`)}
-						</pre>
+}`}
+							variant="muted"
+						/>
 						<div className="rounded-lg border border-border/50 bg-accent/30 p-3 text-xs">
 							<p className="font-medium">Security model</p>
 							<p className="mt-1 text-muted-foreground">

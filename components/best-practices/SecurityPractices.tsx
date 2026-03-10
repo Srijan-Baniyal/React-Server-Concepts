@@ -6,7 +6,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { hl } from "@/lib/Hl";
+import { CodeBlock } from "@/components/ui/code-block";
 
 export function SecurityPractices() {
 	return (
@@ -37,8 +37,8 @@ export function SecurityPractices() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="grid gap-4 md:grid-cols-2">
-					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`// lib/db.ts — database client with env secrets
+					<CodeBlock
+						code={`// lib/db.ts — database client with env secrets
 import "server-only"; // ← add this import
 
 import { PrismaClient } from "@prisma/client";
@@ -56,10 +56,12 @@ if (process.env.NODE_ENV !== "production")
 // If any Client Component imports this file, Next.js
 // throws a build-time error:
 // "This module cannot be imported from a Client Component"
-// ↑ Protects DATABASE_URL and other secrets ✓`)}
-					</pre>
-					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`// lib/auth.ts — session management
+// ↑ Protects DATABASE_URL and other secrets ✓`}
+						filename="lib/db.ts"
+						variant="muted"
+					/>
+					<CodeBlock
+						code={`// lib/auth.ts — session management
 import "server-only";
 
 import { getServerSession } from "next-auth";
@@ -89,8 +91,10 @@ export async function trackEvent(event: string) {
     },
     body: JSON.stringify({ event }),
   });
-}`)}
-					</pre>
+}`}
+						filename="lib/auth.ts"
+						variant="muted"
+					/>
 				</CardContent>
 			</Card>
 
@@ -110,8 +114,8 @@ export async function trackEvent(event: string) {
 						<Badge className="border-red-500/40 text-red-600" variant="outline">
 							Server-Only (never sent to browser)
 						</Badge>
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`# .env.local
+						<CodeBlock
+							code={`# .env.local
 
 # ✓ No NEXT_PUBLIC_ prefix → server only
 DATABASE_URL="postgres://..."
@@ -122,8 +126,9 @@ OPENAI_API_KEY="sk-..."
 ANALYTICS_KEY="internal-key"
 
 # These are NEVER included in the client bundle.
-# Safe to use in Server Components and Server Actions.`)}
-						</pre>
+# Safe to use in Server Components and Server Actions.`}
+							variant="muted"
+						/>
 					</div>
 					<div className="space-y-3">
 						<Badge
@@ -132,8 +137,8 @@ ANALYTICS_KEY="internal-key"
 						>
 							Public (sent to browser in bundle)
 						</Badge>
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`# .env.local
+						<CodeBlock
+							code={`# .env.local
 
 # ⚠ NEXT_PUBLIC_ prefix → included in client bundle
 # Visible to anyone who inspects the JS
@@ -144,8 +149,9 @@ NEXT_PUBLIC_MAPBOX_TOKEN="pk.eyJ1..."
 
 # Only put keys here that are DESIGNED to be public.
 # Publishable/public-facing API keys only.
-# NEVER put secrets with NEXT_PUBLIC_.`)}
-						</pre>
+# NEVER put secrets with NEXT_PUBLIC_.`}
+							variant="muted"
+						/>
 					</div>
 				</CardContent>
 			</Card>
@@ -162,8 +168,9 @@ NEXT_PUBLIC_MAPBOX_TOKEN="pk.eyJ1..."
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="grid gap-4 md:grid-cols-2">
-					<pre className="rounded-md bg-red-500/10 p-3 font-mono text-xs leading-relaxed">
-						{hl(`// ✗ SECRET LEAKED — apiKey goes to the browser
+					<CodeBlock
+						className="bg-red-500/10"
+						code={`// ✗ SECRET LEAKED — apiKey goes to the browser
 async function Page() {
   const apiKey = process.env.INTERNAL_API_KEY;
   const user = await fetchUser(apiKey);
@@ -180,10 +187,12 @@ async function Page() {
 
 // Even if UserCard is a Server Component today,
 // if it ever becomes a Client Component, the key
-// becomes part of the browser-visible payload.`)}
-					</pre>
-					<pre className="rounded-md bg-green-500/10 p-3 font-mono text-xs leading-relaxed">
-						{hl(`// ✓ Use the secret server-side; pass only the result
+// becomes part of the browser-visible payload.`}
+						variant="muted"
+					/>
+					<CodeBlock
+						className="bg-green-500/10"
+						code={`// ✓ Use the secret server-side; pass only the result
 
 async function Page() {
   // Use secret on the server — never prop-drill it
@@ -206,8 +215,9 @@ async function Page() {
   const enrichedUser = await getEnrichedUser(); // SC work
   // Pass the enriched result — not the key used to get it
   return <Profile user={enrichedUser} />;
-}`)}
-					</pre>
+}`}
+						variant="muted"
+					/>
 				</CardContent>
 			</Card>
 
@@ -223,8 +233,9 @@ async function Page() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="grid gap-4 md:grid-cols-2">
-					<pre className="rounded-md bg-red-500/10 p-3 font-mono text-xs leading-relaxed">
-						{hl(`// ✗ Trusting params directly — SQL injection / chaos
+					<CodeBlock
+						className="bg-red-500/10"
+						code={`// ✗ Trusting params directly — SQL injection / chaos
 async function ProductPage({
   params,
 }: {
@@ -241,10 +252,12 @@ async function ProductPage({
 async function SearchPage({ searchParams }) {
   const q = searchParams.q; // could be anything
   const results = await search(\`%\${q}%\`); // SQL injection!
-}`)}
-					</pre>
-					<pre className="rounded-md bg-green-500/10 p-3 font-mono text-xs leading-relaxed">
-						{hl(`import { z } from "zod";
+}`}
+						variant="muted"
+					/>
+					<CodeBlock
+						className="bg-green-500/10"
+						code={`import { z } from "zod";
 import { notFound } from "next/navigation";
 
 // ✓ Validate params at the top of every page/layout
@@ -272,8 +285,9 @@ async function SearchPage({ searchParams }) {
   const { q, page } = SearchSchema.parse(searchParams);
   // q is trimmed to 200 chars, page is a valid integer
   const results = await search(q, page);
-}`)}
-					</pre>
+}`}
+						variant="muted"
+					/>
 				</CardContent>
 			</Card>
 
@@ -289,8 +303,8 @@ async function SearchPage({ searchParams }) {
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`// Opt-in in next.config.ts
+					<CodeBlock
+						code={`// Opt-in in next.config.ts
 // experimental: { taint: true }
 
 import {
@@ -320,8 +334,9 @@ export async function getUser(id: string) {
 
 // Now if any Server Component tries to pass user or
 // user.passwordHash as a prop to a Client Component,
-// React throws a runtime error — even in development.`)}
-					</pre>
+// React throws a runtime error — even in development.`}
+						variant="muted"
+					/>
 				</CardContent>
 			</Card>
 		</section>

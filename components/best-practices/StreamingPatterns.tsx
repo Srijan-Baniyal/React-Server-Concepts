@@ -5,7 +5,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { hl } from "@/lib/Hl";
+import { CodeBlock } from "@/components/ui/code-block";
 
 export function StreamingPatterns() {
 	return (
@@ -52,8 +52,8 @@ export function StreamingPatterns() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`// app/products/loading.tsx
+						<CodeBlock
+							code={`// app/products/loading.tsx
 // Automatically shown while page.tsx suspends
 
 import { ProductGridSkeleton } from "@/components/skeletons";
@@ -74,8 +74,10 @@ export default function Loading() {
 
 // ✓ Layout and navigation render immediately
 // ✓ Loading skeleton shown until page data resolves
-// ✓ Matches the shape of the real content`)}
-						</pre>
+// ✓ Matches the shape of the real content`}
+							filename="app/products/loading.tsx"
+							variant="muted"
+						/>
 					</CardContent>
 				</Card>
 
@@ -89,8 +91,8 @@ export default function Loading() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`import { Suspense } from "react";
+						<CodeBlock
+							code={`import { Suspense } from "react";
 
 // ✓ Fast parts render immediately
 // ✓ Slow parts stream in without blocking others
@@ -112,8 +114,9 @@ async function ProductPage({ id }) {
       </Suspense>
     </div>
   );
-}`)}
-						</pre>
+}`}
+							variant="muted"
+						/>
 					</CardContent>
 				</Card>
 			</div>
@@ -130,8 +133,9 @@ async function ProductPage({ id }) {
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="grid gap-4 md:grid-cols-2">
-					<pre className="rounded-md bg-red-500/10 p-3 font-mono text-xs leading-relaxed">
-						{hl(`// ✗ Generic spinner — no shape hint
+					<CodeBlock
+						className="bg-red-500/10"
+						code={`// ✗ Generic spinner — no shape hint
 function Fallback() {
   return (
     <div className="flex items-center justify-center h-64">
@@ -142,10 +146,12 @@ function Fallback() {
 // Problems:
 // - Doesn't hint at the shape of incoming content
 // - Causes large layout shift when real content arrives
-// - Feels slow even when data comes back quickly`)}
-					</pre>
-					<pre className="rounded-md bg-green-500/10 p-3 font-mono text-xs leading-relaxed">
-						{hl(`// ✓ Shape-matched skeleton — same layout as content
+// - Feels slow even when data comes back quickly`}
+						variant="muted"
+					/>
+					<CodeBlock
+						className="bg-green-500/10"
+						code={`// ✓ Shape-matched skeleton — same layout as content
 function ProductCardSkeleton() {
   return (
     <div className="rounded-lg border p-4 space-y-3">
@@ -160,8 +166,9 @@ function ProductCardSkeleton() {
     </div>
   );
 }
-// Same grid dimensions as the real card — zero layout shift`)}
-					</pre>
+// Same grid dimensions as the real card — zero layout shift`}
+						variant="muted"
+					/>
 				</CardContent>
 			</Card>
 
@@ -177,8 +184,8 @@ function ProductCardSkeleton() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`// ✓ Nested boundaries stream independently
+					<CodeBlock
+						code={`// ✓ Nested boundaries stream independently
 async function DashboardPage() {
   return (
     <div className="grid grid-cols-3 gap-6">
@@ -205,8 +212,9 @@ async function DashboardPage() {
 // MetricsPanel streams in at ~50ms
 // RecentActivity streams in at ~200ms
 // ActivityChart streams in at ~300ms
-// Page feels fast from the first 50ms ✓`)}
-					</pre>
+// Page feels fast from the first 50ms ✓`}
+						variant="muted"
+					/>
 				</CardContent>
 			</Card>
 
@@ -222,8 +230,8 @@ async function DashboardPage() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`// ✗ One Suspense for the entire page
+						<CodeBlock
+							code={`// ✗ One Suspense for the entire page
 // Fast sections also wait for the slowest fetch
 function Dashboard() {
   return (
@@ -235,8 +243,9 @@ function Dashboard() {
   );
 }
 // User sees a spinner for 300ms, then everything at once
-// Effectively same as not streaming at all`)}
-						</pre>
+// Effectively same as not streaming at all`}
+							variant="muted"
+						/>
 					</CardContent>
 				</Card>
 
@@ -250,8 +259,8 @@ function Dashboard() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`// ✓ Independent boundaries — content streams progressively
+						<CodeBlock
+							code={`// ✓ Independent boundaries — content streams progressively
 function Dashboard() {
   return (
     <>
@@ -272,8 +281,9 @@ function Dashboard() {
     </>
   );
 }
-// Progressive reveal — perceived performance is far better ✓`)}
-						</pre>
+// Progressive reveal — perceived performance is far better ✓`}
+							variant="muted"
+						/>
 					</CardContent>
 				</Card>
 			</div>
@@ -293,8 +303,8 @@ function Dashboard() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="grid gap-4 md:grid-cols-2">
-					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`// Server Component — creates the Promise
+					<CodeBlock
+						code={`// Server Component — creates the Promise
 async function Page({ userId }) {
   // Don't await — pass the Promise directly
   const userPromise = getUser(userId);
@@ -305,10 +315,11 @@ async function Page({ userId }) {
       <ProfileCard userPromise={userPromise} />
     </Suspense>
   );
-}`)}
-					</pre>
-					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`// Client Component — unwraps with use()
+}`}
+						variant="muted"
+					/>
+					<CodeBlock
+						code={`// Client Component — unwraps with use()
 "use client";
 import { use } from "react";
 
@@ -330,8 +341,9 @@ function ProfileCard({
 }
 // ✓ Data starts fetching on the server
 // ✓ Client component suspends gracefully
-// ✓ No waterfall: fetch starts before hydration`)}
-					</pre>
+// ✓ No waterfall: fetch starts before hydration`}
+						variant="muted"
+					/>
 				</CardContent>
 			</Card>
 		</section>

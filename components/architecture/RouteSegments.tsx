@@ -11,7 +11,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { hl } from "@/lib/Hl";
+import { CodeBlock } from "@/components/ui/code-block";
 
 export function RouteSegments() {
 	return (
@@ -147,8 +147,8 @@ export function RouteSegments() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="space-y-4">
-					<pre className="overflow-x-auto rounded-md bg-muted/30 p-4 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`// error.tsx — catches errors from page.tsx & children
+					<CodeBlock
+						code={`// error.tsx — catches errors from page.tsx & children
 // Must be a Client Component (React error boundaries require this)
 "use client";
 
@@ -170,8 +170,9 @@ export default function DashboardError({
 }
 
 // global-error.tsx — catches errors in RootLayout
-// Replaces the entire document when triggered`)}
-					</pre>
+// Replaces the entire document when triggered`}
+						variant="muted"
+					/>
 
 					<div className="grid gap-3 sm:grid-cols-3">
 						{[

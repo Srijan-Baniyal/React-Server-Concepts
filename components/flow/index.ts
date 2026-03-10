@@ -6,6 +6,13 @@ export { CompositionTreeFlow } from "./CompositionTreeFlow";
 export { ConcurrentRenderFlow } from "./ConcurrentRenderFlow";
 export { DataFetchingFlow } from "./DataFetchingFlow";
 export { DecisionFlow } from "./DecisionFlow";
+export {
+	FlightStreamingFlow,
+	InitialLoadDetailFlow,
+	InitialVsSoftNavFlow,
+	SoftNavigationDetailFlow,
+	WireFormatFlow,
+} from "./FlightProtocolFlows";
 export { FlowDiagram } from "./FlowWrapper";
 export {
 	HydrationComparisonFlow,

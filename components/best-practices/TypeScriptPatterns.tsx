@@ -5,7 +5,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { hl } from "@/lib/Hl";
+import { CodeBlock } from "@/components/ui/code-block";
 
 export function TypeScriptPatterns() {
 	return (
@@ -34,8 +34,8 @@ export function TypeScriptPatterns() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`// app/products/[id]/page.tsx
+						<CodeBlock
+							code={`// app/products/[id]/page.tsx
 
 // ✓ Explicit params + searchParams typing
 type Props = {
@@ -65,8 +65,10 @@ export async function generateStaticParams(): Promise<
 > {
   const products = await getTopProducts();
   return products.map((p) => ({ id: p.id }));
-}`)}
-						</pre>
+}`}
+							filename="app/products/[id]/page.tsx"
+							variant="muted"
+						/>
 					</CardContent>
 				</Card>
 
@@ -78,8 +80,8 @@ export async function generateStaticParams(): Promise<
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`// types/actions.ts — shared action state type
+						<CodeBlock
+							code={`// types/actions.ts — shared action state type
 export type ActionResult<T = void> =
   | { success: true; data: T; message?: string }
   | { success: false; errors?: Partial<Record<string, string[]>>;
@@ -111,8 +113,9 @@ const [state] = useActionState(createPost, {
   success: false,
   message: "",
 });
-// state.errors is typed, state.data is typed ✓`)}
-						</pre>
+// state.errors is typed, state.data is typed ✓`}
+							variant="muted"
+						/>
 					</CardContent>
 				</Card>
 			</div>
@@ -127,8 +130,8 @@ const [state] = useActionState(createPost, {
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="grid gap-4 md:grid-cols-2">
-					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`// lib/types.ts — derive types from Prisma
+					<CodeBlock
+						code={`// lib/types.ts — derive types from Prisma
 import { Prisma } from "@prisma/client";
 
 // Full model type
@@ -153,10 +156,12 @@ export type PostWithAuthor = Prisma.PostGetPayload<{
 export type PostFeed = PostWithAuthor[];
 
 // ✓ If Prisma schema changes, types update automatically.
-// No manual type maintenance.`)}
-					</pre>
-					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`// lib/queries.ts — typed return values
+// No manual type maintenance.`}
+						filename="lib/types.ts"
+						variant="muted"
+					/>
+					<CodeBlock
+						code={`// lib/queries.ts — typed return values
 import { cache } from "react";
 import type { UserCardData, PostWithAuthor } from "./types";
 
@@ -184,8 +189,10 @@ async function UserCard({ userId }: { userId: string }) {
   if (!user) notFound();
   // user is UserCardData — TypeScript knows every field ✓
   return <div>{user.name}</div>;
-}`)}
-					</pre>
+}`}
+						filename="lib/queries.ts"
+						variant="muted"
+					/>
 				</CardContent>
 			</Card>
 
@@ -201,8 +208,9 @@ async function UserCard({ userId }: { userId: string }) {
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="grid gap-4 md:grid-cols-2">
-					<pre className="rounded-md bg-red-500/10 p-3 font-mono text-xs leading-relaxed">
-						{hl(`// ✗ Not narrowing — TypeScript can't help you
+					<CodeBlock
+						className="bg-red-500/10"
+						code={`// ✗ Not narrowing — TypeScript can't help you
 async function Page({ params }) {
   const product = await getProduct(params.id);
 
@@ -213,10 +221,12 @@ async function Page({ params }) {
       <p>{product.description}</p>
     </div>
   );
-}`)}
-					</pre>
-					<pre className="rounded-md bg-green-500/10 p-3 font-mono text-xs leading-relaxed">
-						{hl(`import { notFound } from "next/navigation";
+}`}
+						variant="muted"
+					/>
+					<CodeBlock
+						className="bg-green-500/10"
+						code={`import { notFound } from "next/navigation";
 
 // ✓ Narrow immediately — then TypeScript knows it's non-null
 async function Page({ params }) {
@@ -239,8 +249,9 @@ async function ProductList() {
   const products = await getProducts(); // Product[] (never null)
   if (products.length === 0) return <EmptyState />;
   return products.map(p => <ProductCard key={p.id} product={p} />);
-}`)}
-					</pre>
+}`}
+						variant="muted"
+					/>
 				</CardContent>
 			</Card>
 
@@ -260,8 +271,8 @@ async function ProductList() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`// ✓ satisfies checks the type but preserves literal inference
+					<CodeBlock
+						code={`// ✓ satisfies checks the type but preserves literal inference
 
 type NavItem = {
   label: string;
@@ -286,8 +297,9 @@ const NAV: NavItem[] = [...]; // href is "string" — less precise
 export const metadata = {
   title: "My App",
   description: "...",
-} satisfies Metadata;`)}
-					</pre>
+} satisfies Metadata;`}
+						variant="muted"
+					/>
 				</CardContent>
 			</Card>
 		</section>

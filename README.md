@@ -1,518 +1,226 @@
-# React Server Concepts Exploration
-
-> A deep dive into React Server Components (RSC), React Server Architecture, and modern React 19 patterns with Next.js 16.
-
-## 🎯 Overview
-
-This project is an experimental playground for exploring the cutting-edge capabilities of React Server Components, React Server Architecture, and the latest React 19 features. It demonstrates the practical implementation of server-client boundaries, component streaming, and modern React patterns in a production-ready Next.js application.
-
-## 🏗️ Architecture
-
-### React Server Components (RSC)
-
-React Server Components represent a paradigm shift in how we build React applications. This project extensively explores the RSC architecture:
-
-#### **Server Components by Default**
-
-- All components are server components unless explicitly marked with `"use client"`
-- Server components run exclusively on the server, reducing JavaScript bundle size
-- Direct access to backend resources without API layers
-- Zero client-side JavaScript for server-only logic
-
-#### **Strategic Client Boundary**
-
-Components marked with `"use client"`:
-
-- [`app/layout.tsx`](app/layout.tsx) - Root layout (server component)
-- [`app/page.tsx`](app/page.tsx) - Main page (server component)
-- [`components/HeroSection.tsx`](components/HeroSection.tsx) - Interactive UI with animations
-- [`components/Navigation.tsx`](components/Navigation.tsx) - Client-side navigation state
-- [`providers/ReactQueryProvider.tsx`](providers/ReactQueryProvider.tsx) - Client state management
-- [`providers/ThemeProvider.tsx`](providers/ThemeProvider.tsx) - Theme switching logic
-
-All UI components in `/components/ui/` are client components for interactivity.
-
-### React Server Architecture Patterns
-
-#### **1. Component Composition**
-
-```tsx
-// Server Component (default)
-export default function RootLayout({ children }) {
-  return (
-    <html>
-      <body>
-        {/* Server component wrapping client providers */}
-        <ThemeProvider>
-          <ReactQueryProvider>
-            <Navigation />
-            {children}
-          </ReactQueryProvider>
-        </ThemeProvider>
-      </body>
-    </html>
-  );
-}
-```
-
-#### **2. Data Fetching Patterns**
-
-- **Server Components**: Fetch data directly in components
-- **Route Handlers**: API endpoints in [`app/api/`](app/api/) directory
-- **Streaming**: Progressive rendering with React Suspense
-- **Parallel Data Fetching**: Multiple async components load simultaneously
-
-#### **3. Client-Server Boundary Optimization**
-
-```bash
-┌─────────────────────────────────┐
-│   Server Component (RSC)         │
-│  ┌──────────────────────────┐   │
-│  │  Client Component        │   │
-│  │  ┌──────────────────┐    │   │
-│  │  │ Server Component │    │   │ ← Composition Pattern
-│  │  └──────────────────┘    │   │
-│  └──────────────────────────┘   │
-└─────────────────────────────────┘
-```
-
-## 🚀 React 19 Features
-
-### 1. **React Compiler**
-
-Enabled via `reactCompiler: true` in [`next.config.ts`](next.config.ts):
-
-- Automatic memoization
-- Optimized re-renders
-- No manual `useMemo`/`useCallback` needed
-- Build-time optimizations
-
-### 2. **Enhanced Hooks**
-
-- `useOptimistic` for optimistic UI updates
-- `useFormStatus` for form state
-- `use` hook for reading promises/context
-- Enhanced `useTransition` for concurrent features
-
-### 3. **Server-Side Rendering Improvements**
-
-- Automatic code splitting
-- Selective hydration
-- Streaming SSR
-- Partial hydration
-
-### 4. **View Transitions API**
-
-```typescript
-experimental: {
-  viewTransition: true,
-}
-```bash
-Native browser transitions between pages without full page reloads.
-
-## 🎨 Component Architecture
-
-### Server Components
-```tsx
-// app/layout.tsx - Pure Server Component
-export default function RootLayout({ children }) {
-  // Runs only on server
-  // Can access database, filesystem, etc.
-  return (
-    <html>
-      <body>{children}</body>
-    </html>
-  );
-}
-```
-
-### Client Components
-
-```tsx
-// components/HeroSection.tsx
-"use client";
-
-export default function HeroSection() {
-  // Has access to browser APIs
-  // useState, useEffect, event handlers
-  const [state, setState] = useState();
-  return <div onClick={() => {}}></div>;
-}
-```
-
-### Hybrid Pattern
-
-```tsx
-// Server Component
-async function Page() {
-  const data = await fetchData(); // Server-side only
-  
-  return (
-    <div>
-      <ServerSideData data={data} />
-      <ClientInteractive data={data} /> {/* Client component */}
-    </div>
-  );
-}
-```
-
-## 🔧 Technical Stack
-
-### Core Framework
-
-- **Next.js 16.1.6** - App Router with RSC
-- **React 19.2.4** - Latest React with server components
-- **TypeScript 5.9.3** - Type safety
-
-### State Management
-
-- **React Query (TanStack Query)** - Server state management
-- **Zustand** - Client state management
-- **React Context** - Theme & provider patterns
-
-### Styling & UI
-
-- **Tailwind CSS 4.1.18** - Utility-first CSS
-- **Motion (Framer Motion)** - Animation library
-- **Shadcn/UI** - Component system with Base UI
-- **Class Variance Authority** - Component variants
-
-### Build Tools
-
-- **Babel React Compiler** - Automatic optimizations
-- **Biome** - Fast linting and formatting
-- **PostCSS** - CSS transformations
-
-## 📁 Project Structure
-
-```bash
-kg-builder/
-├── app/                          # App Router directory
-│   ├── layout.tsx               # Root layout (Server Component)
-│   ├── page.tsx                 # Home page (Server Component)
-│   ├── globals.css              # Global styles
-│   └── api/                     # Route handlers (Server-side APIs)
-│       ├── og/route.tsx         # OG image generation
-│       └── graph/               # API endpoints
-├── components/                   # React components
-│   ├── Navigation.tsx           # Client component
-│   ├── HeroSection.tsx          # Client component
-│   └── ui/                      # UI component library (Client)
-├── providers/                    # Context providers
-│   ├── ReactQueryProvider.tsx   # React Query setup
-│   └── ThemeProvider.tsx        # Theme management
-├── hooks/                        # Custom React hooks
-├── lib/                          # Utility functions
-└── next.config.ts               # Next.js configuration
-```
-
-## 🔍 Key RSC Concepts Demonstrated
-
-### 1. **Automatic Code Splitting**
-
-- Each client component is automatically split
-- Server components don't increase bundle size
-- Lazy loading built-in
-
-### 2. **Zero-Bundle-Cost Server Logic**
-
-```tsx
-// This code never reaches the client
-async function ServerComponent() {
-  const data = await db.query('SELECT * FROM users');
-  const processed = heavyProcessing(data); // No client bundle impact
-  return <ClientDisplay data={processed} />;
-}
-```
-
-### 3. **Streaming & Suspense**
-
-```tsx
-<Suspense fallback={<Loading />}>
-  <AsyncServerComponent />
-</Suspense>
-```
-
-### 4. **Progressive Enhancement**
-
-- Server renders complete HTML
-- Client hydrates interactivity
-- Works without JavaScript for core content
-
-## 🎯 RSC Benefits Explored
-
-### Performance
-
-- **Reduced Bundle Size**: Server logic stays on server
-- **Faster Initial Load**: Less JavaScript to parse
-- **Improved TTI**: Interactive faster with selective hydration
-- **Better Core Web Vitals**: Optimized LCP, FID, CLS
-
-### Developer Experience
-
-- **Direct Data Access**: No API routes for simple data
-- **Simplified Data Fetching**: Async/await in components
-- **Better Code Organization**: Clear server/client boundaries
-- **Type Safety**: Full TypeScript support across boundaries
-
-### User Experience
-
-- **Instant Navigation**: Prefetching & route preloading
-- **Smooth Animations**: Motion library with 60fps
-- **Progressive Loading**: Content appears as it's ready
-- **Responsive UI**: Optimistic updates with React Query
-
-## 🧪 Experimental Features
-
-### 1. **Component Caching**
-
-```typescript
-cacheComponents: true
-```
-
-Experimental Next.js feature for caching RSC payloads.
-
-### 2. **View Transitions**
-
-```typescript
-experimental: {
-  viewTransition: true,
-}
-```
-
-Native browser transitions between routes.
-
-### 3. **React Compiler**
-
-```typescript
-reactCompiler: true
-```
-
-Automatic optimization without manual memoization.
-
-## 🌊 Data Flow Patterns
-
-### Server → Client
-
-```bash
-Server Component (fetch data)
-    ↓ (serialize)
-Client Component (receive props)
-    ↓ (hydrate)
-Interactive UI
-```
-
-### Client → Server
-
-```bash
-Client Action (user interaction)
-    ↓ (request)
-Route Handler (app/api/*)
-    ↓ (process)
-Response (JSON/data)
-```
-
-### Streaming Pattern
-
-```bash
-Initial HTML (shell)
-    ↓ (stream)
-Async Component 1 (ready)
-    ↓ (stream)
-Async Component 2 (ready)
-    ↓ (complete)
-Fully Interactive Page
-```
-
-## 🎨 UI Component System
-
-### Base UI Integration
-
-- Uses `@base-ui/react` for accessible primitives
-- Shadcn/UI style system with Base UI components
-- Full TypeScript support
-- Composable component architecture
-
-### Animation System
-
-```tsx
-// Motion (Framer Motion) with RSC
-"use client";
-
-<motion.div
-  initial={{ opacity: 0 }}
-  animate={{ opacity: 1 }}
-  transition={{ duration: 0.5 }}
->
-  {content}
-</motion.div>
-```
-
-## 📊 Rendering Strategies
-
-### 1. **Static Rendering (Default)**
-
-- Generated at build time
-- Cached and reused
-- Best for static content
-
-### 2. **Dynamic Rendering**
-
-- Rendered at request time
-- When using dynamic functions
-- Personalized content
-
-### 3. **Streaming**
-
-- Progressive rendering
-- Send HTML in chunks
-- Better perceived performance
-
-## 🔐 Environment Separation
-
-### Server-Only Code
-
-- Database queries
-- File system access
-- Environment variables
-- API secrets
-- Heavy computations
-
-### Client-Only Code
-
-- Browser APIs (window, document)
-- Event handlers
-- useState, useEffect
-- Animation libraries
-- User interactions
-
-## 🚦 Performance Optimizations
-
-### 1. **Image Optimization**
-
-```typescript
-images: {
-  qualities: [100],
-}
-```
-
-### 2. **Font Optimization**
-
-```tsx
-import { Inter, Geist, Geist_Mono } from "next/font/google";
-```
-
-Automatic font optimization and self-hosting.
-
-### 3. **Bundle Optimization**
-
-- Tree shaking
-- Code splitting per route
-- Dynamic imports
-- Server component zero-bundle
-
-## 🎓 Learning Resources
-
-### RSC Concepts Covered
-
-- ✅ Server vs Client Components
-- ✅ Component composition patterns
-- ✅ Data fetching strategies
-- ✅ Streaming & Suspense
-- ✅ Route handlers as API layer
-- ✅ Client boundary optimization
-- ✅ Progressive enhancement
-- ✅ Caching strategies
-
-### React 19 Features Used
-
-- ✅ React Compiler
-- ✅ Enhanced hooks
-- ✅ Server Components
-- ✅ Server Actions architecture
-- ✅ Automatic batching
-- ✅ Concurrent rendering
-- ✅ Transitions API
-
-## 🛠️ Development
-
-### Install Dependencies
-
-```bash
-npm install
-```
-
-### Run Development Server
-
-```bash
-npm run dev
-```
-
-### Build for Production
-
-```bash
-npm run build
-```
-
-### Start Production Server
-
-```bash
-npm start
-```
-
-### Lint & Format
-
-```bash
-npm run check  # Check code quality
-npm run fix    # Auto-fix issues
-```
-
-## 📝 Configuration Files
-
-### Next.js Config
-
-[`next.config.ts`](next.config.ts) - React Compiler, experimental features, caching
-
-### TypeScript Config
-
-[`tsconfig.json`](tsconfig.json) - Strict mode, path aliases, JSX configuration
-
-### Components Config
-
-[`components.json`](components.json) - Shadcn/UI setup with RSC enabled
-
-### Tailwind Config
-
-Tailwind CSS 4 with PostCSS plugin system
-
-## 🎯 Key Takeaways
-
-1. **RSC is not just about performance** - It's a new mental model for React apps
-2. **Server components are async by default** - Embrace async/await everywhere
-3. **Client boundaries should be intentional** - Mark components "use client" only when needed
-4. **Composition over props drilling** - Pass server components as children to client components
-5. **Streaming changes everything** - Progressive rendering improves perceived performance
-6. **React 19 + Next.js 16** - The future of React is server-first
-
-## 🔮 Future Exploration
-
-- [ ] Server Actions for mutations
-- [ ] Partial Prerendering (PPR)
-- [ ] Advanced caching strategies
-- [ ] Edge runtime optimization
-- [ ] Incremental Static Regeneration (ISR)
-- [ ] Server Component error boundaries
-- [ ] Advanced streaming patterns
-
-## 📚 References
-
-- [React Server Components RFC](https://github.com/reactjs/rfcs/blob/main/text/0188-server-components.md)
-- [Next.js App Router Docs](https://nextjs.org/docs/app)
-- [React 19 Documentation](https://react.dev)
-- [React Compiler](https://react.dev/learn/react-compiler)
+# React Server Concepts
+
+**An interactive learning platform for React Server Components, modern rendering architecture, and React 19.**
+
+<p>
+  <img src="https://img.shields.io/badge/Next.js-16.1-black?logo=next.js" alt="Next.js" />
+  <img src="https://img.shields.io/badge/React-19.2-blue?logo=react" alt="React" />
+  <img src="https://img.shields.io/badge/TypeScript-5.9-3178c6?logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-4.2-38bdf8?logo=tailwindcss&logoColor=white" alt="Tailwind CSS" />
+  <img src="https://img.shields.io/badge/License-MIT-green" alt="MIT License" />
+</p>
+
+> Every section is a live, working demonstration — not a slide deck. Trace requests from server to browser, break things on purpose, and build real intuition for how modern React works under the hood.
 
 ---
 
-## Built with ❤️ to explore the future of React
+## What's Inside
 
-*This is an experimental project demonstrating React Server Components, React 19 features, and modern React architecture patterns. Use it as a learning resource and reference implementation.*
+| Section | Route | What you'll learn |
+|---------|-------|-------------------|
+| **Server Components** | `/concepts/server-components` | The server/client boundary, serialization, zero-bundle data fetching, composition patterns |
+| **Streaming & Suspense** | `/concepts/streamingandsuspense` | Progressive rendering, nested Suspense boundaries, parallel loading, error boundaries |
+| **React 19 Features** | `/concepts/react-19` | `useOptimistic`, `useFormStatus`, `useActionState`, `useEffectEvent`, Activity API, View Transitions |
+| **Navigation Patterns** | `/concepts/navigation` | Dynamic routes, Pokémon API integration, server/client fetch comparison, network debugging |
+| **Architecture Deep Dives** | `/learning/architecture` | Rendering pipeline, Flight Protocol (RSC wire format), caching layers, hydration, route segments |
+| **Best Practices** | `/learning/best-practices` | Component boundaries, security, caching strategy, streaming patterns, TypeScript patterns |
+
+Each page is backed by dozens of interactive components, animated flow diagrams (via [XYFlow](https://reactflow.dev)), and real API calls to illustrate concepts in practice.
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| Framework | [Next.js 16](https://nextjs.org) with App Router |
+| Language | [TypeScript 5.9](https://www.typescriptlang.org) (strict) |
+| UI | [React 19](https://react.dev), [shadcn/ui](https://ui.shadcn.com) + [Base UI](https://base-ui.com) |
+| Styling | [Tailwind CSS 4](https://tailwindcss.com), [tw-animate-css](https://github.com/Wombosvideo/tw-animate-css) |
+| Animation | [Motion](https://motion.dev) (Framer Motion), View Transitions API |
+| Data | [TanStack React Query](https://tanstack.com/query), [Axios](https://axios-http.com) |
+| State | [Zustand](https://zustand.docs.pmnd.rs), React Context |
+| Forms | [React Hook Form](https://react-hook-form.com), [Zod 4](https://zod.dev) |
+| Diagrams | [XYFlow (React Flow)](https://reactflow.dev) |
+| Icons | [Phosphor Icons](https://phosphoricons.com) |
+| Linting | [Biome](https://biomejs.dev), [Ultracite](https://github.com/haydenbleasel/ultracite) |
+
+---
+
+## Architecture Highlights
+
+### Server-First by Default
+
+Every page is a React Server Component. Client code (`"use client"`) only ships where interactivity is truly required — navigation state, animations, form interactions. This keeps bundles lean and initial loads fast.
+
+### Dual-Runtime Data Fetching
+
+The project fetches from [PokéAPI](https://pokeapi.co) and a custom API, demonstrating both patterns side by side:
+
+```
+Server Component                         Client Component
+  │                                        │
+  ├─ Direct async/await fetch              ├─ React Query + Axios
+  ├─ Zero client bundle cost               ├─ Deduplication & caching
+  ├─ X-Request-Source: server-component    ├─ Optimistic updates
+  └─ Streamed via Suspense                 └─ Background refetch
+```
+
+### Streaming Architecture
+
+Suspense boundaries and streaming SSR deliver an instant shell while data-heavy sections resolve progressively:
+
+```
+Browser request
+    ↓
+HTML shell (layout + navigation)  ←  immediate
+    ↓  stream
+Suspense boundary 1 resolves      ←  ~200ms
+    ↓  stream
+Suspense boundary 2 resolves      ←  ~400ms
+    ↓
+Selective hydration               ←  interactive
+```
+
+### Experimental Next.js Features
+
+```ts
+// next.config.ts
+{
+  reactCompiler: true,         // Automatic memoization — no manual useMemo/useCallback
+  cacheComponents: true,       // RSC payload caching at the component level
+  experimental: {
+    viewTransition: true,      // Native CSS View Transitions for route changes & theme toggle
+  },
+}
+```
+
+---
+
+## Project Structure
+
+```
+app/
+├── layout.tsx                    # Root layout — providers, fonts, metadata
+├── page.tsx                      # Home — animated architecture diagram
+├── about/page.tsx                # About page
+├── api/og/                       # Dynamic OG image generation (1200×630)
+├── concepts/
+│   ├── server-components/        # RSC explainer with live demos
+│   ├── streamingandsuspense/     # Suspense boundary playground
+│   ├── react-19/                 # React 19 hooks & features
+│   └── navigation/              # Dynamic routes + Pokémon demos
+│       ├── [pokemon]/            # /navigation/ditto, /eevee, /mew
+│       └── page.tsx
+└── learning/
+    ├── architecture/             # Deep-dive into rendering pipeline
+    └── best-practices/           # Production patterns & guidelines
+
+components/
+├── HeroSection.tsx               # Animated graph + code showcase
+├── Navigation.tsx                # Floating nav with scroll detection
+├── ThemeToggle.tsx               # View Transitions clip-path theme switch
+├── architecture/                 # 15+ architecture visualization components
+├── best-practices/               # 10+ best-practice section components
+├── flow/                         # 18 interactive flow diagrams (XYFlow)
+├── react19/                      # React 19 feature demos
+├── server/                       # Server component demos + network debugger
+├── streaming/                    # Suspense boundary demos
+└── ui/                           # shadcn/ui component library
+
+providers/
+├── ReactQueryProvider.tsx        # TanStack Query setup
+├── SuspenseProvider.tsx          # Suspense wrapper utilities
+└── ThemeProvider.tsx             # next-themes with View Transitions
+
+lib/
+├── PokemonApi.ts                 # Dual server/client Axios instances (PokéAPI)
+├── NeinApi.ts                    # Dual server/client Axios instances (custom API)
+├── Hl.tsx                        # Syntax highlighting utilities
+└── Utils.ts                      # cn() and helpers
+```
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 20+ (or [Bun](https://bun.sh))
+- Package manager of your choice
+
+### Install & Run
+
+```bash
+# Clone the repository
+git clone https://github.com/Srijan-Baniyal/React-Server-Concepts.git
+cd React-Server-Concepts
+
+# Install dependencies
+npm install
+
+# Start the dev server
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) to start exploring.
+
+### Other Commands
+
+```bash
+npm run build     # Production build
+npm start         # Start production server
+npm run check     # Lint & format check (Biome + Ultracite)
+npm run fix       # Auto-fix lint & format issues
+```
+
+---
+
+## Key Concepts Demonstrated
+
+### React Server Components
+
+- **Server vs Client boundary** — when and why to add `"use client"`
+- **Composition pattern** — passing server components as children to client components
+- **Serialization boundary** — what can and can't cross the wire
+- **Zero-bundle server logic** — heavy computation that never ships to the browser
+
+### Streaming & Suspense
+
+- **Basic Suspense** — single boundary with fallback
+- **Nested Suspense** — multiple boundaries resolving independently
+- **Parallel Suspense** — concurrent data fetching without waterfalls
+- **Error boundaries** — graceful failure handling within streams
+
+### React 19
+
+- **`useOptimistic`** — instant UI feedback before server confirmation
+- **`useFormStatus`** — pending state from parent forms
+- **`useActionState`** — server action return values as state
+- **`useEffectEvent`** — stable event handlers in effects
+- **Activity API** — component lifecycle management
+- **React Compiler** — automatic optimization with zero manual memoization
+
+### Architecture
+
+- Full **rendering pipeline** from request to interactive page
+- **Flight Protocol** — the RSC wire format React uses to serialize component trees
+- **Caching layers** — request dedup, data cache, full-route cache, router cache
+- **Hydration deep dive** — selective hydration and island architecture
+- **Route segments** — layouts, templates, loading, error, and not-found conventions
+
+---
+
+## Design System
+
+- **OKLch color palette** with light/dark mode via `next-themes`
+- **Theme toggle** uses the View Transitions API with a clip-path circle reveal animation
+- **Glassmorphism cards** — `backdrop-blur-sm`, subtle borders, hover state transitions
+- **Scroll-triggered animations** via Motion's `useScroll`, `useSpring`, and `useInView`
+- **Typography** — Montserrat (body), Ubuntu Mono (code), Merriweather (serif accents)
+
+---
+
+## License
+
+[MIT](LICENSE) — Srijan Baniyal

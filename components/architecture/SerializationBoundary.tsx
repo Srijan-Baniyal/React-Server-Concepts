@@ -6,7 +6,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { hl } from "@/lib/Hl";
+import { CodeBlock } from "@/components/ui/code-block";
 
 export function SerializationBoundary() {
 	return (
@@ -50,8 +50,8 @@ export function SerializationBoundary() {
 						<CardDescription>Serialisable by Flight</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-3">
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`// ✓ Primitives
+						<CodeBlock
+							code={`// ✓ Primitives
 <Client name="Alice" count={42} flag={true} />
 
 // ✓ Plain objects & arrays
@@ -69,8 +69,9 @@ async function save(data) { "use server"; ... }
 <Client onSave={save} />
 
 // ✓ React elements / JSX (as children)
-<Client><ServerChild /></Client>`)}
-						</pre>
+<Client><ServerChild /></Client>`}
+							variant="muted"
+						/>
 					</CardContent>
 				</Card>
 
@@ -84,8 +85,8 @@ async function save(data) { "use server"; ... }
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-3">
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`// ✗ Regular functions
+						<CodeBlock
+							code={`// ✗ Regular functions
 <Client onClick={() => console.log("hi")} />
 
 // ✗ Class instances
@@ -101,8 +102,9 @@ async function save(data) { "use server"; ... }
 <Client promise={fetchUser()} />
 
 // ✗ BigInt
-<Client value={BigInt(9007199254740991)} />`)}
-						</pre>
+<Client value={BigInt(9007199254740991)} />`}
+							variant="muted"
+						/>
 					</CardContent>
 				</Card>
 			</div>
@@ -170,12 +172,16 @@ function Client({ userPromise }) {
 								<p className="text-muted-foreground text-sm">{fix}</p>
 							</div>
 							<div className="grid gap-3 md:grid-cols-2">
-								<pre className="rounded-md bg-destructive/5 p-3 font-mono text-xs leading-relaxed">
-									{badCode}
-								</pre>
-								<pre className="rounded-md bg-green-500/5 p-3 font-mono text-xs leading-relaxed">
-									{goodCode}
-								</pre>
+								<CodeBlock
+									className="bg-destructive/5"
+									code={badCode}
+									variant="muted"
+								/>
+								<CodeBlock
+									className="bg-green-500/5"
+									code={goodCode}
+									variant="muted"
+								/>
 							</div>
 						</div>
 					))}
@@ -196,16 +202,17 @@ function Client({ userPromise }) {
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-2">
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`// lib/db.ts
+						<CodeBlock
+							code={`// lib/db.ts
 import "server-only";
 // ↑ Build will throw if this module is imported
 // anywhere inside a "use client" module graph
 
 export async function getSensitiveData() {
   return db.query("SELECT * FROM secrets");
-}`)}
-						</pre>
+}`}
+							variant="muted"
+						/>
 						<p className="text-muted-foreground text-xs">
 							Install with:{" "}
 							<code className="rounded bg-muted px-1">npm i server-only</code>
@@ -225,15 +232,16 @@ export async function getSensitiveData() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-2">
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`// lib/analytics.ts
+						<CodeBlock
+							code={`// lib/analytics.ts
 import "client-only";
 // ↑ Build throws if imported in a Server Component
 
 export function trackEvent(name: string) {
   window.gtag("event", name); // browser-only ✓
-}`)}
-						</pre>
+}`}
+							variant="muted"
+						/>
 						<p className="text-muted-foreground text-xs">
 							Install with:{" "}
 							<code className="rounded bg-muted px-1">npm i client-only</code>

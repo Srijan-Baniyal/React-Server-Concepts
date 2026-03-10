@@ -5,7 +5,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { hl } from "@/lib/Hl";
+import { CodeBlock } from "@/components/ui/code-block";
 
 export function PerformanceOptimizations() {
 	return (
@@ -54,8 +54,9 @@ export function PerformanceOptimizations() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`// ✗ Sends ~2MB of syntax-highlighting library to browser
+						<CodeBlock
+							className="bg-red-500/10"
+							code={`// ✗ Sends ~2MB of syntax-highlighting library to browser
 "use client";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -69,8 +70,9 @@ function CodeBlock({ code, language }) {
   );
 }
 // react-syntax-highlighter: ~2.5 MB minified!
-// Every user downloads this on first load.`)}
-						</pre>
+// Every user downloads this on first load.`}
+							variant="muted"
+						/>
 					</CardContent>
 				</Card>
 
@@ -84,8 +86,9 @@ function CodeBlock({ code, language }) {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`// ✓ Runs on server — library doesn't ship to browser
+						<CodeBlock
+							className="bg-green-500/10"
+							code={`// ✓ Runs on server — library doesn't ship to browser
 import { codeToHtml } from "shiki";
 
 // Server Component — no "use client"
@@ -109,8 +112,9 @@ async function CodeBlock({
     />
   );
 }
-// Client bundle impact: 0 bytes — only HTML/CSS sent ✓`)}
-						</pre>
+// Client bundle impact: 0 bytes — only HTML/CSS sent ✓`}
+							variant="muted"
+						/>
 					</CardContent>
 				</Card>
 			</div>
@@ -127,8 +131,8 @@ async function CodeBlock({
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="grid gap-4 md:grid-cols-2">
-					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`// ✓ Lazy-load heavy Client Components
+					<CodeBlock
+						code={`// ✓ Lazy-load heavy Client Components
 import dynamic from "next/dynamic";
 
 // Only loads when this component renders
@@ -156,10 +160,11 @@ function DashboardPage() {
       <RichTextEditor />       {/* browser-only, loads on demand */}
     </>
   );
-}`)}
-					</pre>
-					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`// ✓ Dynamic import with named export
+}`}
+						variant="muted"
+					/>
+					<CodeBlock
+						code={`// ✓ Dynamic import with named export
 const HeavyModal = dynamic(
   () => import("@/components/modals").then((m) => m.HeavyModal),
   { loading: () => <ModalSkeleton /> },
@@ -181,8 +186,9 @@ function Page() {
 
 // Without dynamic import, RichTextEditor would be
 // downloaded on page load even if never opened.
-// With dynamic + condition: downloaded only when needed.`)}
-					</pre>
+// With dynamic + condition: downloaded only when needed.`}
+						variant="muted"
+					/>
 				</CardContent>
 			</Card>
 
@@ -197,8 +203,9 @@ function Page() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="grid gap-4 md:grid-cols-2">
-					<pre className="rounded-md bg-red-500/10 p-3 font-mono text-xs leading-relaxed">
-						{hl(`// ✗ Raw img tag — no optimization
+					<CodeBlock
+						className="bg-red-500/10"
+						code={`// ✗ Raw img tag — no optimization
 <img
   src="/hero.jpg"
   alt="Hero"
@@ -210,10 +217,12 @@ function Page() {
 // - No lazy loading by default
 // - No CLS prevention (no size reservation)
 // - No blur placeholder
-// Hero image: potentially 2-8 MB to mobile users!`)}
-					</pre>
-					<pre className="rounded-md bg-green-500/10 p-3 font-mono text-xs leading-relaxed">
-						{hl(`import Image from "next/image";
+// Hero image: potentially 2-8 MB to mobile users!`}
+						variant="muted"
+					/>
+					<CodeBlock
+						className="bg-green-500/10"
+						code={`import Image from "next/image";
 
 // ✓ next/image — automatic optimization
 <Image
@@ -236,8 +245,9 @@ function Page() {
   width={400} height={400}
   // lazy loaded automatically ✓
 />
-// Result: WebP/AVIF, right size per device, lazy, CLS-free`)}
-					</pre>
+// Result: WebP/AVIF, right size per device, lazy, CLS-free`}
+						variant="muted"
+					/>
 				</CardContent>
 			</Card>
 
@@ -253,8 +263,8 @@ function Page() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="grid gap-4 md:grid-cols-2">
-					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`import Link from "next/link";
+					<CodeBlock
+						code={`import Link from "next/link";
 
 // ✓ Default <Link> — prefetches on hover/viewport entry
 // Ideal for main navigation
@@ -275,8 +285,9 @@ router.push("/cart");
 router.refresh();
 
 // Replace current history entry (no back button entry)
-router.replace("/login");`)}
-					</pre>
+router.replace("/login");`}
+						variant="muted"
+					/>
 					<div className="space-y-3">
 						<p className="font-medium text-sm">Prefetch Behaviour Summary</p>
 						{[
@@ -324,8 +335,8 @@ router.replace("/login");`)}
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`// app/layout.tsx
+					<CodeBlock
+						code={`// app/layout.tsx
 // ✓ next/font — downloaded at build time, self-hosted
 import { Inter, JetBrains_Mono } from "next/font/google";
 import localFont from "next/font/local";
@@ -361,8 +372,10 @@ export default function RootLayout({ children }) {
 }
 // ✓ No external network request for fonts at runtime
 // ✓ Font files served from your own domain
-// ✓ Automatic size-adjust prevents CLS`)}
-					</pre>
+// ✓ Automatic size-adjust prevents CLS`}
+						filename="app/layout.tsx"
+						variant="muted"
+					/>
 				</CardContent>
 			</Card>
 		</section>

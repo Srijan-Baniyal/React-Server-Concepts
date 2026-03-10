@@ -6,7 +6,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { hl } from "@/lib/Hl";
+import { CodeBlock } from "@/components/ui/code-block";
 
 export function StreamingSuspense() {
 	return (
@@ -34,8 +34,8 @@ export function StreamingSuspense() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="space-y-3">
-					<pre className="overflow-x-auto rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`// Server Component tree with Suspense
+					<CodeBlock
+						code={`// Server Component tree with Suspense
 export default function Dashboard() {
   return (
     <div>
@@ -59,8 +59,9 @@ export default function Dashboard() {
 }
 
 // UserProfile, FeedItems, Notifications all await data concurrently.
-// They DON'T block each other.`)}
-					</pre>
+// They DON'T block each other.`}
+						variant="muted"
+					/>
 
 					<div className="grid gap-3 text-xs sm:grid-cols-3">
 						{[
@@ -98,8 +99,8 @@ export default function Dashboard() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<pre className="overflow-x-auto rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`export default function ProductPage({ params }) {
+					<CodeBlock
+						code={`export default function ProductPage({ params }) {
   return (
     // ① Fast — product info resolves first (~30ms)
     <Suspense fallback={<ProductSkeleton />}>
@@ -118,8 +119,9 @@ Timeline:
   t=30   <ProductDetails> resolves → outer skeleton replaced
            <ReviewsSkeleton> still visible inside
   t=300  <Reviews> resolves → inner skeleton replaced
-           Page fully populated`)}
-					</pre>
+           Page fully populated`}
+						variant="muted"
+					/>
 				</CardContent>
 			</Card>
 
@@ -135,8 +137,8 @@ Timeline:
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<pre className="overflow-x-auto rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`// Server Component — create promise and pass it down
+					<CodeBlock
+						code={`// Server Component — create promise and pass it down
 import { use } from "react";
 
 async function Page() {
@@ -159,8 +161,9 @@ function UserProfile({ userPromise }: { userPromise: Promise<User> }) {
 
 // Why? The Server Component kicks off the fetch immediately.
 // The Client Component suspends without blocking hydration.
-// Waterfall avoided: data fetch starts at server, not after hydration.`)}
-					</pre>
+// Waterfall avoided: data fetch starts at server, not after hydration.`}
+						variant="muted"
+					/>
 				</CardContent>
 			</Card>
 		</section>

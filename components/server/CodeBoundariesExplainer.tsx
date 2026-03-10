@@ -1,48 +1,8 @@
 import { CompositionTreeFlow } from "@/components/flow";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CodeBlock } from "@/components/ui/code-block";
 import { Separator } from "@/components/ui/separator";
-
-function CodeWindow({
-	filename,
-	children,
-	badge,
-	badgeClass,
-}: {
-	filename: string;
-	children: React.ReactNode;
-	badge?: string;
-	badgeClass?: string;
-}) {
-	return (
-		<div className="overflow-hidden rounded-lg border border-border/50">
-			<div className="flex items-center justify-between border-border/40 border-b bg-muted/60 px-4 py-2">
-				<div className="flex items-center gap-2">
-					<div className="flex gap-1.5">
-						<div className="h-2.5 w-2.5 rounded-full bg-red-400/70" />
-						<div className="h-2.5 w-2.5 rounded-full bg-yellow-400/70" />
-						<div className="h-2.5 w-2.5 rounded-full bg-green-400/70" />
-					</div>
-					<span className="font-mono text-muted-foreground text-xs">
-						{filename}
-					</span>
-				</div>
-				{badge && (
-					<span
-						className={`rounded px-2 py-0.5 font-mono text-xs ${badgeClass}`}
-					>
-						{badge}
-					</span>
-				)}
-			</div>
-			<div className="bg-muted/30 p-4 dark:bg-zinc-900/40">
-				<pre className="overflow-x-auto font-mono text-xs leading-relaxed">
-					{children}
-				</pre>
-			</div>
-		</div>
-	);
-}
 
 // Tiny helpers for syntax token colours
 const kw = (s: string) => (
@@ -224,10 +184,11 @@ export function CodeBoundariesExplainer() {
 								</ul>
 							</div>
 
-							<CodeWindow
+							<CodeBlock
 								badge="Server"
-								badgeClass="bg-green-500/10 text-green-700 dark:text-green-400"
+								badgeClassName="bg-green-500/10 text-green-700 dark:text-green-400"
 								filename="app/pokemon/page.tsx"
+								variant="outlined"
 							>
 								<code>
 									{cmt("// No directive — Server Component by default\n")}
@@ -272,7 +233,7 @@ export function CodeBoundariesExplainer() {
 									{punct("} />;\n")}
 									{punct("}")}
 								</code>
-							</CodeWindow>
+							</CodeBlock>
 						</CardContent>
 					</Card>
 
@@ -331,10 +292,11 @@ export function CodeBoundariesExplainer() {
 								</ul>
 							</div>
 
-							<CodeWindow
+							<CodeBlock
 								badge="Client"
-								badgeClass="bg-blue-500/10 text-blue-700 dark:text-blue-400"
+								badgeClassName="bg-blue-500/10 text-blue-700 dark:text-blue-400"
 								filename="components/FavoriteButton.tsx"
+								variant="outlined"
 							>
 								<code>
 									{str('"use client"')}
@@ -383,7 +345,7 @@ export function CodeBoundariesExplainer() {
 									{punct(");\n")}
 									{punct("}")}
 								</code>
-							</CodeWindow>
+							</CodeBlock>
 						</CardContent>
 					</Card>
 				</div>
@@ -454,7 +416,7 @@ export function CodeBoundariesExplainer() {
 										</li>
 									))}
 								</ul>
-								<CodeWindow filename="app/page.tsx">
+								<CodeBlock filename="app/page.tsx" variant="outlined">
 									<code>
 										{cmt("// Server Component — no directive needed\n")}
 										{kw("import")} {"{ FavoriteButton }"} {kw("from")}{" "}
@@ -493,7 +455,7 @@ export function CodeBoundariesExplainer() {
 										{punct(");\n")}
 										{punct("}")}
 									</code>
-								</CodeWindow>
+								</CodeBlock>
 							</CardContent>
 						</Card>
 
@@ -520,7 +482,10 @@ export function CodeBoundariesExplainer() {
 										</li>
 									))}
 								</ul>
-								<CodeWindow filename="components/ClientWrapper.tsx">
+								<CodeBlock
+									filename="components/ClientWrapper.tsx"
+									variant="outlined"
+								>
 									<code>
 										{str('"use client"')}
 										{"\n"}
@@ -552,7 +517,7 @@ export function CodeBoundariesExplainer() {
 										{punct(">\n")}
 										{punct("}")}
 									</code>
-								</CodeWindow>
+								</CodeBlock>
 							</CardContent>
 						</Card>
 					</div>

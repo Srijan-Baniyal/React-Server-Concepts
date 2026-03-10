@@ -6,7 +6,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { hl } from "@/lib/Hl";
+import { CodeBlock } from "@/components/ui/code-block";
 
 export function ComponentTree() {
 	return (
@@ -47,8 +47,8 @@ export function ComponentTree() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-3">
-						<pre className="overflow-x-auto rounded-md bg-muted/30 p-4 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`// modal.tsx  ("use client")
+						<CodeBlock
+							code={`// modal.tsx  ("use client")
 "use client";
 export function Modal({ children }) {
   const [open, setOpen] = useState(false);
@@ -68,8 +68,9 @@ export default function Page() {
       <HeavyServerContent />
     </Modal>
   );
-}`)}
-						</pre>
+}`}
+							variant="muted"
+						/>
 						<p className="text-muted-foreground text-xs">
 							<code className="rounded bg-muted px-1">HeavyServerContent</code>{" "}
 							is serialised into the RSC payload before Modal ever runs in the
@@ -93,8 +94,8 @@ export default function Page() {
 							<p className="font-medium text-destructive text-sm">
 								❌ Anti-pattern: importing SC inside CC
 							</p>
-							<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-								{hl(`// ClientNav.tsx
+							<CodeBlock
+								code={`// ClientNav.tsx
 "use client";
 // ✗ HeavyChart is a Server Component.
 // Importing it here "promotes" it to Client,
@@ -104,15 +105,16 @@ import { HeavyChart } from "./HeavyChart";
 
 export function ClientNav() {
   return <><HeavyChart /></>;
-}`)}
-							</pre>
+}`}
+								variant="muted"
+							/>
 						</div>
 						<div className="space-y-2">
 							<p className="font-medium text-green-600 text-sm">
 								✅ Fix: pass as a prop from a Server parent
 							</p>
-							<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-								{hl(`// page.tsx (Server Component)
+							<CodeBlock
+								code={`// page.tsx (Server Component)
 import { ClientNav } from "./ClientNav";
 import { HeavyChart } from "./HeavyChart";
 
@@ -127,8 +129,9 @@ export default function Page() {
 "use client";
 export function ClientNav({ chart }) {
   return <>{chart}</>; // renders the slot
-}`)}
-							</pre>
+}`}
+								variant="muted"
+							/>
 						</div>
 					</div>
 				</CardContent>

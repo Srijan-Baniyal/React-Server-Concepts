@@ -1,4 +1,41 @@
+import type { Metadata } from "next";
 import { Card, CardContent } from "@/components/ui/card";
+
+export const metadata: Metadata = {
+	title: "Navigation & Partial Updates | React Server Concepts",
+	description:
+		"See how Next.js layouts persist while content streams in — an interactive demo of navigation, partial rendering, and layout persistence with Pokémon data.",
+	alternates: {
+		canonical: "https://rsc.srijanbaniyal.com/concepts/navigation",
+	},
+	openGraph: {
+		title: "Navigation & Partial Updates | React Server Concepts",
+		description:
+			"See how Next.js layouts persist while content streams in — an interactive demo of navigation, partial rendering, and layout persistence.",
+		url: "https://rsc.srijanbaniyal.com/concepts/navigation",
+		images: [
+			{
+				url: "https://rsc.srijanbaniyal.com/api/og",
+				width: 1200,
+				height: 630,
+				alt: "Navigation & Partial Updates",
+			},
+		],
+	},
+	twitter: {
+		title: "Navigation & Partial Updates | React Server Concepts",
+		description:
+			"See how Next.js layouts persist while content streams in — an interactive demo of navigation, partial rendering, and layout persistence.",
+		images: [
+			{
+				url: "https://rsc.srijanbaniyal.com/api/og",
+				alt: "Navigation & Partial Updates",
+				width: 1200,
+				height: 630,
+			},
+		],
+	},
+};
 
 export default function NavigationIndexPage() {
 	return (

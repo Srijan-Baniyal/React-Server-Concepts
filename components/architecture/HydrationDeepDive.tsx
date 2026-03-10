@@ -6,6 +6,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { CodeBlock } from "@/components/ui/code-block";
 
 export function HydrationDeepDive() {
 	return (
@@ -90,12 +91,16 @@ const id = useId(); // Stable across server + client
 						<div className="space-y-2" key={cause}>
 							<p className="font-medium text-sm">{cause}</p>
 							<div className="grid gap-2 sm:grid-cols-2">
-								<pre className="rounded-md bg-red-500/10 p-3 font-mono text-[10px] leading-relaxed">
-									{bad}
-								</pre>
-								<pre className="rounded-md bg-green-500/10 p-3 font-mono text-[10px] leading-relaxed">
-									{good}
-								</pre>
+								<CodeBlock
+									className="bg-red-500/10"
+									code={bad}
+									variant="muted"
+								/>
+								<CodeBlock
+									className="bg-green-500/10"
+									code={good}
+									variant="muted"
+								/>
 							</div>
 						</div>
 					))}

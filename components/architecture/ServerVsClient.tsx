@@ -7,6 +7,8 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { CodeBlock } from "@/components/ui/code-block";
+
 export function ServerVsClient() {
 	return (
 		<section className="space-y-8" id="sc-vs-cc">
@@ -37,11 +39,10 @@ export function ServerVsClient() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-4">
-						<div className="rounded-md bg-muted p-3 font-mono text-xs">
-							<p className="mb-2 text-green-600">
-								{"// No 'use client' directive — Server Component by default"}
-							</p>
-							{`async function ProductPage({ id }: { id: string }) {
+						<CodeBlock
+							code={`// No 'use client' directive — Server Component by default
+
+async function ProductPage({ id }: { id: string }) {
   // ✓ Direct database access — no API layer needed
   const product = await db.product.findUnique({
     where: { id },
@@ -55,7 +56,9 @@ export function ServerVsClient() {
 
   return <ProductDetails product={product} />;
 }`}
-						</div>
+							filename="app/products/[id]/page.tsx"
+							variant="dark"
+						/>
 
 						<div className="grid gap-3 sm:grid-cols-2">
 							<div className="space-y-2">
@@ -115,9 +118,10 @@ export function ServerVsClient() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-4">
-						<div className="rounded-md bg-muted p-3 font-mono text-xs">
-							<p className="mb-2 text-blue-500">"use client";</p>
-							{`import { useState, useEffect } from "react";
+						<CodeBlock
+							code={`"use client";
+
+import { useState, useEffect } from "react";
 
 function Counter() {
   const [count, setCount] = useState(0);
@@ -133,7 +137,9 @@ function Counter() {
     </button>
   );
 }`}
-						</div>
+							filename="components/Counter.tsx"
+							variant="dark"
+						/>
 
 						<div className="grid gap-3 sm:grid-cols-2">
 							<div className="space-y-2">

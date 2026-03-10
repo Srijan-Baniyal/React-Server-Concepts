@@ -5,7 +5,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { hl } from "@/lib/Hl";
+import { CodeBlock } from "@/components/ui/code-block";
 
 export function CompositionPatterns() {
 	return (
@@ -33,8 +33,9 @@ export function CompositionPatterns() {
 							1. Importing a Server Component inside a Client Component
 						</p>
 						<div className="grid gap-2 sm:grid-cols-2">
-							<pre className="rounded-md bg-red-500/10 p-3 font-mono text-[10px] leading-relaxed">
-								{hl(`// ✗ WRONG — will throw an error
+							<CodeBlock
+								className="bg-red-500/10"
+								code={`// ✗ WRONG — will throw an error
 "use client";
 import { UserAvatar } from "./UserAvatar";
 // ↑ Server Component (async, accesses DB)
@@ -43,10 +44,12 @@ function Container() {
   return <UserAvatar userId={state.id} />;
   // React can't render async Server
   // Components inside Client boundary
-}`)}
-							</pre>
-							<pre className="rounded-md bg-green-500/10 p-3 font-mono text-[10px] leading-relaxed">
-								{hl(`// ✓ CORRECT — pass as children prop
+}`}
+								variant="muted"
+							/>
+							<CodeBlock
+								className="bg-green-500/10"
+								code={`// ✓ CORRECT — pass as children prop
 
 // Server Component parent controls the tree
 async function Page() {
@@ -62,8 +65,9 @@ async function Page() {
 "use client";
 function Container({ children }) {
   return <div onClick={...}>{children}</div>;
-}`)}
-							</pre>
+}`}
+								variant="muted"
+							/>
 						</div>
 					</div>
 
@@ -73,17 +77,20 @@ function Container({ children }) {
 							2. Adding Context at the Root (in a Server Component)
 						</p>
 						<div className="grid gap-2 sm:grid-cols-2">
-							<pre className="rounded-md bg-red-500/10 p-3 font-mono text-[10px] leading-relaxed">
-								{hl(`// ✗ WRONG — layout.tsx is a Server Component
+							<CodeBlock
+								className="bg-red-500/10"
+								code={`// ✗ WRONG — layout.tsx is a Server Component
 // createContext + useContext are client-only
 
 import { MyContext } from "./context";
 import { hl } from "@/lib/Hl";
 // This throws because Server Components
-// cannot be a Context Provider`)}
-							</pre>
-							<pre className="rounded-md bg-green-500/10 p-3 font-mono text-[10px] leading-relaxed">
-								{hl(`// ✓ CORRECT — wrap in a thin Client Component
+// cannot be a Context Provider`}
+								variant="muted"
+							/>
+							<CodeBlock
+								className="bg-green-500/10"
+								code={`// ✓ CORRECT — wrap in a thin Client Component
 
 // providers/ThemeProvider.tsx
 "use client";
@@ -102,8 +109,9 @@ export default function Layout({ children }) {
       {children}     {/* ← SC children pass through */}
     </ThemeProvider>
   );
-}`)}
-							</pre>
+}`}
+								variant="muted"
+							/>
 						</div>
 					</div>
 				</CardContent>
@@ -121,8 +129,8 @@ export default function Layout({ children }) {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`// ✓ Works — children are passed from SERVER
+						<CodeBlock
+							code={`// ✓ Works — children are passed from SERVER
 //   so they have already been rendered when
 //   the Client Component receives them
 
@@ -141,8 +149,9 @@ async function DashboardPage() {
 }
 
 // The SC children are rendered server-side.
-// SidebarLayout just renders {children} on client.`)}
-						</pre>
+// SidebarLayout just renders {children} on client.`}
+							variant="muted"
+						/>
 					</CardContent>
 				</Card>
 
@@ -154,8 +163,8 @@ async function DashboardPage() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-2">
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`// lib/db.ts
+						<CodeBlock
+							code={`// lib/db.ts
 import "server-only"; // ← next line throws at BUILD TIME
                        //   if this file is imported from
                        //   a Client Component
@@ -171,8 +180,9 @@ export const STRIPE_SECRET = process.env.STRIPE_SECRET_KEY!;
 // the build fails with:
 //   "This module cannot be imported from a Client Component"
 //
-// Also useful: "client-only" for browser-only code.`)}
-						</pre>
+// Also useful: "client-only" for browser-only code.`}
+							variant="muted"
+						/>
 					</CardContent>
 				</Card>
 
@@ -187,8 +197,8 @@ export const STRIPE_SECRET = process.env.STRIPE_SECRET_KEY!;
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`// ✗ Too broad — entire article is a CC
+						<CodeBlock
+							code={`// ✗ Too broad — entire article is a CC
 "use client";
 async function BlogArticle({ slug }) {
   // Can't use async here either...
@@ -212,8 +222,9 @@ export async function BlogArticle({ slug }) {
       <LikeButton postId={post.id} />  {/* CC */}
     </article>
   );
-}`)}
-						</pre>
+}`}
+							variant="muted"
+						/>
 					</CardContent>
 				</Card>
 
@@ -225,8 +236,8 @@ export async function BlogArticle({ slug }) {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`// Pattern: fetch at top, pass down to CC subtree
+						<CodeBlock
+							code={`// Pattern: fetch at top, pass down to CC subtree
 
 // Server Component (layout.tsx)
 async function Layout({ children }) {
@@ -246,8 +257,9 @@ function NavAvatar() {
 }
 
 // The fetch happens once on the server.
-// The context is only in client subtree.`)}
-						</pre>
+// The context is only in client subtree.`}
+							variant="muted"
+						/>
 					</CardContent>
 				</Card>
 			</div>

@@ -6,7 +6,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { hl } from "@/lib/Hl";
+import { CodeBlock } from "@/components/ui/code-block";
 
 const DECISION_RULES = [
 	{
@@ -127,8 +127,8 @@ export function ComponentBoundaries() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`// ✗ Entire ProductPage is client-side
+						<CodeBlock
+							code={`// ✗ Entire ProductPage is client-side
 "use client";
 
 async function ProductPage({ id }) {
@@ -148,8 +148,9 @@ async function ProductPage({ id }) {
       <AddToCartButton />
     </div>
   );
-}`)}
-						</pre>
+}`}
+							variant="muted"
+						/>
 					</CardContent>
 				</Card>
 
@@ -163,8 +164,8 @@ async function ProductPage({ id }) {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`// ✓ Only interactive leaf is a Client Component
+						<CodeBlock
+							code={`// ✓ Only interactive leaf is a Client Component
 
 // Server Component — fetches data, zero bundle cost
 async function ProductPage({ id }) {
@@ -191,8 +192,9 @@ function AddToCart({ product }) {
       </button>
     </div>
   );
-}`)}
-						</pre>
+}`}
+							variant="muted"
+						/>
 					</CardContent>
 				</Card>
 			</div>
@@ -209,8 +211,8 @@ function AddToCart({ product }) {
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="grid gap-4 sm:grid-cols-2">
-					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`// providers/ThemeProvider.tsx
+					<CodeBlock
+						code={`// providers/ThemeProvider.tsx
 "use client";
 import { ThemeContext } from "./context";
 
@@ -222,10 +224,11 @@ export function ThemeProvider({ children }) {
     </ThemeContext.Provider>
   );
 }
-// ↑ CC — necessary because useState is used`)}
-					</pre>
-					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`// app/layout.tsx (Server Component)
+// ↑ CC — necessary because useState is used`}
+						variant="muted"
+					/>
+					<CodeBlock
+						code={`// app/layout.tsx (Server Component)
 import { ThemeProvider } from "@/providers/ThemeProvider";
 
 export default function RootLayout({ children }) {
@@ -240,8 +243,9 @@ export default function RootLayout({ children }) {
   );
 }
 // ↑ children are SC — still rendered server-side
-// ThemeProvider just wraps without touching them`)}
-					</pre>
+// ThemeProvider just wraps without touching them`}
+						variant="muted"
+					/>
 				</CardContent>
 			</Card>
 
@@ -265,8 +269,8 @@ export default function RootLayout({ children }) {
 						<code className="rounded bg-muted px-1">children</code> prop or any
 						other prop to a Client Component — and it stays server-rendered.
 					</p>
-					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`// ✓ Server Component passes SC children into a CC wrapper
+					<CodeBlock
+						code={`// ✓ Server Component passes SC children into a CC wrapper
 
 // app/dashboard/page.tsx — Server Component
 import { AnimatedLayout } from "@/components/AnimatedLayout"; // CC
@@ -298,8 +302,9 @@ function AnimatedLayout({ children, sidebar }) {
       <main>{children}</main>     {/* server-rendered DataTable */}
     </div>
   );
-}`)}
-					</pre>
+}`}
+						variant="muted"
+					/>
 				</CardContent>
 			</Card>
 		</section>

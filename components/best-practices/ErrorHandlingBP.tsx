@@ -6,7 +6,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { hl } from "@/lib/Hl";
+import { CodeBlock } from "@/components/ui/code-block";
 
 export function ErrorHandlingBP() {
 	return (
@@ -77,8 +77,8 @@ export function ErrorHandlingBP() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="grid gap-4 md:grid-cols-2">
-					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`// app/products/error.tsx
+					<CodeBlock
+						code={`// app/products/error.tsx
 "use client"; // ← Required — must be a Client Component
 
 import { useEffect } from "react";
@@ -109,10 +109,12 @@ export default function Error({ error, reset }: Props) {
       </button>
     </div>
   );
-}`)}
-					</pre>
-					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`// ✓ Granular error boundaries — scope errors to segments
+}`}
+						filename="app/products/error.tsx"
+						variant="muted"
+					/>
+					<CodeBlock
+						code={`// ✓ Granular error boundaries — scope errors to segments
 
 // app/
 //   layout.tsx         (error boundary here = root errors)
@@ -132,8 +134,9 @@ export default function Error({ error, reset }: Props) {
 
 // If you only have /products/error.tsx:
 // → It handles both /products and /products/[id] errors
-// → Useful for simple apps; too coarse for large UIs`)}
-					</pre>
+// → Useful for simple apps; too coarse for large UIs`}
+						variant="muted"
+					/>
 				</CardContent>
 			</Card>
 
@@ -149,8 +152,8 @@ export default function Error({ error, reset }: Props) {
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="grid gap-4 md:grid-cols-2">
-					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`// app/products/[id]/page.tsx
+					<CodeBlock
+						code={`// app/products/[id]/page.tsx
 import { notFound } from "next/navigation";
 
 async function ProductPage({ params }) {
@@ -172,10 +175,12 @@ async function ProductPage({ params }) {
   if (product.ownerId !== session.user.id) notFound();
 
   return <ProductView product={product} />;
-}`)}
-					</pre>
-					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`// app/products/[id]/not-found.tsx
+}`}
+						filename="app/products/[id]/page.tsx"
+						variant="muted"
+					/>
+					<CodeBlock
+						code={`// app/products/[id]/not-found.tsx
 // Context-aware 404 — stays inside the products layout
 
 export default function ProductNotFound() {
@@ -206,8 +211,10 @@ export default function ProductNotFound() {
 
 // ✓ Navigation + layout still visible
 // ✓ Context-aware message
-// ✓ Actionable links to recover`)}
-					</pre>
+// ✓ Actionable links to recover`}
+						filename="app/products/[id]/not-found.tsx"
+						variant="muted"
+					/>
 				</CardContent>
 			</Card>
 
@@ -223,8 +230,9 @@ export default function ProductNotFound() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="grid gap-4 md:grid-cols-2">
-					<pre className="rounded-md bg-red-500/10 p-3 font-mono text-xs leading-relaxed">
-						{hl(`// ✗ Throwing generic errors — bad UX
+					<CodeBlock
+						className="bg-red-500/10"
+						code={`// ✗ Throwing generic errors — bad UX
 "use server";
 export async function updateProfile(formData: FormData) {
   const name = formData.get("name") as string;
@@ -233,10 +241,12 @@ export async function updateProfile(formData: FormData) {
   // The error boundary above the form catches it instead —
   // replacing the entire form with the error UI.
   await db.user.update({ where: { id: ... }, data: { name } });
-}`)}
-					</pre>
-					<pre className="rounded-md bg-green-500/10 p-3 font-mono text-xs leading-relaxed">
-						{hl(`// ✓ Return structured errors — display inline
+}`}
+						variant="muted"
+					/>
+					<CodeBlock
+						className="bg-green-500/10"
+						code={`// ✓ Return structured errors — display inline
 "use server";
 export async function updateProfile(
   _prev: FormState,
@@ -263,8 +273,9 @@ export async function updateProfile(
       message: "Failed to update profile. Please try again.",
     };
   }
-}`)}
-					</pre>
+}`}
+						variant="muted"
+					/>
 				</CardContent>
 			</Card>
 
@@ -280,8 +291,8 @@ export async function updateProfile(
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`// ✓ Wrap risky interactive widgets with an error boundary
+					<CodeBlock
+						code={`// ✓ Wrap risky interactive widgets with an error boundary
 "use client";
 import { ErrorBoundary } from "react-error-boundary";
 
@@ -314,8 +325,9 @@ function Dashboard() {
   );
 }
 // If StockChart throws, only that widget shows an error.
-// NewsWidget continues to function normally. ✓`)}
-					</pre>
+// NewsWidget continues to function normally. ✓`}
+						variant="muted"
+					/>
 				</CardContent>
 			</Card>
 		</section>

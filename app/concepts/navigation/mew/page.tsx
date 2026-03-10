@@ -1,7 +1,31 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PokemonAPI } from "@/lib/PokemonApi";
+
+export const metadata: Metadata = {
+	title: "Mew — Navigation Demo | React Server Concepts",
+	description:
+		"A server-streamed Pokémon page for Mew demonstrating Next.js layout persistence, partial rendering, and streaming with Suspense.",
+	alternates: {
+		canonical: "https://rsc.srijanbaniyal.com/concepts/navigation/mew",
+	},
+	openGraph: {
+		title: "Mew — Navigation Demo | React Server Concepts",
+		description:
+			"A server-streamed Pokémon page for Mew demonstrating Next.js layout persistence, partial rendering, and streaming.",
+		url: "https://rsc.srijanbaniyal.com/concepts/navigation/mew",
+		images: [
+			{
+				url: "https://rsc.srijanbaniyal.com/api/og",
+				width: 1200,
+				height: 630,
+				alt: "Mew Navigation Demo",
+			},
+		],
+	},
+};
 
 interface PokemonType {
 	type: {

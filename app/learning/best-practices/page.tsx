@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { BestPracticesChecklist } from "@/components/best-practices/BestPracticesChecklist";
 import { BestPracticesHero } from "@/components/best-practices/BestPracticesHero";
 import { CachingStrategy } from "@/components/best-practices/CachingStrategy";
@@ -10,6 +11,42 @@ import { ServerActionsBP } from "@/components/best-practices/ServerActionsBP";
 import { StreamingPatterns } from "@/components/best-practices/StreamingPatterns";
 import { TypeScriptPatterns } from "@/components/best-practices/TypeScriptPatterns";
 import { Separator } from "@/components/ui/separator";
+
+export const metadata: Metadata = {
+	title: "Best Practices | React Server Concepts",
+	description:
+		"Actionable best practices for building with React Server Components — from component boundaries and data fetching to caching, streaming, security, and performance optimization.",
+	alternates: {
+		canonical: "https://rsc.srijanbaniyal.com/learning/best-practices",
+	},
+	openGraph: {
+		title: "Best Practices | React Server Concepts",
+		description:
+			"Actionable best practices for building with React Server Components — from component boundaries and data fetching to caching, streaming, security, and performance optimization.",
+		url: "https://rsc.srijanbaniyal.com/learning/best-practices",
+		images: [
+			{
+				url: "https://rsc.srijanbaniyal.com/api/og",
+				width: 1200,
+				height: 630,
+				alt: "Best Practices",
+			},
+		],
+	},
+	twitter: {
+		title: "Best Practices | React Server Concepts",
+		description:
+			"Actionable best practices for building with React Server Components — from component boundaries and data fetching to caching, streaming, security, and performance optimization.",
+		images: [
+			{
+				url: "https://rsc.srijanbaniyal.com/api/og",
+				alt: "Best Practices",
+				width: 1200,
+				height: 630,
+			},
+		],
+	},
+};
 
 export default function BestPracticesPage() {
 	return (

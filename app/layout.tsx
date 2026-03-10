@@ -32,7 +32,6 @@ export const metadata: Metadata = {
 		"Streaming",
 		"Suspense",
 		"React Architecture",
-		"Srijan Baniyal",
 	],
 	authors: [{ name: "Srijan Baniyal", url: "https://srijanbaniyal.com" }],
 	creator: "Srijan Baniyal",

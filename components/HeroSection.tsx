@@ -25,6 +25,7 @@ import {
 	useRef,
 	useState,
 } from "react";
+import { CodeBlock } from "@/components/ui/code-block";
 import { cn } from "@/lib/Utils";
 
 interface Node {
@@ -243,113 +244,6 @@ const HERO_STATS = [
 	{ label: "Less JS Bundle", value: "−60%" },
 	{ label: "Type Safe", value: "100%" },
 ] as const;
-
-// Syntax-highlighting helpers
-const CODE_KEYWORDS = new Set([
-	"async",
-	"function",
-	"const",
-	"let",
-	"var",
-	"return",
-	"await",
-	"true",
-	"false",
-	"null",
-	"undefined",
-	"import",
-	"export",
-	"default",
-	"from",
-	"new",
-	"typeof",
-	"if",
-	"else",
-	"class",
-	"extends",
-	"interface",
-	"type",
-]);
-
-const RE_COMMENT = /^\s*\//;
-const RE_DIRECTIVE = /^\s*['"]use (client|server)['"]\s*;?\s*$/;
-const RE_CAPITAL = /^[A-Z]/;
-const RE_TOKEN =
-	/("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`)|(<\/?[A-Za-z][A-Za-z0-9.]*(?:\s*\/>)?\s*>?)|([A-Za-z_$][A-Za-z0-9_$]*)|([0-9]+(?:\.[0-9]+)?)|([\s\S])/g;
-
-function tokenizeLine(line: string): Array<{ cls: string; text: string }> {
-	if (RE_COMMENT.test(line) && line.trimStart().startsWith("//")) {
-		return [{ text: line, cls: "text-slate-500 italic" }];
-	}
-	if (RE_DIRECTIVE.test(line)) {
-		return [{ text: line, cls: "text-amber-400" }];
-	}
-	const tokens: Array<{ cls: string; text: string }> = [];
-	const re = new RegExp(RE_TOKEN.source, "g");
-	let m: RegExpExecArray | null;
-	// biome-ignore lint/suspicious/noAssignInExpressions: intentional regex loop
-	while ((m = re.exec(line)) !== null) {
-		const [, str, tag, ident, num] = m;
-		if (str) {
-			tokens.push({ text: str, cls: "text-amber-400" });
-		} else if (tag) {
-			tokens.push({ text: tag, cls: "text-blue-400" });
-		} else if (ident) {
-			if (CODE_KEYWORDS.has(ident)) {
-				tokens.push({ text: ident, cls: "text-purple-400" });
-			} else if (RE_CAPITAL.test(ident)) {
-				tokens.push({ text: ident, cls: "text-cyan-400" });
-			} else {
-				tokens.push({ text: ident, cls: "text-slate-200" });
-			}
-		} else if (num) {
-			tokens.push({ text: num, cls: "text-emerald-400" });
-		} else {
-			tokens.push({ text: m[0], cls: "text-slate-400" });
-		}
-	}
-	return tokens;
-}
-
-function StepCodeBlock({ code, filename }: { code: string; filename: string }) {
-	const lines = code.split("\n");
-	return (
-		<div className="flex h-full flex-col overflow-hidden rounded-xl border border-white/10 bg-zinc-950 font-mono text-xs shadow-2xl">
-			{/* macOS-style header */}
-			<div className="flex shrink-0 items-center gap-2 border-white/10 border-b bg-zinc-900 px-4 py-2.5">
-				<div className="flex gap-1.5">
-					<div className="size-3 rounded-full bg-red-500/80" />
-					<div className="size-3 rounded-full bg-yellow-500/80" />
-					<div className="size-3 rounded-full bg-green-500/80" />
-				</div>
-				<span className="ml-3 select-none text-slate-400 text-xs">
-					{filename}
-				</span>
-			</div>
-			{/* Code lines */}
-			<div className="overflow-auto p-4">
-				<pre className="leading-6">
-					{lines.map((line, i) => (
-						// biome-ignore lint/suspicious/noArrayIndexKey: static code snippet lines never reorder
-						<div className="flex" key={i}>
-							<span className="mr-4 w-5 shrink-0 select-none text-right text-slate-600">
-								{i + 1}
-							</span>
-							<span>
-								{tokenizeLine(line).map((tok, j) => (
-									// biome-ignore lint/suspicious/noArrayIndexKey: static token order is stable
-									<span className={tok.cls} key={j}>
-										{tok.text}
-									</span>
-								))}
-							</span>
-						</div>
-					))}
-				</pre>
-			</div>
-		</div>
-	);
-}
 
 // Animated Architecture Diagram Component - No Repeat
 function AnimatedGraph({ skipAnimation }: { skipAnimation: boolean }) {
@@ -1132,9 +1026,11 @@ export default function HeroSection() {
 										whileInView={{ opacity: 1, scale: 1, rotateY: 0 }}
 									>
 										<div className="pointer-events-none absolute inset-0 z-10 bg-linear-to-br from-primary/15 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-										<StepCodeBlock
+										<CodeBlock
 											code={STEP_SNIPPETS[index]}
 											filename={STEP_FILENAMES[index]}
+											showLineNumbers
+											variant="dark"
 										/>
 									</motion.div>
 								</div>

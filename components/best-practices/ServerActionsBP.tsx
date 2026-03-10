@@ -5,7 +5,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { hl } from "@/lib/Hl";
+import { CodeBlock } from "@/components/ui/code-block";
 
 export function ServerActionsBP() {
 	return (
@@ -88,8 +88,8 @@ export function ServerActionsBP() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="grid gap-4 md:grid-cols-2">
-					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`// actions/post.ts
+					<CodeBlock
+						code={`// actions/post.ts
 "use server";
 
 import { z } from "zod";
@@ -150,11 +150,12 @@ export async function createPost(
   revalidatePath("/blog");
 
   return { success: true, message: "Post created!" };
-}`)}
-					</pre>
-					<div className="space-y-4">
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`// components/CreatePostForm.tsx
+}`}
+						filename="actions/post.ts"
+						variant="muted"
+					/>
+					<CodeBlock
+						code={`// components/CreatePostForm.tsx
 "use client";
 
 import { useActionState } from "react";
@@ -208,9 +209,10 @@ export function CreatePostForm() {
       <SubmitButton />
     </form>
   );
-}`)}
-						</pre>
-					</div>
+}`}
+						filename="components/CreatePostForm.tsx"
+						variant="muted"
+					/>
 				</CardContent>
 			</Card>
 
@@ -225,8 +227,8 @@ export function CreatePostForm() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`"use client";
+					<CodeBlock
+						code={`"use client";
 import { useOptimistic, useTransition } from "react";
 import { toggleLike } from "@/actions/post";
 
@@ -260,8 +262,9 @@ function LikeButton({ postId, initialLikes, initialLiked }) {
       {optimisticState.liked ? "❤️" : "🤍"} {optimisticState.likes}
     </button>
   );
-}`)}
-					</pre>
+}`}
+						variant="muted"
+					/>
 				</CardContent>
 			</Card>
 
@@ -273,8 +276,9 @@ function LikeButton({ postId, initialLikes, initialLiked }) {
 					</CardTitle>
 				</CardHeader>
 				<CardContent className="grid gap-4 md:grid-cols-2">
-					<pre className="rounded-md bg-red-500/10 p-3 font-mono text-xs leading-relaxed">
-						{hl(`// ✗ No authentication — any user can call this
+					<CodeBlock
+						className="bg-red-500/10"
+						code={`// ✗ No authentication — any user can call this
 "use server";
 export async function deletePost(postId: string) {
   // No session check!
@@ -289,10 +293,12 @@ export async function deletePost(postId: string) {
 
   // But no check that session.user owns this post!
   await db.post.delete({ where: { id: postId } });
-}`)}
-					</pre>
-					<pre className="rounded-md bg-green-500/10 p-3 font-mono text-xs leading-relaxed">
-						{hl(`// ✓ Authentication AND authorisation
+}`}
+						variant="muted"
+					/>
+					<CodeBlock
+						className="bg-green-500/10"
+						code={`// ✓ Authentication AND authorisation
 "use server";
 export async function deletePost(postId: string) {
   const session = await auth();
@@ -310,8 +316,9 @@ export async function deletePost(postId: string) {
 
   await db.post.delete({ where: { id: postId } });
   revalidatePath("/blog");
-}`)}
-					</pre>
+}`}
+						variant="muted"
+					/>
 				</CardContent>
 			</Card>
 		</section>

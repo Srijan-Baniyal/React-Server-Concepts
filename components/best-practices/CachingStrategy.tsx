@@ -6,7 +6,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { hl } from "@/lib/Hl";
+import { CodeBlock } from "@/components/ui/code-block";
 
 const CACHE_LAYERS = [
 	{
@@ -91,8 +91,8 @@ export function CachingStrategy() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="grid gap-4 md:grid-cols-2">
-					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{`// Static data — cache indefinitely (default)
+					<CodeBlock
+						code={`// Static data — cache indefinitely (default)
 const config = await fetch("/api/config");
 
 // Time-based revalidation — refresh every hour
@@ -112,9 +112,10 @@ const products = await fetch("/api/products", {
     revalidate: 300, // also revalidate every 5 min
   },
 });`}
-					</pre>
-					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{`// Invalidation from a Server Action
+						variant="muted"
+					/>
+					<CodeBlock
+						code={`// Invalidation from a Server Action
 "use server";
 import {
   revalidateTag,
@@ -140,7 +141,8 @@ export async function POST(req: Request) {
   revalidateTag(tag);
   return Response.json({ revalidated: true });
 }`}
-					</pre>
+						variant="muted"
+					/>
 				</CardContent>
 			</Card>
 
@@ -156,8 +158,8 @@ export async function POST(req: Request) {
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="grid gap-4 md:grid-cols-2">
-					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`// Any of these opts the ENTIRE route out of
+					<CodeBlock
+						code={`// Any of these opts the ENTIRE route out of
 // Full Route Cache:
 
 import { cookies, headers } from "next/headers";
@@ -176,10 +178,11 @@ noStore(); // force-dynamic for this component
 await fetch(url, { cache: "no-store" });
 
 // ⚠ Only call these when you actually need
-// per-request dynamic data. Static is always faster.`)}
-					</pre>
-					<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{`// ✓ Route caching config via segment options
+// per-request dynamic data. Static is always faster.`}
+						variant="muted"
+					/>
+					<CodeBlock
+						code={`// ✓ Route caching config via segment options
 // app/dashboard/layout.tsx
 
 // Force all routes in this segment to be dynamic
@@ -199,7 +202,8 @@ export const revalidate = 300; // 5 min for this page only
 
 // ✓ Best practice: be explicit. Don't let
 // accidental cookies() calls make routes dynamic.`}
-					</pre>
+						variant="muted"
+					/>
 				</CardContent>
 			</Card>
 
@@ -215,8 +219,8 @@ export const revalidate = 300; // 5 min for this page only
 				</CardHeader>
 				<CardContent className="space-y-4">
 					<div className="grid gap-4 md:grid-cols-2">
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{hl(`// ✓ Wrap at the data-access layer, not at
+						<CodeBlock
+							code={`// ✓ Wrap at the data-access layer, not at
 // the component level
 
 // lib/queries/user.ts
@@ -237,10 +241,11 @@ export const getUserWithPosts = cache(
     });
   }
 );
-// Each unique (function + args) gets one cached result.`)}
-						</pre>
-						<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-							{`// ✓ OK to call in multiple components
+// Each unique (function + args) gets one cached result.`}
+							variant="muted"
+						/>
+						<CodeBlock
+							code={`// ✓ OK to call in multiple components
 // React.cache is per-render, not global state
 
 // Navbar.tsx
@@ -258,7 +263,8 @@ const user = await getUser(session.userId); // ← cache HIT ✓
 // incoming Request — it is NOT shared
 // across users or deployments.
 // Use fetch() + Data Cache for cross-request caching.`}
-						</pre>
+							variant="muted"
+						/>
 					</div>
 				</CardContent>
 			</Card>

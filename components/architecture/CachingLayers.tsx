@@ -7,6 +7,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { CodeBlock } from "@/components/ui/code-block";
 
 const CACHES = [
 	{
@@ -132,9 +133,11 @@ export function CachingLayers() {
 							</CardHeader>
 							<CardContent className="space-y-3">
 								<p className="text-muted-foreground text-sm">{description}</p>
-								<pre className="overflow-x-auto rounded-md bg-background/60 p-3 font-mono text-[10px] leading-relaxed">
-									{code}
-								</pre>
+								<CodeBlock
+									className="bg-background/60"
+									code={code}
+									variant="muted"
+								/>
 							</CardContent>
 						</Card>
 					)

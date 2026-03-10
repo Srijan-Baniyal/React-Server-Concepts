@@ -6,7 +6,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { hl } from "@/lib/Hl";
+import { CodeBlock } from "@/components/ui/code-block";
 
 const STRATEGIES = [
 	{
@@ -119,9 +119,11 @@ export function RenderingPipeline() {
 										<span className="text-muted-foreground">{useCase}</span>
 									</p>
 								</div>
-								<pre className="overflow-x-auto rounded-md bg-background/60 p-2 font-mono text-[10px] leading-relaxed">
-									{code}
-								</pre>
+								<CodeBlock
+									className="bg-background/60"
+									code={code}
+									variant="muted"
+								/>
 							</CardContent>
 						</Card>
 					)
@@ -140,8 +142,8 @@ export function RenderingPipeline() {
 					<div className="grid gap-4 md:grid-cols-2">
 						<div className="space-y-2">
 							<p className="font-medium text-sm">Dynamic signals (automatic)</p>
-							<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-								{hl(`import { cookies }    from "next/headers";
+							<CodeBlock
+								code={`import { cookies }    from "next/headers";
 import { headers }    from "next/headers";
 import { connection }  from "next/server";
 
@@ -149,13 +151,14 @@ import { connection }  from "next/server";
 const c = await cookies();    // reads request
 const h = await headers();    // reads request
 await connection();           // explicit opt-in
-const { searchParams } = props; // from URL`)}
-							</pre>
+const { searchParams } = props; // from URL`}
+								variant="muted"
+							/>
 						</div>
 						<div className="space-y-2">
 							<p className="font-medium text-sm">Force via route config</p>
-							<pre className="rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-								{hl(`// Force static (errors on dynamic API use)
+							<CodeBlock
+								code={`// Force static (errors on dynamic API use)
 export const dynamic = "force-static";
 
 // Force dynamic (always SSR)
@@ -168,8 +171,9 @@ export const dynamic = "error"; // fail-fast
 export const revalidate = 3600;
 
 // Partial Pre-Rendering (Next.js 15+)
-export const experimental_ppr = true;`)}
-							</pre>
+export const experimental_ppr = true;`}
+								variant="muted"
+							/>
 						</div>
 					</div>
 				</CardContent>
@@ -189,8 +193,8 @@ export const experimental_ppr = true;`)}
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="space-y-3">
-					<pre className="overflow-x-auto rounded-md bg-muted/30 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-900/40">
-						{hl(`// app/blog/[slug]/page.tsx
+					<CodeBlock
+						code={`// app/blog/[slug]/page.tsx
 
 // Called at BUILD TIME — Next.js pre-renders every slug
 export async function generateStaticParams() {
@@ -208,8 +212,9 @@ export default async function BlogPost({ params }) {
 
 // Optionally control what happens for unknown slugs:
 export const dynamicParams = false; // 404
-export const dynamicParams = true;  // SSR on first visit (default)`)}
-					</pre>
+export const dynamicParams = true;  // SSR on first visit (default)`}
+						variant="muted"
+					/>
 					<p className="text-muted-foreground text-xs">
 						<code className="rounded bg-muted px-1">generateStaticParams</code>{" "}
 						works in tandem with the Data Cache — even paths fetched at runtime

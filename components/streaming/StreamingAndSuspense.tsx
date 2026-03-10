@@ -62,18 +62,18 @@ function hl(code: string): ReactNode {
 
 export default function StreamingAndSuspense() {
 	return (
-		<div className="container mx-auto max-w-7xl space-y-16 px-4 pt-24 pb-16 sm:px-6 md:pt-28 lg:px-8">
+		<div className="container mx-auto max-w-7xl space-y-10 px-4 pt-20 pb-12 sm:space-y-16 sm:px-6 md:pt-28 lg:px-8">
 			{/* ─── Hero ────────────────────────────────────────────────── */}
 			<section className="space-y-6">
-				<div className="flex items-start gap-5">
-					<div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-primary to-primary/50 shadow-lg shadow-primary/20">
-						<span className="text-3xl">⚡</span>
+				<div className="flex items-start gap-3 sm:gap-5">
+					<div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-primary to-primary/50 shadow-lg shadow-primary/20 sm:h-16 sm:w-16">
+						<span className="text-2xl sm:text-3xl">⚡</span>
 					</div>
 					<div>
-						<h1 className="font-bold text-5xl tracking-tight">
+						<h1 className="font-bold text-3xl tracking-tight sm:text-5xl">
 							Streaming &amp; Suspense
 						</h1>
-						<p className="mt-2 text-lg text-muted-foreground">
+						<p className="mt-2 text-base text-muted-foreground sm:text-lg">
 							Progressive rendering with error boundaries in React Server
 							Components
 						</p>
@@ -99,7 +99,7 @@ export default function StreamingAndSuspense() {
 			{/* ─── What is Streaming ───────────────────────────────────── */}
 			<section className="space-y-8">
 				<div>
-					<h2 className="mb-2 font-semibold text-3xl tracking-tight">
+					<h2 className="mb-2 font-semibold text-2xl tracking-tight sm:text-3xl">
 						What is Streaming? 🌊
 					</h2>
 					<p className="text-muted-foreground">
@@ -164,7 +164,7 @@ export default function StreamingAndSuspense() {
 			{/* ─── How Suspense Works ──────────────────────────────────── */}
 			<section className="space-y-8">
 				<div>
-					<h2 className="mb-2 font-semibold text-3xl tracking-tight">
+					<h2 className="mb-2 font-semibold text-2xl tracking-tight sm:text-3xl">
 						How Suspense Works 🎯
 					</h2>
 					<p className="text-muted-foreground">
@@ -357,7 +357,7 @@ export default function StreamingAndSuspense() {
 			{/* ─── Streaming Architecture ──────────────────────────────── */}
 			<section className="space-y-8">
 				<div>
-					<h2 className="mb-2 font-semibold text-3xl tracking-tight">
+					<h2 className="mb-2 font-semibold text-2xl tracking-tight sm:text-3xl">
 						Streaming Architecture 🏗️
 					</h2>
 					<p className="text-muted-foreground">
@@ -482,7 +482,7 @@ export default function StreamingAndSuspense() {
 			{/* ─── Common Patterns ─────────────────────────────────────── */}
 			<section className="space-y-8">
 				<div>
-					<h2 className="mb-2 font-semibold text-3xl tracking-tight">
+					<h2 className="mb-2 font-semibold text-2xl tracking-tight sm:text-3xl">
 						Common Patterns 📝
 					</h2>
 					<p className="text-muted-foreground">
@@ -718,7 +718,7 @@ export default function ParentComponent() {
 			{/* ─── Advanced Concepts ───────────────────────────────────── */}
 			<section className="space-y-8">
 				<div>
-					<h2 className="mb-2 font-semibold text-3xl tracking-tight">
+					<h2 className="mb-2 font-semibold text-2xl tracking-tight sm:text-3xl">
 						Advanced Concepts 🎓
 					</h2>
 					<p className="text-muted-foreground">
@@ -883,7 +883,7 @@ export function ProductList() {
 			{/* ─── Performance Impact ──────────────────────────────────── */}
 			<section className="space-y-8">
 				<div>
-					<h2 className="mb-2 font-semibold text-3xl tracking-tight">
+					<h2 className="mb-2 font-semibold text-2xl tracking-tight sm:text-3xl">
 						Performance Impact 📊
 					</h2>
 					<p className="text-muted-foreground">

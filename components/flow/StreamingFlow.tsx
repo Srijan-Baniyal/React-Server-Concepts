@@ -193,5 +193,5 @@ const edges: Edge[] = [
 ];
 
 export function StreamingFlow() {
-	return <FlowDiagram edges={edges} height="700px" nodes={nodes} />;
+	return <FlowDiagram edges={edges} height="450px" className="sm:h-[700px]!" nodes={nodes} />;
 }

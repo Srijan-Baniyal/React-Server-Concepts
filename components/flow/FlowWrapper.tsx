@@ -43,7 +43,7 @@ export function FlowDiagram({
 	const [edges] = useEdgesState(initialEdges);
 
 	return (
-		<div className={className} style={{ height, width: "100%", ...style }}>
+		<div className={className} style={{ height, width: "100%", minHeight: 0, ...style }}>
 			<ReactFlowProvider>
 				<ReactFlow
 					colorMode="system"
@@ -51,9 +51,9 @@ export function FlowDiagram({
 					edgesReconnectable={false}
 					elementsSelectable={false}
 					fitView={fitView}
-					fitViewOptions={{ padding: 0.2 }}
+					fitViewOptions={{ padding: 0.15 }}
 					maxZoom={1.5}
-					minZoom={0.3}
+					minZoom={0.2}
 					nodes={nodes}
 					nodesConnectable={false}
 					nodesDraggable={false}
@@ -67,7 +67,8 @@ export function FlowDiagram({
 					)}
 					{showControls && (
 						<Controls
-							fitViewOptions={{ padding: 0.2 }}
+							className="hidden sm:flex"
+							fitViewOptions={{ padding: 0.15 }}
 							showInteractive={false}
 						/>
 					)}

@@ -262,7 +262,8 @@ export function BlockingVsStreamingFlow() {
 				</p>
 				<FlowDiagram
 					edges={blockingEdges}
-					height="460px"
+					height="320px"
+					className="sm:h-[460px]!"
 					nodes={blockingNodes}
 				/>
 			</div>
@@ -272,7 +273,8 @@ export function BlockingVsStreamingFlow() {
 				</p>
 				<FlowDiagram
 					edges={streamingEdges}
-					height="460px"
+					height="320px"
+					className="sm:h-[460px]!"
 					nodes={streamingNodes}
 				/>
 			</div>

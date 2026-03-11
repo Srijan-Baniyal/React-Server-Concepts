@@ -37,7 +37,7 @@ export const metadata: Metadata = {
 	creator: "Srijan Baniyal",
 	publisher: "Srijan Baniyal",
 	alternates: {
-		canonical: "https://rsc.srijanbaniyal.com",
+		canonical: "https://reactserverthings.vercel.app",
 	},
 	icons: {
 		icon: [
@@ -81,17 +81,17 @@ export const metadata: Metadata = {
 		title: "React Server Concepts",
 		description:
 			"An interactive exploration of React Server Components, RSC architecture, React 19 features, streaming, suspense, and modern Next.js patterns.",
-		url: "https://rsc.srijanbaniyal.com",
+		url: "https://reactserverthings.vercel.app",
 		siteName: "React Server Concepts",
 		images: [
 			{
-				url: "https://rsc.srijanbaniyal.com/api/og",
+				url: "https://reactserverthings.vercel.app/api/og",
 				width: 1200,
 				height: 630,
 				alt: "React Server Concepts",
 			},
 			{
-				url: "https://rsc.srijanbaniyal.com/api/og",
+				url: "https://reactserverthings.vercel.app/api/og",
 				width: 1200,
 				height: 630,
 				alt: "React Server Concepts",
@@ -108,7 +108,7 @@ export const metadata: Metadata = {
 			"An interactive exploration of React Server Components, RSC architecture, React 19 features, streaming, suspense, and modern Next.js patterns.",
 		images: [
 			{
-				url: "https://rsc.srijanbaniyal.com/api/og",
+				url: "https://reactserverthings.vercel.app/api/og",
 				alt: "React Server Concepts",
 				width: 1200,
 				height: 630,
@@ -117,7 +117,7 @@ export const metadata: Metadata = {
 	},
 	category: "Technology",
 	classification: "Portfolio Website",
-	metadataBase: new URL("https://rsc.srijanbaniyal.com"),
+	metadataBase: new URL("https://reactserverthings.vercel.app"),
 	other: {
 		"article:author": "https://www.x.com/srijanbaniyal",
 		"profile:username": "srijanbaniyal",

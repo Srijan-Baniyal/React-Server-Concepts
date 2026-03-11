@@ -17,16 +17,16 @@ export const metadata: Metadata = {
 	description:
 		"Actionable best practices for building with React Server Components — from component boundaries and data fetching to caching, streaming, security, and performance optimization.",
 	alternates: {
-		canonical: "https://rsc.srijanbaniyal.com/learning/best-practices",
+		canonical: "https://reactserverthings.vercel.app/learning/best-practices",
 	},
 	openGraph: {
 		title: "Best Practices | React Server Concepts",
 		description:
 			"Actionable best practices for building with React Server Components — from component boundaries and data fetching to caching, streaming, security, and performance optimization.",
-		url: "https://rsc.srijanbaniyal.com/learning/best-practices",
+		url: "https://reactserverthings.vercel.app/learning/best-practices",
 		images: [
 			{
-				url: "https://rsc.srijanbaniyal.com/api/og",
+				url: "https://reactserverthings.vercel.app/api/og",
 				width: 1200,
 				height: 630,
 				alt: "Best Practices",
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
 			"Actionable best practices for building with React Server Components — from component boundaries and data fetching to caching, streaming, security, and performance optimization.",
 		images: [
 			{
-				url: "https://rsc.srijanbaniyal.com/api/og",
+				url: "https://reactserverthings.vercel.app/api/og",
 				alt: "Best Practices",
 				width: 1200,
 				height: 630,

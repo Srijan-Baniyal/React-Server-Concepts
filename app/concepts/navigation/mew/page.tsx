@@ -9,16 +9,16 @@ export const metadata: Metadata = {
 	description:
 		"A server-streamed Pokémon page for Mew demonstrating Next.js layout persistence, partial rendering, and streaming with Suspense.",
 	alternates: {
-		canonical: "https://rsc.srijanbaniyal.com/concepts/navigation/mew",
+		canonical: "https://reactserverthings.vercel.app/concepts/navigation/mew",
 	},
 	openGraph: {
 		title: "Mew — Navigation Demo | React Server Concepts",
 		description:
 			"A server-streamed Pokémon page for Mew demonstrating Next.js layout persistence, partial rendering, and streaming.",
-		url: "https://rsc.srijanbaniyal.com/concepts/navigation/mew",
+		url: "https://reactserverthings.vercel.app/concepts/navigation/mew",
 		images: [
 			{
-				url: "https://rsc.srijanbaniyal.com/api/og",
+				url: "https://reactserverthings.vercel.app/api/og",
 				width: 1200,
 				height: 630,
 				alt: "Mew Navigation Demo",

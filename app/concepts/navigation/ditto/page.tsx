@@ -9,16 +9,16 @@ export const metadata: Metadata = {
 	description:
 		"A server-streamed Pokémon page for Ditto demonstrating Next.js layout persistence, partial rendering, and streaming with Suspense.",
 	alternates: {
-		canonical: "https://rsc.srijanbaniyal.com/concepts/navigation/ditto",
+		canonical: "https://reactserverthings.vercel.app/concepts/navigation/ditto",
 	},
 	openGraph: {
 		title: "Ditto — Navigation Demo | React Server Concepts",
 		description:
 			"A server-streamed Pokémon page for Ditto demonstrating Next.js layout persistence, partial rendering, and streaming.",
-		url: "https://rsc.srijanbaniyal.com/concepts/navigation/ditto",
+		url: "https://reactserverthings.vercel.app/concepts/navigation/ditto",
 		images: [
 			{
-				url: "https://rsc.srijanbaniyal.com/api/og",
+				url: "https://reactserverthings.vercel.app/api/og",
 				width: 1200,
 				height: 630,
 				alt: "Ditto Navigation Demo",

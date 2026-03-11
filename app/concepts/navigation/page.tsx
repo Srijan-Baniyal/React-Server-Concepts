@@ -6,16 +6,16 @@ export const metadata: Metadata = {
 	description:
 		"See how Next.js layouts persist while content streams in — an interactive demo of navigation, partial rendering, and layout persistence with Pokémon data.",
 	alternates: {
-		canonical: "https://rsc.srijanbaniyal.com/concepts/navigation",
+		canonical: "https://reactserverthings.vercel.app/concepts/navigation",
 	},
 	openGraph: {
 		title: "Navigation & Partial Updates | React Server Concepts",
 		description:
 			"See how Next.js layouts persist while content streams in — an interactive demo of navigation, partial rendering, and layout persistence.",
-		url: "https://rsc.srijanbaniyal.com/concepts/navigation",
+		url: "https://reactserverthings.vercel.app/concepts/navigation",
 		images: [
 			{
-				url: "https://rsc.srijanbaniyal.com/api/og",
+				url: "https://reactserverthings.vercel.app/api/og",
 				width: 1200,
 				height: 630,
 				alt: "Navigation & Partial Updates",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 			"See how Next.js layouts persist while content streams in — an interactive demo of navigation, partial rendering, and layout persistence.",
 		images: [
 			{
-				url: "https://rsc.srijanbaniyal.com/api/og",
+				url: "https://reactserverthings.vercel.app/api/og",
 				alt: "Navigation & Partial Updates",
 				width: 1200,
 				height: 630,

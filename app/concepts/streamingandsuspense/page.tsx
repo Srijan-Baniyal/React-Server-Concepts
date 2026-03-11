@@ -6,16 +6,16 @@ export const metadata: Metadata = {
 	description:
 		"Progressive rendering in action — how React streams HTML, selective hydration, nested Suspense boundaries, and streaming architecture patterns in Next.js.",
 	alternates: {
-		canonical: "https://rsc.srijanbaniyal.com/concepts/streamingandsuspense",
+		canonical: "https://reactserverthings.vercel.app/concepts/streamingandsuspense",
 	},
 	openGraph: {
 		title: "Streaming & Suspense | React Server Concepts",
 		description:
 			"Progressive rendering in action — how React streams HTML, selective hydration, nested Suspense boundaries, and streaming architecture patterns.",
-		url: "https://rsc.srijanbaniyal.com/concepts/streamingandsuspense",
+		url: "https://reactserverthings.vercel.app/concepts/streamingandsuspense",
 		images: [
 			{
-				url: "https://rsc.srijanbaniyal.com/api/og",
+				url: "https://reactserverthings.vercel.app/api/og",
 				width: 1200,
 				height: 630,
 				alt: "Streaming & Suspense",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 			"Progressive rendering in action — how React streams HTML, selective hydration, nested Suspense boundaries, and streaming architecture patterns.",
 		images: [
 			{
-				url: "https://rsc.srijanbaniyal.com/api/og",
+				url: "https://reactserverthings.vercel.app/api/og",
 				alt: "Streaming & Suspense",
 				width: 1200,
 				height: 630,

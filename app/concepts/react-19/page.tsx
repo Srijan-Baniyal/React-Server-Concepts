@@ -5,15 +5,15 @@ export const metadata: Metadata = {
 	title: "React 19 Features | React Server Concepts",
 	description:
 		"Live demos for React 19 features — useOptimistic, useFormStatus, useActionState, the React Compiler, Activity API, and View Transitions.",
-	alternates: { canonical: "https://rsc.srijanbaniyal.com/concepts/react-19" },
+	alternates: { canonical: "https://reactserverthings.vercel.app/concepts/react-19" },
 	openGraph: {
 		title: "React 19 Features | React Server Concepts",
 		description:
 			"Live demos for React 19 features — useOptimistic, useFormStatus, useActionState, the React Compiler, Activity API, and View Transitions.",
-		url: "https://rsc.srijanbaniyal.com/concepts/react-19",
+		url: "https://reactserverthings.vercel.app/concepts/react-19",
 		images: [
 			{
-				url: "https://rsc.srijanbaniyal.com/api/og",
+				url: "https://reactserverthings.vercel.app/api/og",
 				width: 1200,
 				height: 630,
 				alt: "React 19 Features",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 			"Live demos for React 19 features — useOptimistic, useFormStatus, useActionState, the React Compiler, Activity API, and View Transitions.",
 		images: [
 			{
-				url: "https://rsc.srijanbaniyal.com/api/og",
+				url: "https://reactserverthings.vercel.app/api/og",
 				alt: "React 19 Features",
 				width: 1200,
 				height: 630,

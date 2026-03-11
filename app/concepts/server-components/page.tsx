@@ -6,16 +6,16 @@ export const metadata: Metadata = {
 	description:
 		"Explore how the React Server/Client boundary works, why it matters for bundle size and performance, and what actually travels over the wire in RSC.",
 	alternates: {
-		canonical: "https://rsc.srijanbaniyal.com/concepts/server-components",
+		canonical: "https://reactserverthings.vercel.app/concepts/server-components",
 	},
 	openGraph: {
 		title: "Server Components | React Server Concepts",
 		description:
 			"Explore how the React Server/Client boundary works, why it matters for bundle size and performance, and what actually travels over the wire in RSC.",
-		url: "https://rsc.srijanbaniyal.com/concepts/server-components",
+		url: "https://reactserverthings.vercel.app/concepts/server-components",
 		images: [
 			{
-				url: "https://rsc.srijanbaniyal.com/api/og",
+				url: "https://reactserverthings.vercel.app/api/og",
 				width: 1200,
 				height: 630,
 				alt: "Server Components",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 			"Explore how the React Server/Client boundary works, why it matters for bundle size and performance, and what actually travels over the wire in RSC.",
 		images: [
 			{
-				url: "https://rsc.srijanbaniyal.com/api/og",
+				url: "https://reactserverthings.vercel.app/api/og",
 				alt: "Server Components",
 				width: 1200,
 				height: 630,

@@ -9,16 +9,16 @@ export const metadata: Metadata = {
 	description:
 		"A server-streamed Pokémon page for Eevee demonstrating Next.js layout persistence, partial rendering, and streaming with Suspense.",
 	alternates: {
-		canonical: "https://rsc.srijanbaniyal.com/concepts/navigation/eevee",
+		canonical: "https://reactserverthings.vercel.app/concepts/navigation/eevee",
 	},
 	openGraph: {
 		title: "Eevee — Navigation Demo | React Server Concepts",
 		description:
 			"A server-streamed Pokémon page for Eevee demonstrating Next.js layout persistence, partial rendering, and streaming.",
-		url: "https://rsc.srijanbaniyal.com/concepts/navigation/eevee",
+		url: "https://reactserverthings.vercel.app/concepts/navigation/eevee",
 		images: [
 			{
-				url: "https://rsc.srijanbaniyal.com/api/og",
+				url: "https://reactserverthings.vercel.app/api/og",
 				width: 1200,
 				height: 630,
 				alt: "Eevee Navigation Demo",

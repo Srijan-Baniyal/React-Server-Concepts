@@ -23,16 +23,16 @@ export const metadata: Metadata = {
 	description:
 		"The full RSC rendering pipeline, React Flight wire format, caching layers, hydration, route segments, server actions, and composition patterns — end to end.",
 	alternates: {
-		canonical: "https://rsc.srijanbaniyal.com/learning/architecture",
+		canonical: "https://reactserverthings.vercel.app/learning/architecture",
 	},
 	openGraph: {
 		title: "Architecture Deep Dive | React Server Concepts",
 		description:
 			"The full RSC rendering pipeline, React Flight wire format, caching layers, hydration, route segments, server actions, and composition patterns.",
-		url: "https://rsc.srijanbaniyal.com/learning/architecture",
+		url: "https://reactserverthings.vercel.app/learning/architecture",
 		images: [
 			{
-				url: "https://rsc.srijanbaniyal.com/api/og",
+				url: "https://reactserverthings.vercel.app/api/og",
 				width: 1200,
 				height: 630,
 				alt: "Architecture Deep Dive",
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
 			"The full RSC rendering pipeline, React Flight wire format, caching layers, hydration, route segments, server actions, and composition patterns.",
 		images: [
 			{
-				url: "https://rsc.srijanbaniyal.com/api/og",
+				url: "https://reactserverthings.vercel.app/api/og",
 				alt: "Architecture Deep Dive",
 				width: 1200,
 				height: 630,

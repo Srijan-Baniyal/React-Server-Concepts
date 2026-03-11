@@ -17,15 +17,15 @@ export const metadata: Metadata = {
 	title: "About | React Server Concepts",
 	description:
 		"Learn about this project — an interactive deep dive into React Server Components, RSC architecture, React 19 features, streaming, suspense, and modern Next.js patterns by Srijan Baniyal.",
-	alternates: { canonical: "https://rsc.srijanbaniyal.com/about" },
+	alternates: { canonical: "https://reactserverthings.vercel.app/about" },
 	openGraph: {
 		title: "About | React Server Concepts",
 		description:
 			"Learn about this project — an interactive deep dive into React Server Components, RSC architecture, React 19 features, and modern Next.js patterns.",
-		url: "https://rsc.srijanbaniyal.com/about",
+		url: "https://reactserverthings.vercel.app/about",
 		images: [
 			{
-				url: "https://rsc.srijanbaniyal.com/api/og",
+				url: "https://reactserverthings.vercel.app/api/og",
 				width: 1200,
 				height: 630,
 				alt: "About React Server Concepts",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
 			"Learn about this project — an interactive deep dive into React Server Components, RSC architecture, React 19 features, and modern Next.js patterns.",
 		images: [
 			{
-				url: "https://rsc.srijanbaniyal.com/api/og",
+				url: "https://reactserverthings.vercel.app/api/og",
 				alt: "About React Server Concepts",
 				width: 1200,
 				height: 630,
